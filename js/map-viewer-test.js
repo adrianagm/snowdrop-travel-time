@@ -23,11 +23,11 @@ function MapViewerTest() {
 
     var chicago = new google.maps.LatLng(41.850033, -87.6500523);
     mapViewer.loadModule({
-    	type: 'button',
-    	text: 'Chicago',
-    	position: 'BOTTOM_CENTER',
-    	clickFunction: mapViewer.map.setCenter,
-    	clickParams: [chicago],
-    	clickThis: mapViewer.map
+        type: 'button',
+        text: 'Chicago',
+        position: 'BOTTOM_CENTER',
+        clickFunction: mapViewer.map.setCenter,
+        clickParams: [chicago],
+        clickThis: mapViewer.map
     });
 }

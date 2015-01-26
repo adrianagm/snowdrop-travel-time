@@ -24,13 +24,15 @@ function MapViewer(id, api) {
         },
 
         loadModule: function(control) {
+            var moduleObject;
+            var module;
             if (typeof(control) === 'string') {
-                var moduleObject = MapViewer.modules[control];
-                var module = new moduleObject.control(moduleObject.defaultOptions);
+                moduleObject = MapViewer.modules[control];
+                module = new moduleObject.control(moduleObject.defaultOptions);
                 module.addToMap(moduleObject.defaultPosition);
             } else if (typeof(control) === 'object') {
-                var moduleObject = MapViewer.modules[control.type];
-                var module = new moduleObject.control(control);
+                moduleObject = MapViewer.modules[control.type];
+                module = new moduleObject.control(control);
                 module.addToMap(control.position);
             }
         },
@@ -60,6 +62,10 @@ function MapViewer(id, api) {
     MapViewer.modules = {};
     MapViewer.registerModule = function(control, alias, defaultPosition, defaultOptions) {
         control.prototype = Object.create(MapViewer.MapControl.prototype);
-        this.modules[alias] = {control: control, defaultPosition: defaultPosition, defaultOptions: defaultOptions};
+        this.modules[alias] = {
+            control: control,
+            defaultPosition: defaultPosition,
+            defaultOptions: defaultOptions
+        };
     };
 })();
