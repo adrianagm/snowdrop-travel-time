@@ -19,8 +19,15 @@ function MapViewer(id, api) {
             this.element = document.getElementById(id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
-            MapViewer.MapControl.prototype.map = this.map;
+            this.setModulesMap();
             this.activeModules = {};
+        },
+
+        setModulesMap: function() {
+            MapViewer.MapControl.prototype.map = this.map;
+            for (var module in MapViewer.modules) {
+                MapViewer.modules[module].control.prototype.map = this.map;
+            }
         },
 
         loadModule: function(control) {
@@ -61,11 +68,23 @@ function MapViewer(id, api) {
     //Class functions
     MapViewer.modules = {};
     MapViewer.registerModule = function(control, alias, defaultPosition, defaultOptions) {
-        control.prototype = Object.create(MapViewer.MapControl.prototype);
         this.modules[alias] = {
             control: control,
             defaultPosition: defaultPosition,
             defaultOptions: defaultOptions
         };
+    };
+
+    MapViewer.extend = function(parent, child) {
+        var Module = function(options) {
+            parent.apply(this, arguments);
+        };
+        for (var attr in parent.prototype) {
+            Module.prototype[attr] = parent.prototype[attr];
+        }
+        for (attr in child) {
+            Module.prototype[attr] = child[attr];
+        }
+        return Module;
     };
 })();
