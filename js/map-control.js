@@ -2,13 +2,18 @@
     "use strict";
 
     MapViewer.MapControl = function() {
-
+    	
     };
 
     MapViewer.MapControl.prototype = {
         template: "",
-        addToMap: function() {
-            this.map.controls[google.maps.ControlPosition.TOP_RIGHT].push(this.content);
+        setContent: function(html) {
+        	var controlDiv = document.createElement('div');
+            controlDiv.innerHTML = html;
+        	this.content = controlDiv.firstChild;
+        },
+        addToMap: function(position) {
+            this.map.controls[google.maps.ControlPosition[position]].push(this.content);
         }
     };
 })();

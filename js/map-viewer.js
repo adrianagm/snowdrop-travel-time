@@ -25,8 +25,13 @@ function MapViewer(id, api) {
 
         loadModule: function(control) {
             if (typeof(control) === 'string') {
-                var module = new MapViewer.modules[control](this.map);
-                module.addToMap();
+                var moduleObject = MapViewer.modules[control];
+                var module = new moduleObject.control(moduleObject.defaultOptions);
+                module.addToMap(moduleObject.defaultPosition);
+            } else if (typeof(control) === 'object') {
+                var moduleObject = MapViewer.modules[control.type];
+                var module = new moduleObject.control(control);
+                module.addToMap(control.position);
             }
         },
 
@@ -53,8 +58,8 @@ function MapViewer(id, api) {
 
     //Class functions
     MapViewer.modules = {};
-    MapViewer.registerModule = function(control, alias) {
+    MapViewer.registerModule = function(control, alias, defaultPosition, defaultOptions) {
         control.prototype = Object.create(MapViewer.MapControl.prototype);
-        this.modules[alias] = control;
+        this.modules[alias] = {control: control, defaultPosition: defaultPosition, defaultOptions: defaultOptions};
     };
 })();
