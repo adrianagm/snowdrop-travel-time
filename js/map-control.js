@@ -4,7 +4,7 @@
     var CONTROL_CLASS = 'map-control';
 
     MapViewer.MapControl = function(options) {
-        this.setContent(options.cssClass);
+        this.setContent(options);
         this.initialize(options);
     };
 
@@ -16,15 +16,15 @@
 
         },
 
-        setContent: function(cssClass) {
+        setContent: function(options) {
             var helperDiv = document.createElement('div');
             var wrapperDiv = document.createElement('div');
             var controlDiv = document.createElement('div');
 
             controlDiv.innerHTML = this.template;
             controlDiv.className = this.controlClass;
-            if (cssClass) {
-                controlDiv.classList.add(cssClass);
+            if (options.cssClass) {
+                controlDiv.classList.add(options.cssClass);
             }
 
             wrapperDiv.className = 'map-control';

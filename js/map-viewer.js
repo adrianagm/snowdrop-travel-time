@@ -44,6 +44,12 @@ function MapViewer(id, api) {
             }
         },
 
+        loadModules: function(modulesList) {
+            for (var m = 0; m < modulesList.length; m++) {
+                this.loadModule(modulesList[m]);
+            }
+        },
+
         checkAPI: function(api) {
             var error;
             if (!api)

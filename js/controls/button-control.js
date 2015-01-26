@@ -7,12 +7,13 @@
         controlClass: 'button-control',
 
         initialize: function(options) {
-            this.bindEvent('button-control-inner', 'click', function() {
+            this.bindEvent('button-control-outer', 'click', function() {
                 options.clickFunction.apply(options.clickThis, options.clickParams);
             });
         }
     });
 
+    //Default values
     var msg = "Default function";
     MapViewer.registerModule(MapViewer.ButtonControl, "button", 'TOP_RIGHT', {
         text: 'Default',
