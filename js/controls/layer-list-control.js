@@ -53,6 +53,9 @@
             } else {
                 style.display = 'initial';
             }
+
+            var clear = this.getElementsByClass('clear')[0];
+            clear.style.display = style.display;
         },
 
         clearList: function() {
