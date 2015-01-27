@@ -7,9 +7,11 @@ function MapViewer(id, api, modules) {
 
     var that = this;
     cb = function() {
-        MapViewer.loadGoogleLibs();
-        that.createMap(id);
-        that.loadModules(modules);
+        var promises = MapViewer.loadGoogleLibs();
+        Promise.all(promises).then(function(values) {
+            that.createMap(id);
+            that.loadModules(modules);
+        });
     };
 
     MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places');
@@ -85,13 +87,22 @@ function MapViewer(id, api, modules) {
     };
 
     MapViewer.loadGoogleLibs = function() {
-
+        var promises = [];
+        promises.push(this.loadLib('js/libs/markerclusterer.js'));
+        promises.push(this.loadLib('js/libs/richmarker.js'));
+        return promises;
     };
 
     MapViewer.loadLib = function(src) {
-        var lib = document.createElement('script');
-        lib.src = src;
-        document.body.appendChild(lib);
+        var promise = new Promise(function(resolve, reject) {
+            var lib = document.createElement('script');
+            lib.src = src;
+            lib.onload = function() {
+                resolve();
+            };
+            document.body.appendChild(lib);
+        });
+        return promise;
     };
 
     MapViewer.extend = function(parent, child) {
