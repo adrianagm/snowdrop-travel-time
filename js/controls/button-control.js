@@ -3,21 +3,22 @@
     MapViewer.ButtonControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="button-control-outer"><div class="button-control-border"><div class="button-control-inner"><b>Texto</b></div></div></div>',
-
         controlClass: 'button-control',
 
+        position: 'TOP_RIGHT',
+        alias: 'button',
+
+        text: 'Default',
+        clickFunction: alert,
+        clickParams: ['Default function'],
+
         initialize: function(options) {
+            var that = this;
             this.bindEvent('button-control-outer', 'click', function() {
-                options.clickFunction.apply(options.clickThis, options.clickParams);
+                that.clickFunction.apply(that.clickThis, that.clickParams);
             });
         }
     });
 
-    //Default values
-    var msg = "Default function";
-    MapViewer.registerModule(MapViewer.ButtonControl, "button", 'TOP_RIGHT', {
-        text: 'Default',
-        clickFunction: alert,
-        clickParams: [msg]
-    });
+    MapViewer.registerModule(MapViewer.ButtonControl, "button");
 })();

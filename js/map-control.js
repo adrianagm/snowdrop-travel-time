@@ -4,27 +4,32 @@
     var CONTROL_CLASS = 'map-control';
 
     MapViewer.MapControl = function(options) {
-        this.setContent(options);
-        this.initialize(options);
+        if (typeof(options) === 'object') {
+            for (var attr in options) {
+                this[attr] = options[attr];
+            }
+        }
+        this.setContent();
+        this.initialize();
     };
 
     MapViewer.MapControl.prototype = {
         template: "",
         controlClass: "",
 
-        initialize: function(options) {
+        initialize: function() {
 
         },
 
-        setContent: function(options) {
+        setContent: function() {
             var helperDiv = document.createElement('div');
             var wrapperDiv = document.createElement('div');
             var controlDiv = document.createElement('div');
 
             controlDiv.innerHTML = this.template;
             controlDiv.className = this.controlClass;
-            if (options.cssClass) {
-                controlDiv.classList.add(options.cssClass);
+            if (this.cssClass) {
+                controlDiv.classList.add(this.cssClass);
             }
 
             wrapperDiv.className = 'map-control';
@@ -34,8 +39,8 @@
             this.content = helperDiv.firstChild;
         },
 
-        addToMap: function(position) {
-            this.map.controls[google.maps.ControlPosition[position]].push(this.content);
+        addToMap: function() {
+            this.map.controls[google.maps.ControlPosition[this.position]].push(this.content);
         },
 
         getElementsByClass: function(classSelector) {

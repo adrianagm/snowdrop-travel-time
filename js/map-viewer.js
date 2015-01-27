@@ -26,22 +26,21 @@ function MapViewer(id, api) {
         setModulesMap: function() {
             MapViewer.MapControl.prototype.map = this.map;
             for (var module in MapViewer.modules) {
-                MapViewer.modules[module].control.prototype.map = this.map;
+                MapViewer.modules[module].prototype.map = this.map;
             }
         },
 
         loadModule: function(control) {
-            var moduleObject;
+            var ModuleObject;
             var module;
             if (typeof(control) === 'string') {
-                moduleObject = MapViewer.modules[control];
-                module = new moduleObject.control(moduleObject.defaultOptions);
-                module.addToMap(moduleObject.defaultPosition);
+                ModuleObject = MapViewer.modules[control];
             } else if (typeof(control) === 'object') {
-                moduleObject = MapViewer.modules[control.type];
-                module = new moduleObject.control(control);
-                module.addToMap(control.position);
+                ModuleObject = MapViewer.modules[control.type];
             }
+
+            module = new ModuleObject(control);
+            module.addToMap();
         },
 
         loadModules: function(modulesList) {
@@ -73,12 +72,8 @@ function MapViewer(id, api) {
 
     //Class functions
     MapViewer.modules = {};
-    MapViewer.registerModule = function(control, alias, defaultPosition, defaultOptions) {
-        this.modules[alias] = {
-            control: control,
-            defaultPosition: defaultPosition,
-            defaultOptions: defaultOptions
-        };
+    MapViewer.registerModule = function(controlClass, alias) {
+        this.modules[alias] = controlClass;
     };
 
     MapViewer.extend = function(parent, child) {
