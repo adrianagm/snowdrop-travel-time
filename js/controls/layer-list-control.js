@@ -2,7 +2,7 @@
 
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header">Layers</div><ul class="layer-list"></ul>',
+        template: '<div class="header">Layers</div><ul class="layer-list"></ul></ul><div class="clear">Clear</div>',
         controlClass: 'layer-list-control',
 
         position: 'RIGHT_CENTER',
@@ -32,6 +32,10 @@
             this.bindEvent('header', 'click', function(event) {
                 that.toggleList();
             });
+
+            this.bindEvent('clear', 'click', function(event) {
+                that.clearList();
+            });
         },
 
         layerSelected: function(li) {
@@ -48,6 +52,13 @@
                 style.display = 'none';
             } else {
                 style.display = 'initial';
+            }
+        },
+
+        clearList: function() {
+            var lis = this.getElementsByClass('layer');
+            for (var l = 0; l < lis.length; l++) {
+                this.layerDeselected(lis[l]);
             }
         },
 

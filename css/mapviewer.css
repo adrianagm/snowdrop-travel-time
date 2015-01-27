@@ -35,6 +35,12 @@ html, body, .map-widget, .map-widget ul {
     color: white;
 }
 
+.map-widget .layer-list-control .clear {
+    padding: 5px;
+    background-color: #BBB;
+    color: white;
+}
+
 .map-widget .layer-list-control ul li{
     padding: 5px;
     list-style: none;
