@@ -62,7 +62,7 @@ html, body, .map-widget, .map-widget ul {
 
 .map-widget .places-control {
     background-color: white;
-    margin: 20px;
+    margin-bottom: 40px;
     font-size: 20px;
     cursor: pointer;
 }
