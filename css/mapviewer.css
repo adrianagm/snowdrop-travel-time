@@ -1,7 +1,8 @@
 html, body, .map-widget, .map-widget ul {
     height: 100%;
     margin: 0px;
-    padding: 0px
+    padding: 0px;
+    font-family: "Times New Roman";
 }
 
 .map-widget .button-control-outer {
@@ -17,7 +18,6 @@ html, body, .map-widget, .map-widget ul {
 }
 
 .map-widget .button-control-inner {
-    font-family: Arial, sans-serif;
     font-size: 12px;
     padding-left: 4px;
     padding-right: 4px;
@@ -34,8 +34,9 @@ html, body, .map-widget, .map-widget ul {
 
 .map-widget .layer-list-control .header {
     padding: 5px;
-    background-color: #D00;
+    background-color: rgb(188, 20, 26);
     color: white;
+    font-family: "Times New Roman";
 }
 
 .map-widget .layer-list-control .clear {
@@ -51,11 +52,11 @@ html, body, .map-widget, .map-widget ul {
 }
 
 .map-widget .layer-list-control ul li:hover {
-    color:#555;
+    color:rgb(109, 113, 116);
 }
 
 .map-widget .layer-list-control ul li.active {
-    color:#0D0;
+    color:rgb(188, 20, 26);
 }
 
 
@@ -69,14 +70,15 @@ html, body, .map-widget, .map-widget ul {
 
 .map-widget .places-control .header {
     padding: 5px;
-    background-color: #D00;
+    background-color: rgb(188, 20, 26);
     color: white;
     display: inline;
+    font-family: "Times New Roman";
 }
 
 .map-widget .places-control .clear {
     padding: 5px;
-    background-color: #BBB;
+    color:rgb(109, 113, 116);
     color: white;
 }
 
@@ -93,9 +95,9 @@ html, body, .map-widget, .map-widget ul {
 }
 
 .map-widget .places-control ul .places:hover {
-    color:#555;
+    color:rgb(109, 113, 116);
 }
 
 .map-widget .places-control ul .places.active {
-    color:#0D0;
+    color:rgb(188, 20, 26);
 }
