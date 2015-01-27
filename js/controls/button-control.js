@@ -12,7 +12,7 @@
         clickFunction: alert,
         clickParams: ['Default function'],
 
-        initialize: function(options) {
+        initialize: function() {
             var that = this;
             this.bindEvent('button-control-outer', 'click', function() {
                 that.clickFunction.apply(that.clickThis, that.clickParams);

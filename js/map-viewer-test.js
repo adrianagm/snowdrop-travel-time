@@ -50,6 +50,9 @@ function MapViewerTest() {
             position: 'BOTTOM_RIGHT',
             clickFunction: hide,
             cssClass: 'nhide'
+        }, {
+            type: 'layer-list',
+            layers: ['Terciopelo', 'Seda', 'Sintetica'],
         }
     ]);
 }
