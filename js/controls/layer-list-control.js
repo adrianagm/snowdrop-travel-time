@@ -28,6 +28,10 @@
                     that.layerSelected(li);
                 }
             });
+
+            this.bindEvent('header', 'click', function(event) {
+                that.toggleList();
+            });
         },
 
         layerSelected: function(li) {
@@ -36,7 +40,15 @@
 
         layerDeselected: function(li) {
             li.classList.remove('active');
+        },
 
+        toggleList: function() {
+            var style = this.layerList.style;
+            if (style.display !== 'none') {
+                style.display = 'none';
+            } else {
+                style.display = 'initial';
+            }
         },
 
         addLI: function(text) {
