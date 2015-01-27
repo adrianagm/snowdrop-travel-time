@@ -39,13 +39,6 @@ function MapViewerTest() {
     mapViewer.loadModules([
         "button", {
             type: 'button',
-            text: 'Chicago',
-            position: 'BOTTOM_CENTER',
-            clickFunction: mapViewer.map.setCenter,
-            clickParams: [chicago],
-            clickThis: mapViewer.map
-        }, {
-            type: 'button',
             text: 'Hide/Show',
             position: 'BOTTOM_RIGHT',
             clickFunction: hide,
@@ -53,6 +46,9 @@ function MapViewerTest() {
         }, {
             type: 'layer-list',
             layers: ['Terciopelo', 'Seda', 'Sintetica'],
+        }, {
+            type: 'places',
+            places: ['Schools', 'Hospitals', 'Supermarkets', 'Bars'],
         }
     ]);
 }

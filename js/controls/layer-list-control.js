@@ -2,14 +2,14 @@
 
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header">Layers</div><ul class="layer-list"></ul></ul><div class="clear">Clear</div>',
+        template: '<div class="header">Layers</div><ul class="layer-list"></ul><div class="clear">Clear</div>',
         controlClass: 'layer-list-control',
 
         position: 'RIGHT_CENTER',
         alias: 'layer-list',
 
         layerList: null,
-        layer: [],
+        layers: [],
 
         initialize: function() {
             var layers = this.layers;
