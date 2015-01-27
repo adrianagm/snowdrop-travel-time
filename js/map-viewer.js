@@ -1,10 +1,18 @@
-function MapViewer(id, api) {
+function MapViewer(id, api, modules) {
     try {
         this.checkAPI(api);
     } catch (error) {
         console.error(error);
     }
-    this.createMap(id);
+
+    var that = this;
+    cb = function() {
+        MapViewer.loadGoogleLibs();
+        that.createMap(id);
+        that.loadModules(modules);
+    };
+
+    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places');
 }
 
 (function() {
@@ -74,6 +82,16 @@ function MapViewer(id, api) {
     MapViewer.modules = {};
     MapViewer.registerModule = function(controlClass, alias) {
         this.modules[alias] = controlClass;
+    };
+
+    MapViewer.loadGoogleLibs = function() {
+
+    };
+
+    MapViewer.loadLib = function(src) {
+        var lib = document.createElement('script');
+        lib.src = src;
+        document.body.appendChild(lib);
     };
 
     MapViewer.extend = function(parent, child) {

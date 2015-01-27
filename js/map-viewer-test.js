@@ -33,10 +33,7 @@ function hide() {
 function MapViewerTest() {
     console.log("Map Viewer");
 
-    var chicago = new google.maps.LatLng(41.850033, -87.6500523);
-    mapViewer = new MapViewer('map', IntegrationAPI);
-
-    mapViewer.loadModules([
+    mapViewer = new MapViewer('map', IntegrationAPI, [
         "button", {
             type: 'button',
             text: 'Hide/Show',
@@ -57,3 +54,5 @@ function MapViewerTest() {
         }
     ]);
 }
+
+window.onload = MapViewerTest;
