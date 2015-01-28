@@ -2,7 +2,7 @@
 
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header">Places</div><ul class="places-list"></ul>',
+        template: '<div class="header" data-i18n="places">Places</div><ul class="places-list"></ul>',
         controlClass: 'places-control',
 
         position: 'BOTTOM_CENTER',
@@ -14,6 +14,7 @@
 
         service: null,
         infowindow: null,
+        startCollapse: false,
 
         initialize: function() {
             var places = this.places;
@@ -21,7 +22,9 @@
             for (var place in places) {
                 this.addLI(place);
             }
-
+            if(this.startCollapse){
+                this.toggleList();
+            }
             this.infowindow = new google.maps.InfoWindow();
             this.service = new google.maps.places.PlacesService(this.map);
 
@@ -43,30 +46,32 @@
 
         placesSelected: function(li) {
             li.classList.add('active');
-            var type = li.getAttribute("data-tag");
+            var place = this.places[li.innerHTML];
+            var type = place.type;
             var request = {
                 location: this.map.getCenter(),
-                radius: 20000,
+                radius: 50000,
                 types: [type]
             };
 
             var that = this;
             this.service.nearbySearch(request, function(results, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
-                    that.map.setZoom(12);
+                    //that.map.setZoom(12);
                     that.markers[type] = [];
                     for (var i = 0; i < results.length; i++) {
-                        that.createMarker(results[i], type);
+                        that.createMarker(results[i], type, place.icon);
                     }
                 }
             });
         },
 
-        createMarker: function(place, type) {
+        createMarker: function(place, type, icon) {
             var placeLoc = place.geometry.location;
             var marker = new google.maps.Marker({
                 map: this.map,
-                position: place.geometry.location
+                position: place.geometry.location,
+               // icon: icon
             });
             this.markers[type].push(marker);
 
@@ -79,7 +84,8 @@
 
         placesDeselected: function(li) {
             li.classList.remove('active');
-            var type = li.getAttribute("data-tag");
+            var place = this.places[li.innerHTML];
+            var type = place.type;
             var markers = this.markers[type];
             for (var m = 0; m < markers.length; m++) {
                 markers[m].setMap(null);
@@ -92,7 +98,7 @@
             if (style.display !== 'none') {
                 style.display = 'none';
             } else {
-                style.display = 'initial';
+                style.display = 'inline-block';
             }
         },
 

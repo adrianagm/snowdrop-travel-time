@@ -16,7 +16,7 @@
     MapViewer.MapControl.prototype = {
         template: "",
         controlClass: "",
-        postion: 'TOP_CENTER',
+        position: 'TOP_CENTER',
 
         initialize: function() {
 

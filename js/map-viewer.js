@@ -14,7 +14,7 @@ function MapViewer(id, api, modules) {
         });
     };
 
-    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places');
+    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,visualization');
 }
 
 (function() {
@@ -22,8 +22,9 @@ function MapViewer(id, api, modules) {
     MapViewer.prototype = {
         createMap: function(id) {
             var mapOptions = {
-                zoom: 8,
-                center: new google.maps.LatLng(51.506640, -0.125853)
+                zoom: 11,
+                //center: new google.maps.LatLng(51.506640, -0.125853)
+                center: new google.maps.LatLng(40.7033121,-73.979681)
             };
 
             this.element = document.getElementById(id);
@@ -90,6 +91,7 @@ function MapViewer(id, api, modules) {
         var promises = [];
         promises.push(this.loadLib('js/libs/markerclusterer.js'));
         promises.push(this.loadLib('js/libs/richmarker.js'));
+        promises.push(this.loadLib("js/libs/mercatorProjectorLayer.js"));
         return promises;
     };
 

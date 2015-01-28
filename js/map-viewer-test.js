@@ -42,15 +42,51 @@ function MapViewerTest() {
             cssClass: 'nhide'
         }, {
             type: 'layer-list',
-            layers: ['Terciopelo', 'Seda', 'Sintetica'],
+            startCollapse: true,
+            layers: {
+                "GME Layer": {
+                    type: "gme",
+                    layerId: "10446176163891957399-13516001307527776624",
+                    layerName: 'layer_00001'
+                },
+                "GME Layer 2": {
+                    type: "gme",
+                    layerId: "10446176163891957399-13516001307527776624",
+                    layerName: 'layer_00002'
+                },
+                "WMS Layer": {
+                    type: "wms",
+                    url: "http://webservices.nationalatlas.gov/wms",
+                    layers: 'seihaz'
+
+                },
+                "WMS Layer states": {
+                    type: "wms",
+                    url: "http://webservices.nationalatlas.gov/wms",
+                    layers: 'states'
+                },
+            }
         }, {
             type: 'places',
+            startCollapse: true,
             places: {
-                Schools: 'school',
-                Hospitals: 'hospital',
-                Supermarkets: 'grocery_or_supermarket',
-                Restaurants: 'restaurant'
-            },
+                Schools: {
+                    type: 'school',
+                    icon: '<i class="fa fa-child"></i>'
+                },
+                Hospitals: {
+                    type: 'hospital',
+                    icon: '<i class="fa fa-hospital-o"></i>'
+                },
+                Supermarkets: {
+                    type: 'grocery_or_supermarket',
+                    icon: '<i class="fa fa-cart-plus"></i>'
+                },
+                Restaurants: {
+                    type: 'restaurant',
+                    icon: '<i class="fa-cutlery"></i>'
+                }
+            }
         }
     ]);
 }
