@@ -20,6 +20,7 @@ function MapViewer(id, api, modules) {
 (function() {
     "use strict";
     MapViewer.prototype = {
+        cluster: null,
         createMap: function(id) {
             var mapOptions = {
                 zoom: 8,
@@ -29,8 +30,21 @@ function MapViewer(id, api, modules) {
             this.element = document.getElementById(id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
+
             this.setModulesMap();
             this.activeModules = {};
+            var that = this;
+
+            var mcOptions = {
+                className: "property-cluster-marker"
+            };
+
+            this.cluster = new MarkerClusterer(this.map, null, mcOptions);
+
+            google.maps.event.addListener(this.map, 'dragend', function() {
+                that.removeMarkers();
+                that.setMarkers();
+            });
         },
 
         setModulesMap: function() {
@@ -38,6 +52,31 @@ function MapViewer(id, api, modules) {
             for (var module in MapViewer.modules) {
                 MapViewer.modules[module].prototype.map = this.map;
             }
+        },
+
+        removeMarkers: function() {
+            this.cluster.clearMarkers();
+        },
+
+        setMarkers: function() {
+            var data = [];
+            var markers = [];
+            data = this.CreateRandom();
+
+            for (var i = 0; i < 20; i++) {
+                var latLng = new google.maps.LatLng(data[i].lat, data[i].lng);
+                var marker = new RichMarker({
+                    position: latLng,
+                    flat: true,
+                    content: '<div class="property-marker"></div>'
+                });
+                markers.push(marker);
+            }
+
+            //this.cluster.setStyles(this.clusterStyles);
+            this.cluster.addMarkers(markers);
+
+
         },
 
         loadModule: function(control) {
@@ -77,6 +116,40 @@ function MapViewer(id, api, modules) {
                 error = "API setPropertiesFilter is not a function.";
 
             if (error) throw error;
+        },
+
+        RandomCoordinate: function(min, max) {
+            return Math.random() * (max - min) + min;
+        },
+
+        CreateRandom: function() {
+            var list = [];
+
+            var bounds = this.map.getBounds();
+            var ne = bounds.getNorthEast();
+            var sw = bounds.getSouthWest();
+            var lat0 = sw.lat();
+            var lat1 = ne.lat();
+            var lng0 = sw.lng();
+            var lng1 = ne.lng();
+
+
+            for (var i = 0; i < 20; i++) {
+                var lat = this.RandomCoordinate(lat0, lat1);
+                var lng = this.RandomCoordinate(lng0, lng1);
+
+                var elem = {
+                    propertyId: 1,
+                    lat: lat,
+                    lng: lng,
+                    fuzzy: false,
+                    type: "test"
+                };
+
+                list.push(elem);
+            }
+
+            return list;
         }
     };
 
