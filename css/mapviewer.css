@@ -101,3 +101,22 @@ html, body, .map-widget, .map-widget ul {
 .map-widget .places-control ul .places.active {
     color:rgb(188, 20, 26);
 }
+
+.property-marker {
+    background-image: url('../images/flag.png');
+    background-repeat: no-repeat;
+    background-color: transparent;
+    height: 50px;
+    width: 50px;
+}
+
+.property-cluster-marker {
+    height: 53px;
+    color: #9f3a2b ;
+    background-image: url('../images/cluster.png');
+    width: 53px;
+    line-height: 53px;
+    cursor: pointer;
+    font-family: Arial,sans-serif;
+    font-weight: bold;
+}
