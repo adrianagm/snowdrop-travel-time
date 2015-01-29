@@ -102,6 +102,22 @@ html, body, .map-widget, .map-widget ul {
     color:rgb(188, 20, 26);
 }
 
+.map-widget .check-pan-control-outer {
+    padding: 5px;
+}
+
+.map-widget .check-pan-control-border {
+    cursor: pointer;
+    text-align: center;
+    background-color: white;
+}
+
+.map-widget .check-pan-control-inner {
+    font-size: 12px;
+    padding-bottom: 4px;
+    padding-right: 4px;
+}
+
 .property-marker {
     background-image: url('../images/flag.png');
     background-repeat: no-repeat;
@@ -119,6 +135,22 @@ html, body, .map-widget, .map-widget ul {
     cursor: pointer;
     font-family: Arial,sans-serif;
     font-weight: bold;
+}
+
+.checked-pan {
+    background-image: url('../images/check.png');
+    height: 24px;
+    width: 24px;
+    padding: 4px 25px 24px 4px;
+    background-repeat: no-repeat;
+}
+
+.unchecked-pan {
+    background-image: url('../images/uncheck.png');
+    height: 24px;
+    width: 24px;
+    padding: 4px 25px 24px 4px;
+    background-repeat: no-repeat;
 }
 
 .places-marker {
