@@ -9,7 +9,7 @@ function MapViewer(id, api, modules) {
     cb = function() {
         var promises = MapViewer.loadGoogleLibs();
         Promise.all(promises).then(function(values) {
-            that.createMap(id);
+            that.createMap(id, api);
             that.loadModules(modules);
         });
     };
@@ -21,7 +21,7 @@ function MapViewer(id, api, modules) {
     "use strict";
     MapViewer.prototype = {
         cluster: null,
-        createMap: function(id) {
+        createMap: function(id, api) {
             var mapOptions = {
                 zoom: 8,
                 center: new google.maps.LatLng(51.506640, -0.125853)
@@ -30,21 +30,19 @@ function MapViewer(id, api, modules) {
             this.element = document.getElementById(id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
+            this.api = api;
+
+            var that = this;
+            this.setCluster();
+
+            this.api.addSearchListener(function(searchCallback) {
+                that.removeMarkers();
+                that.setMarkers(searchCallback);
+            });
 
             this.setModulesMap();
+            this.setModulesApi();
             this.activeModules = {};
-            var that = this;
-
-            var mcOptions = {
-                className: "property-cluster-marker"
-            };
-
-            this.cluster = new MarkerClusterer(this.map, null, mcOptions);
-
-            google.maps.event.addListener(this.map, 'dragend', function() {
-                that.removeMarkers();
-                that.setMarkers();
-            });
         },
 
         setModulesMap: function() {
@@ -54,29 +52,11 @@ function MapViewer(id, api, modules) {
             }
         },
 
-        removeMarkers: function() {
-            this.cluster.clearMarkers();
-        },
-
-        setMarkers: function() {
-            var data = [];
-            var markers = [];
-            data = this.CreateRandom();
-
-            for (var i = 0; i < 20; i++) {
-                var latLng = new google.maps.LatLng(data[i].lat, data[i].lng);
-                var marker = new RichMarker({
-                    position: latLng,
-                    flat: true,
-                    content: '<div class="property-marker"></div>'
-                });
-                markers.push(marker);
+        setModulesApi: function() {
+            MapViewer.MapControl.prototype.api = this.api;
+            for (var module in MapViewer.modules) {
+                MapViewer.modules[module].prototype.api = this.api;
             }
-
-            //this.cluster.setStyles(this.clusterStyles);
-            this.cluster.addMarkers(markers);
-
-
         },
 
         loadModule: function(control) {
@@ -118,38 +98,32 @@ function MapViewer(id, api, modules) {
             if (error) throw error;
         },
 
-        RandomCoordinate: function(min, max) {
-            return Math.random() * (max - min) + min;
+        setCluster: function() {
+            var mcOptions = {
+                className: "property-cluster-marker"
+            };
+            this.cluster = new MarkerClusterer(this.map, null, mcOptions);
         },
 
-        CreateRandom: function() {
-            var list = [];
+        removeMarkers: function() {
+            this.cluster.clearMarkers();
+        },
 
-            var bounds = this.map.getBounds();
-            var ne = bounds.getNorthEast();
-            var sw = bounds.getSouthWest();
-            var lat0 = sw.lat();
-            var lat1 = ne.lat();
-            var lng0 = sw.lng();
-            var lng1 = ne.lng();
-
+        setMarkers: function(searchResults) {
+            var markers = [];
 
             for (var i = 0; i < 20; i++) {
-                var lat = this.RandomCoordinate(lat0, lat1);
-                var lng = this.RandomCoordinate(lng0, lng1);
-
-                var elem = {
-                    propertyId: 1,
-                    lat: lat,
-                    lng: lng,
-                    fuzzy: false,
-                    type: "test"
-                };
-
-                list.push(elem);
+                var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
+                var marker = new RichMarker({
+                    position: latLng,
+                    flat: true,
+                    content: '<div class="property-marker"></div>'
+                });
+                markers.push(marker);
             }
 
-            return list;
+            this.cluster.addMarkers(markers);
+
         }
     };
 
