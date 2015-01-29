@@ -11,15 +11,18 @@
         layerList: null,
         layers: [],
         layersLoaded: [],
-        wmsIndex: 0,
+
         startCollapse: false,
 
 
         initialize: function() {
             var layers = this.layers;
             this.layerList = this.getElementsByClass('layer-list')[0];
+            var i = 0;
             for (var layer in layers) {
+                layers[layer].index = i;
                 this.addLI(layer);
+                i++;
             }
             if(this.startCollapse){
                 this.toggleList();
@@ -70,9 +73,8 @@
            
             var wms = MercatorProjectionLayer.loadWMS(layer, requestParams) ;
 
-            this.map.overlayMapTypes.setAt(this.wmsIndex, wms);
-            layer.index = this.wmsIndex;
-            this.wmsIndex++;
+            this.map.overlayMapTypes.setAt(layer.index, wms);
+
             return wms;
         },
 
@@ -80,12 +82,14 @@
             li.classList.add('active');
             var layer = this.layers[li.innerHTML];
             var type = layer.type;
+            
             if (type == 'gme') {
                 this.layersLoaded[li.innerHTML] = this.addLayerGme(layer);
             }
             if (type == 'wms') {
                 this.layersLoaded[li.innerHTML] = this.addLayerWms(layer);
             }
+
         },
 
         layerDeselected: function(li) {

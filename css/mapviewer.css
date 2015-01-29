@@ -120,3 +120,34 @@ html, body, .map-widget, .map-widget ul {
     font-family: Arial,sans-serif;
     font-weight: bold;
 }
+
+.places-marker {
+    background-image: url('../images/placesMarker.png');
+    background-size: 15px 15px;
+    height: 20px;
+    width: 20px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}
+
+.places-cluster-marker {
+    color: #fff ;
+    background-image: url('../images/cluster-places.png');
+    background-size: 25px 25px;
+    height: 25px;
+    width: 25px;
+    line-height: 25px;
+    cursor: pointer;
+    font-family: Arial,sans-serif;
+    font-weight: bold;
+
+}
+
+.places-marker.places-marker-grocery_or_supermarket{
+    background-image: url('../images/shopping-card.png');
+    background-size: 15px 15px;
+    height: 20px;
+    width: 20px;
+    background-repeat: no-repeat;
+    background-color: transparent;
+}

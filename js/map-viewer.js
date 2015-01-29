@@ -23,9 +23,8 @@ function MapViewer(id, api, modules) {
         cluster: null,
         createMap: function(id) {
             var mapOptions = {
-                zoom: 11,
-                //center: new google.maps.LatLng(51.506640, -0.125853)
-                center: new google.maps.LatLng(40.7033121,-73.979681)
+                zoom: 12,
+                center: new google.maps.LatLng(40.7033121, -73.979681)
             };
 
             this.element = document.getElementById(id);
@@ -41,6 +40,7 @@ function MapViewer(id, api, modules) {
             };
 
             this.cluster = new MarkerClusterer(this.map, null, mcOptions);
+
 
             google.maps.event.addListener(this.map, 'dragend', function() {
                 that.removeMarkers();
@@ -65,19 +65,30 @@ function MapViewer(id, api, modules) {
             data = this.CreateRandom();
 
             for (var i = 0; i < 20; i++) {
-                var latLng = new google.maps.LatLng(data[i].lat, data[i].lng);
-                var marker = new RichMarker({
-                    position: latLng,
-                    flat: true,
-                    content: '<div class="property-marker"></div>'
-                });
-                markers.push(marker);
+                var marker = {
+                    properties: data[i],
+                    latLng: new google.maps.LatLng(data[i].lat, data[i].lng),
+                    iconClass: "property-marker"
+                };
+
+                markers.push(this.drawMarker(marker));
             }
 
             //this.cluster.setStyles(this.clusterStyles);
             this.cluster.addMarkers(markers);
 
+        },
 
+        drawMarker: function(marker) {
+            var content = "<div class='" + marker.iconClass + "'></div>";
+            var richMarker = new RichMarker({
+                position: marker.latLng,
+                flat: true,
+                content: content,
+                map: marker.map
+            });
+
+            return richMarker;
         },
 
         loadModule: function(control) {
@@ -164,7 +175,7 @@ function MapViewer(id, api, modules) {
         var promises = [];
         promises.push(this.loadLib('js/libs/markerclusterer.js'));
         promises.push(this.loadLib('js/libs/richmarker.js'));
-        promises.push(this.loadLib("js/libs/mercatorProjectorLayer.js"));
+        promises.push(this.loadLib('js/libs/mercatorProjectorLayer.js'));
         return promises;
     };
 
