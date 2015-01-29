@@ -24,7 +24,7 @@
                 this.addLI(layer);
                 i++;
             }
-            if(this.startCollapse){
+            if (this.startCollapse) {
                 this.toggleList();
             }
             var that = this;
@@ -70,8 +70,8 @@
                     requestParams[p] = layer.requestParams[p];
                 }
             }
-           
-            var wms = MercatorProjectionLayer.loadWMS(layer, requestParams) ;
+
+            var wms = MercatorProjectionLayer.loadWMS(layer, requestParams);
 
             this.map.overlayMapTypes.setAt(layer.index, wms);
 
@@ -82,7 +82,7 @@
             li.classList.add('active');
             var layer = this.layers[li.innerHTML];
             var type = layer.type;
-            
+
             if (type == 'gme') {
                 this.layersLoaded[li.innerHTML] = this.addLayerGme(layer);
             }
@@ -118,7 +118,9 @@
         clearList: function() {
             var lis = this.getElementsByClass('layer');
             for (var l = 0; l < lis.length; l++) {
-                this.layerDeselected(lis[l]);
+                if (lis[l].classList.contains('active')) {
+                    this.layerDeselected(lis[l]);
+                }
             }
         },
 
