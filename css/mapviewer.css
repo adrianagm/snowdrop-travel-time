@@ -116,6 +116,24 @@ html, body, .map-widget, .map-widget ul {
     font-size: 12px;
     padding-bottom: 4px;
     padding-right: 4px;
+    padding-top: 4px;
+}
+
+.map-widget .check-draw-control-outer {
+    padding: 5px;
+}
+
+.map-widget .check-draw-control-border {
+    cursor: pointer;
+    text-align: center;
+    background-color: white;
+}
+
+.map-widget .check-draw-control-inner {
+    font-size: 12px;
+    padding-bottom: 4px;
+    padding-right: 4px;
+    padding-top: 4px;
 }
 
 .property-marker {

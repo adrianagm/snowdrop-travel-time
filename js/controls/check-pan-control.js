@@ -26,6 +26,7 @@
             var that = this;
 
             this.bindEvent('check-pan-control-outer', 'click', function(event) {
+
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.link.classList.remove('unchecked-pan');
                     that.link.classList.add('checked-pan');
@@ -36,8 +37,8 @@
                     that.checked = false;
                 }
 
-                google.maps.event.addListener(that.map, 'bounds_changed', function() {
-                    if (that.checked) {
+                google.maps.event.addListener(that.map, 'idle', function() {
+                    if (that.link.classList.contains("checked-pan")) {
                         var bounds = that.searchBounds();
                         that.api.searchByPolygon(bounds);
                     }

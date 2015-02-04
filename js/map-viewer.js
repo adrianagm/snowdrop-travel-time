@@ -14,7 +14,7 @@ function MapViewer(id, api, modules) {
         });
     };
 
-    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places');
+    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,drawing');
 }
 
 (function() {
@@ -112,7 +112,7 @@ function MapViewer(id, api, modules) {
         setMarkers: function(searchResults) {
             var markers = [];
 
-            for (var i = 0; i < 20; i++) {
+            for (var i = 0; i < searchResults.length; i++) {
                 var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
                 var marker = new RichMarker({
                     position: latLng,

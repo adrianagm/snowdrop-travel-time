@@ -11,6 +11,26 @@
         }
         this.setContent();
         this.initialize();
+        var that = this;
+
+        this.bindEvent('check-draw-control-outer', 'click', function(event) {
+            var link = document.getElementsByClassName('check-draw-class')[0];
+            var pan = document.getElementsByClassName('check-class')[0];
+            if (link.classList.contains("checked-pan")) {
+                that.controls(pan, 'checked-pan', 'unchecked-pan');
+            }
+        });
+
+        this.bindEvent('check-pan-control-outer', 'click', function(event) {
+            var link = document.getElementsByClassName('check-class')[0];
+            var draw = document.getElementsByClassName('check-draw-class')[0];
+            if (link.classList.contains("checked-pan")) {
+                that.controls(draw, 'checked-pan', 'unchecked-pan');
+                var evento = new Event('change');
+                draw.dispatchEvent(evento);
+            }
+        });
+
     };
 
     MapViewer.MapControl.prototype = {
@@ -20,6 +40,11 @@
 
         initialize: function() {
 
+        },
+
+        controls: function(control, removeClass, addClass) {
+            control.classList.remove(removeClass);
+            control.classList.add(addClass);
         },
 
         setContent: function() {
