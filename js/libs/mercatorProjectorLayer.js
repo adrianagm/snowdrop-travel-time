@@ -80,8 +80,8 @@ MercatorProjectionLayer.loadWMS = function loadWMS(layer, requestParams) {
 
     var overlayOptions = {
         getTileUrl: function(coord, zoom) {
-            var lULP = new google.maps.Point(coord.x * 256, (coord.y + 1) * 256);
-            var lLRP = new google.maps.Point((coord.x + 1) * 256, coord.y * 256);
+            var lULP = new google.maps.Point(coord.x * requestParams.height, (coord.y + 1) * requestParams.width);
+            var lLRP = new google.maps.Point((coord.x + 1) * requestParams.height, coord.y * requestParams.width);
 
             var projectionMap = new MercatorProjection();
 
