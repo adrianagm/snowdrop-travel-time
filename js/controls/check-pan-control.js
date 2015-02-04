@@ -1,6 +1,6 @@
 (function() {
 
-    MapViewer.CheckPanControl = MapViewer.extend(MapViewer.MapControl, {
+    MapViewer.SearchOnPanControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
             '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a> Search when moving map</div></div></div>',
@@ -58,5 +58,5 @@
 
     });
 
-    MapViewer.registerModule(MapViewer.CheckPanControl, "check-pan");
+    MapViewer.registerModule(MapViewer.SearchOnPanControl, "search-on-pan");
 })();

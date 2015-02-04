@@ -14,7 +14,7 @@ function MapViewer(id, api, modules) {
         });
     };
 
-    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,drawing');
+    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,drawing,visualization');
 }
 
 (function() {
@@ -23,8 +23,8 @@ function MapViewer(id, api, modules) {
         cluster: null,
         createMap: function(id, api) {
             var mapOptions = {
-                zoom: 8,
-                center: new google.maps.LatLng(51.506640, -0.125853)
+                zoom: 12,
+                center: new google.maps.LatLng(40.7033121, -73.979681)
             };
 
             this.element = document.getElementById(id);
@@ -35,10 +35,12 @@ function MapViewer(id, api, modules) {
             var that = this;
             this.setCluster();
 
-            this.api.addSearchListener(function(searchCallback) {
+            this.api.addSearchListener(function(results) {
                 that.removeMarkers();
-                that.setMarkers(searchCallback);
+                that.setMarkers(results);
             });
+
+
 
             this.setModulesMap();
             this.setModulesApi();
@@ -57,6 +59,18 @@ function MapViewer(id, api, modules) {
             for (var module in MapViewer.modules) {
                 MapViewer.modules[module].prototype.api = this.api;
             }
+        },
+
+        drawMarker: function(marker) {
+            var content = "<div class='" + marker.iconClass + "'></div>";
+            var richMarker = new RichMarker({
+                position: marker.latLng,
+                flat: true,
+                content: content,
+                map: marker.map
+            });
+
+            return richMarker;
         },
 
         loadModule: function(control) {
@@ -137,6 +151,7 @@ function MapViewer(id, api, modules) {
         var promises = [];
         promises.push(this.loadLib('js/libs/markerclusterer.js'));
         promises.push(this.loadLib('js/libs/richmarker.js'));
+        promises.push(this.loadLib('js/libs/mercatorProjectorLayer.js'));
         return promises;
     };
 
