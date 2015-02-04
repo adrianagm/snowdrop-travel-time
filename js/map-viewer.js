@@ -17,10 +17,15 @@ function MapViewer(id, api, modules) {
     MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,visualization');
 }
 
+var infoWindow = null;
+
+
 (function() {
     "use strict";
+
     MapViewer.prototype = {
         cluster: null,
+        templateTabs: null,
         createMap: function(id, api) {
             var mapOptions = {
                 zoom: 12,
@@ -36,10 +41,9 @@ function MapViewer(id, api, modules) {
             this.setCluster();
 
             this.api.addSearchListener(function(results) {
-                that.removeMarkers();
+                //that.removeMarkers();
                 that.setMarkers(results);
             });
-
 
 
             this.setModulesMap();
@@ -61,17 +65,7 @@ function MapViewer(id, api, modules) {
             }
         },
 
-        drawMarker: function(marker) {
-            var content = "<div class='" + marker.iconClass + "'></div>";
-            var richMarker = new RichMarker({
-                position: marker.latLng,
-                flat: true,
-                content: content,
-                map: marker.map
-            });
 
-            return richMarker;
-        },
 
         loadModule: function(control) {
             var ModuleObject;
@@ -125,21 +119,141 @@ function MapViewer(id, api, modules) {
 
         setMarkers: function(searchResults) {
             var markers = [];
-
+            var that = this;
             for (var i = 0; i < 20; i++) {
                 var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
-                var marker = new RichMarker({
-                    position: latLng,
-                    flat: true,
-                    content: '<div class="property-marker"></div>'
-                });
+                var markerObject = {
+                    properties: searchResults[i],
+                    latLng: latLng,
+                    iconClass: 'property-marker',
+                    map: this.map,
+
+                };
+                var marker = this.drawMarker(markerObject);
+                this.showInfoWindow(marker);
                 markers.push(marker);
+
             }
 
             this.cluster.addMarkers(markers);
 
-        }
+        },
+
+        drawMarker: function(marker) {
+            var content = "<div class='" + marker.iconClass + "'></div>";
+            var richMarker = new RichMarker({
+                position: marker.latLng,
+                flat: true,
+                content: content,
+                map: marker.map,
+                properties: marker.properties,
+
+            });
+
+            return richMarker;
+        },
+
+        showInfoWindow: function(marker) {
+            var that = this;
+            marker.addListener("click", function(event) {
+                if (infoWindow) {
+                    infoWindow.close();
+                    infoWindow.removeChildren_(infoWindow.content_);
+
+                }
+                infoWindow = that.setInfoWindow(marker);
+                infoWindow.open(this.map, this);
+
+
+
+            });
+
+        },
+
+        setInfoWindow: function(marker) {
+            var infoWindow = new InfoBubble({
+                offsetWidth: 10,
+                offsetHeight:20
+            });
+            var tabs = this.templateTabs;
+            for (var labelTab in tabs) {
+                var tab = tabs[labelTab];
+                var output = tab.template ? tab.template : '';
+
+                var data = marker.properties;
+                if (tab.dataFields) {
+                    data = {};
+                    for (var d in tab.dataFields) {
+                        var field = tab.dataFields[d];
+                        data[field] = marker.properties[field];
+                    }
+
+                }
+                var details = {
+                    'data': []
+                };
+                if (tab.template) {
+                    for (var propKey in data) {
+                        var item = data[propKey];
+                        if (item instanceof Object) {
+                            for (var i in item) {
+                                details.data.push({
+                                    'key': i,
+                                    'value': item[i]
+                                });
+                            }
+                        } else {
+                            details.data.push({
+                                'key': propKey,
+                                'value': item
+                            });
+                        }
+                    }
+                    output = Mustache.render(tab.template, details);
+                } else {
+                    output = 'No content template';
+                }
+
+
+
+                if (tab.type == 'streetView') {
+                    output = '<div class="balloon street-tab container"><div id="pano"></div><div id="map-pano"></div>';
+                    google.maps.event.addDomListener(infoWindow, 'content_changed', function() {
+                        google.maps.event.addDomListener(infoWindow, 'domready', function() {
+                            if (document.getElementById('pano') !== null) {
+                                if (tab.orientationField) {
+                                    marker.orientationField = marker.properties[tab.orientationField];
+                                }
+                                if (tab.inclinationField) {
+                                    marker.inclinationField = marker.properties[tab.inclinationField];
+                                }
+                                initializeStreetView(marker);
+                            }
+                        });
+                    });
+
+                }
+
+
+                infoWindow.addTab(labelTab, output);
+
+
+
+            }
+
+            return infoWindow;
+
+        },
+
+        setBubbleTemplate: function(template) {
+            this.templateTabs = template;
+        },
+
+
+
     };
+
+
 
     //Class functions
     MapViewer.modules = {};
@@ -152,6 +266,8 @@ function MapViewer(id, api, modules) {
         promises.push(this.loadLib('js/libs/markerclusterer.js'));
         promises.push(this.loadLib('js/libs/richmarker.js'));
         promises.push(this.loadLib('js/libs/mercatorProjectorLayer.js'));
+        promises.push(this.loadLib('js/libs/infobubble.js'));
+        promises.push(this.loadLib('js/libs/mustache.js'));
         return promises;
     };
 
@@ -180,3 +296,33 @@ function MapViewer(id, api, modules) {
         return Module;
     };
 })();
+
+
+
+function initializeStreetView(marker) {
+    var mapPano = document.getElementById('map-pano');
+    var pano = document.getElementById('pano');
+    var heading = marker.orientationField ? marker.orientationField : 90;
+    var pitch = marker.inclinationField ? marker.inclinationField : 5;
+    var panoramaOptions = {
+        position: marker.position,
+        pov: {
+            heading: heading,
+            pitch: pitch
+        }
+    };
+
+    var sv = new google.maps.StreetViewService();
+    sv.getPanoramaByLocation(marker.position, 50, processSVData);
+
+    function processSVData(data, status) {
+        if (status == google.maps.StreetViewStatus.OK) {
+            var panorama = new google.maps.StreetViewPanorama(pano, panoramaOptions);
+            var map = new google.maps.Map(mapPano);
+            map.setStreetView(panorama);
+        } else {
+            pano.innerHTML = 'Street View not available in this position';
+        }
+    }
+
+}
