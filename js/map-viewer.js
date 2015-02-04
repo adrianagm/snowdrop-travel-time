@@ -9,18 +9,23 @@ function MapViewer(id, api, modules) {
     cb = function() {
         var promises = MapViewer.loadGoogleLibs();
         Promise.all(promises).then(function(values) {
-            that.createMap(id);
+            that.createMap(id, api);
             that.loadModules(modules);
         });
     };
 
+<<<<<<< HEAD
     MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,visualization');
+=======
+    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,drawing');
+>>>>>>> fead5b1edaa697efa4c6a7400867f9d71a14dc62
 }
 
 (function() {
     "use strict";
     MapViewer.prototype = {
-        createMap: function(id) {
+        cluster: null,
+        createMap: function(id, api) {
             var mapOptions = {
                 zoom: 11,
                 //center: new google.maps.LatLng(51.506640, -0.125853)
@@ -30,7 +35,18 @@ function MapViewer(id, api, modules) {
             this.element = document.getElementById(id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
+            this.api = api;
+
+            var that = this;
+            this.setCluster();
+
+            this.api.addSearchListener(function(searchCallback) {
+                that.removeMarkers();
+                that.setMarkers(searchCallback);
+            });
+
             this.setModulesMap();
+            this.setModulesApi();
             this.activeModules = {};
         },
 
@@ -38,6 +54,13 @@ function MapViewer(id, api, modules) {
             MapViewer.MapControl.prototype.map = this.map;
             for (var module in MapViewer.modules) {
                 MapViewer.modules[module].prototype.map = this.map;
+            }
+        },
+
+        setModulesApi: function() {
+            MapViewer.MapControl.prototype.api = this.api;
+            for (var module in MapViewer.modules) {
+                MapViewer.modules[module].prototype.api = this.api;
             }
         },
 
@@ -78,6 +101,34 @@ function MapViewer(id, api, modules) {
                 error = "API setPropertiesFilter is not a function.";
 
             if (error) throw error;
+        },
+
+        setCluster: function() {
+            var mcOptions = {
+                className: "property-cluster-marker"
+            };
+            this.cluster = new MarkerClusterer(this.map, null, mcOptions);
+        },
+
+        removeMarkers: function() {
+            this.cluster.clearMarkers();
+        },
+
+        setMarkers: function(searchResults) {
+            var markers = [];
+
+            for (var i = 0; i < searchResults.length; i++) {
+                var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
+                var marker = new RichMarker({
+                    position: latLng,
+                    flat: true,
+                    content: '<div class="property-marker"></div>'
+                });
+                markers.push(marker);
+            }
+
+            this.cluster.addMarkers(markers);
+
         }
     };
 
