@@ -137,13 +137,7 @@ function MapViewerTest() {
 	};
 
 	mapViewer = new MapViewer('map', IntegrationAPI, [
-		"button", {
-			type: 'button',
-			text: 'Hide/Show',
-			position: 'BOTTOM_RIGHT',
-			clickFunction: hide,
-			cssClass: 'nhide'
-		},
+		"button",
 		layerListControl,
 		placesToolbar,
 		"search-on-pan", "check-draw"
