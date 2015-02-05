@@ -24,7 +24,14 @@ function MapViewer(id, api, modules) {
         createMap: function(id, api) {
             var mapOptions = {
                 zoom: 12,
-                center: new google.maps.LatLng(40.7033121, -73.979681)
+                center: new google.maps.LatLng(40.7033121, -73.979681),
+                zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.SMALL,
+                    position: google.maps.ControlPosition.RIGHT_TOP,
+
+                },
+                streetViewControl: false,
+                panControl: false
             };
 
             this.element = document.getElementById(id);
@@ -39,8 +46,6 @@ function MapViewer(id, api, modules) {
                 that.removeMarkers();
                 that.setMarkers(results);
             });
-
-
 
             this.setModulesMap();
             this.setModulesApi();
@@ -61,17 +66,6 @@ function MapViewer(id, api, modules) {
             }
         },
 
-        drawMarker: function(marker) {
-            var content = "<div class='" + marker.iconClass + "'></div>";
-            var richMarker = new RichMarker({
-                position: marker.latLng,
-                flat: true,
-                content: content,
-                map: marker.map
-            });
-
-            return richMarker;
-        },
 
         loadModule: function(control) {
             var ModuleObject;
@@ -127,18 +121,30 @@ function MapViewer(id, api, modules) {
             var markers = [];
 
             for (var i = 0; i < searchResults.length; i++) {
-                var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
-                var marker = new RichMarker({
-                    position: latLng,
-                    flat: true,
-                    content: '<div class="property-marker"></div>'
-                });
-                markers.push(marker);
+                var marker = {
+                    latLng: new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng),
+                    iconClass: "property-marker",
+                    properties: searchResults[i],
+                    map: this.map
+                };
+                markers.push(this.drawMarker(marker));
             }
 
             this.cluster.addMarkers(markers);
 
-        }
+        },
+
+        drawMarker: function(marker) {
+            var content = "<div class='" + marker.iconClass + "'></div>";
+            var richMarker = new RichMarker({
+                position: marker.latLng,
+                flat: true,
+                content: content,
+                map: marker.map
+            });
+
+            return richMarker;
+        },
     };
 
     //Class functions

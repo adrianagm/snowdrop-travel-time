@@ -103,6 +103,7 @@ MercatorProjectionLayer.loadWMS = function loadWMS(layer, requestParams) {
             }
             urlResult += "&LAYERS=" + layer.layers;
             urlResult += "&bbox=" + lUL_Longitude + "," + lUL_Latitude + "," + lLR_Longitude + "," + lLR_Latitude;
+            urlResult += "&styles=";
             return urlResult;
         },
 

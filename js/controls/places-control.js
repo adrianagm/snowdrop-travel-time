@@ -2,7 +2,7 @@
 
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header" data-i18n="places">Places</div><ul class="places-list"></ul>',
+        template: '<div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>',
         controlClass: 'places-control',
 
         position: 'BOTTOM_CENTER',
@@ -15,15 +15,16 @@
         service: null,
         infowindow: null,
         startCollapse: false,
+        clusterPlaces: null,
 
 
         initialize: function() {
             var places = this.places;
-             var mcOptions = {
+            var mcOptions = {
                 className: "places-cluster-marker"
             };
 
-            MapViewer.prototype.clusterPlaces = new MarkerClusterer(this.map, null, mcOptions);
+            this.clusterPlaces = new MarkerClusterer(this.map, null, mcOptions);
             this.placesList = this.getElementsByClass('places-list')[0];
             for (var place in places) {
                 this.addLI(place);
@@ -46,13 +47,13 @@
             });
 
             this.bindEvent('header', 'click', function(event) {
-                that.toggleList();
+                that.toggleList(event.target);
             });
             google.maps.event.addListener(this.map, 'dragend', function() {
                 var activePlaces = that.getElementsByClass('active');
                 for (var i = 0; i < activePlaces.length; i++) {
                     var place = that.places[activePlaces[i].innerHTML];
-                    var type = place.type; 
+                    var type = place.type;
                     that.removePlacesToMap(type);
                     that.placesSelected(activePlaces[i]);
                 }
@@ -68,8 +69,8 @@
                 radius: 50000,
                 types: [type]
             };
-            if(!place.iconClass){
-                place.iconClass = 'places-marker places-marker-'+type;
+            if (!place.iconClass) {
+                place.iconClass = 'places-marker places-marker-' + type;
             }
             var that = this;
             this.service.nearbySearch(request, function(results, status) {
@@ -79,6 +80,7 @@
                     for (var i = 0; i < results.length; i++) {
                         that.createMarker(results[i], type, place.iconClass);
                     }
+                    that.clusterPlaces.addMarkers(that.markers[type]);
                 }
             });
         },
@@ -91,7 +93,7 @@
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
-            MapViewer.prototype.clusterPlaces.addMarkers([marker]);
+            
             this.markers[type].push(marker);
 
             var that = this;
@@ -106,23 +108,25 @@
             var place = this.places[li.innerHTML];
             var type = place.type;
             this.removePlacesToMap(type);
-           
+
         },
 
-        removePlacesToMap: function(type){
+        removePlacesToMap: function(type) {
             var markers = this.markers[type];
-             for (var m = 0; m < markers.length; m++) {
-                MapViewer.prototype.clusterPlaces.removeMarker(markers[m]);
+            for (var m = 0; m < markers.length; m++) {
+                this.clusterPlaces.removeMarker(markers[m]);
                 markers[m].setMap(null);
             }
             this.markers[type] = [];
         },
 
-        toggleList: function() {
+        toggleList: function(header) {
             var style = this.placesList.style;
             if (style.display !== 'none') {
+                header.classList.add('collapse');
                 style.display = 'none';
             } else {
+                header.classList.remove('collapse');
                 style.display = 'inline-block';
             }
         },
