@@ -1,0 +1,31 @@
+application: cogent-case-847
+version: 1
+runtime: php
+api_version: 1
+
+skip_files:
+ - node_modules/*
+
+handlers:
+- url: /dist
+  static_dir: dist
+  login: required
+
+- url: /images
+  static_dir: images
+  login: required
+
+- url: /js
+  static_dir: dist/js
+  login: required
+
+- url: /(.+\.(css|js))$
+  static_files: test/\1
+  login: required
+  upload: .+\.(css|js)$
+
+- url: /
+  script: test/index.html
+  login: required
+
+
