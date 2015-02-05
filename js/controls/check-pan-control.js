@@ -3,10 +3,10 @@
     MapViewer.SearchOnPanControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
-            '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a> Search when moving map</div></div></div>',
+            '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Search when moving map</span></div></div></div>',
         controlClass: 'check-pan-control',
 
-        position: 'BOTTOM_RIGHT',
+        position: 'LEFT_BOTTOM',
         alias: 'check-pan',
 
         text: 'Default',

@@ -3,10 +3,10 @@
     MapViewer.CheckDrawControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-draw-control-outer"><div class="check-draw-control-border">' +
-            '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> Draw a polygon into de map</div></div></div>',
+            '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> <span>Draw a polygon into de map</span></div></div></div>',
         controlClass: 'check-draw-control',
 
-        position: 'BOTTOM_LEFT',
+        position: 'LEFT_BOTTOM',
         alias: 'check-draw',
 
         text: 'Default',
@@ -28,9 +28,9 @@
 
             this.drawingManager = new google.maps.drawing.DrawingManager({
                 drawingMode: google.maps.drawing.OverlayType.POLYGON,
-                drawingControl: true,
+                drawingControl: false,
                 drawingControlOptions: {
-                    position: google.maps.ControlPosition.TOP_CENTER,
+                    position: google.maps.ControlPosition.BOTTOM_LEFT,
                     drawingModes: [
                         google.maps.drawing.OverlayType.POLYGON
                     ]
@@ -47,6 +47,7 @@
                     zIndex: 1
                 }
             });
+
 
             if (this.defaultChecked) {
                 this.link.classList.add('checked-pan');
@@ -71,6 +72,7 @@
             });
 
             this.bindEvent('check-draw-control-outer', 'click', function(event) {
+
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.link.classList.remove('unchecked-pan');
                     that.link.classList.add('checked-pan');
@@ -85,8 +87,10 @@
                     that.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
                     that.drawingManager.setMap(that.map);
                     that.drawingManager.setOptions({
-                        drawingControl: true
+                        drawingControl: false,
+
                     });
+
 
                     that.listener = google.maps.event.addListenerOnce(that.drawingManager, 'polygoncomplete', function(polygon) {
                         that.dragFlag = false;
@@ -126,6 +130,7 @@
                     });
 
                 } else {
+
                     google.maps.event.removeListener(that.listener);
                     that.drawingManager.setMap(null);
                     if (that.InnerPolygon !== null) {

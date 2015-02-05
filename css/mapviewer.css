@@ -2,7 +2,20 @@ html, body, .map-widget, .map-widget ul {
     height: 100%;
     margin: 0px;
     padding: 0px;
-    font-family: "Times New Roman";
+    font-family: myFirstFont, sans-serif;
+}
+
+@font-face {
+    font-family: myFirstFont;
+    src: url('../fonts/DroidSans.ttf');
+}
+
+.map-widget .map-control{
+    font-family: myFirstFont, sans-serif;
+    margin-left: 20px;
+    margin-right:20px;
+    color: #555;
+    
 }
 
 .map-widget .button-control-outer {
@@ -23,20 +36,18 @@ html, body, .map-widget, .map-widget ul {
     padding-right: 4px;
 }
 
-
-
 .map-widget .layer-list-control {
     background-color: white;
-    margin: 20px;
-    font-size: 20px;
+    font-size: 16px;
     cursor: pointer;
+    margin-top: 20px;
 }
 
 .map-widget .layer-list-control .header {
     padding: 5px;
     background-color: rgb(188, 20, 26);
     color: white;
-    font-family: "Times New Roman";
+
 }
 
 .map-widget .layer-list-control .clear {
@@ -48,7 +59,7 @@ html, body, .map-widget, .map-widget ul {
 .map-widget .layer-list-control ul li{
     padding: 5px;
     list-style: none;
-    color: #999;
+
 }
 
 .map-widget .layer-list-control ul li:hover {
@@ -60,11 +71,10 @@ html, body, .map-widget, .map-widget ul {
 }
 
 
-
 .map-widget .places-control {
     background-color: white;
     margin-bottom: 40px;
-    font-size: 20px;
+    font-size: 16px;
     cursor: pointer;
 }
 
@@ -72,8 +82,20 @@ html, body, .map-widget, .map-widget ul {
     padding: 5px;
     background-color: rgb(188, 20, 26);
     color: white;
-    display: inline;
-    font-family: "Times New Roman";
+    display: inline-block;
+   
+}
+
+.map-widget .header::before {
+    content: url('../images/minimize.png');
+    float:left;
+    padding-right: 10px;
+}
+
+.map-widget .header.collapse::before {
+    content: url('../images/maximize.png');
+    float:left;
+    padding-right: 10px;
 }
 
 .map-widget .places-control .clear {
@@ -91,7 +113,7 @@ html, body, .map-widget, .map-widget ul {
     list-style: none;
     display: inline;
     background-color: white;
-    color: #999;
+    
 }
 
 .map-widget .places-control ul .places:hover {
@@ -102,42 +124,39 @@ html, body, .map-widget, .map-widget ul {
     color:rgb(188, 20, 26);
 }
 
-.map-widget .check-pan-control-outer {
-    padding: 5px;
+.map-widget .check-pan-control, .map-widget .check-draw-control{
+    position:relative;
+    bottom: 7px;  
+    
 }
 
-.map-widget .check-pan-control-border {
+.map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer {
+    padding: 5px;
+    float:left;
+    width: 250px;
+
+}
+
+.map-widget .check-pan-control-border, .map-widget .check-draw-control-border {
     cursor: pointer;
     text-align: center;
     background-color: white;
 }
 
-.map-widget .check-pan-control-inner {
-    font-size: 12px;
-    padding-bottom: 4px;
-    padding-right: 4px;
-    padding-top: 4px;
+.map-widget .check-pan-control-inner, .map-widget .check-draw-control-inner {
+    font-size: 14px;
+    padding:10px;
+
 }
 
-.map-widget .check-draw-control-outer {
-    padding: 5px;
+.map-widget .check-pan-control-inner span, .map-widget .check-draw-control-inner span{
+    padding:5px;
+    text-align: left;
 }
 
-.map-widget .check-draw-control-border {
-    cursor: pointer;
-    text-align: center;
-    background-color: white;
-}
-
-.map-widget .check-draw-control-inner {
-    font-size: 12px;
-    padding-bottom: 4px;
-    padding-right: 4px;
-    padding-top: 4px;
-}
 
 .property-marker {
-    background-image: url('../images/flag.png');
+    background-image: url('../images/precise_pin_inactive_white.png');
     background-repeat: no-repeat;
     background-color: transparent;
     height: 50px;
@@ -145,29 +164,35 @@ html, body, .map-widget, .map-widget ul {
 }
 
 .property-cluster-marker {
-    height: 53px;
-    color: #9f3a2b ;
-    background-image: url('../images/cluster.png');
-    width: 53px;
-    line-height: 53px;
+    height: 40px;
+    color: #000;
+    background: url('../images/unprecise_pin_inactive_big.png') center no-repeat;
+    width: 40px;
+    line-height: 40px;
     cursor: pointer;
-    font-family: Arial,sans-serif;
     font-weight: bold;
+    font-size: 14px;
 }
 
+
 .checked-pan {
-    background-image: url('../images/check.png');
+    background-image: url('../images/check_box.png'), url('../images/checkbox.png');
+    background-repeat: no-repeat;
+    background-size: 13px 10px, 25px 20px;
+    background-position: center, center;
     height: 24px;
     width: 24px;
-    padding: 4px 25px 24px 4px;
-    background-repeat: no-repeat;
+    padding: 10px 25px 12px 4px;
+
 }
 
 .unchecked-pan {
-    background-image: url('../images/uncheck.png');
+    background-image: url('../images/checkbox.png');
+    background-size: 25px 20px;
+    background-position: center;
     height: 24px;
     width: 24px;
-    padding: 4px 25px 24px 4px;
+    padding: 10px 25px 12px 4px;
     background-repeat: no-repeat;
 }
 
@@ -183,12 +208,11 @@ html, body, .map-widget, .map-widget ul {
 .places-cluster-marker {
     color: #fff ;
     background-image: url('../images/cluster-places.png');
-    background-size: 25px 25px;
-    height: 25px;
-    width: 25px;
-    line-height: 25px;
+    background-size: 30px 30px;
+    height: 30px;
+    width: 30px;
+    line-height: 30px;
     cursor: pointer;
-    font-family: Arial,sans-serif;
     font-weight: bold;
 
 }
@@ -201,3 +225,4 @@ html, body, .map-widget, .map-widget ul {
     background-repeat: no-repeat;
     background-color: transparent;
 }
+

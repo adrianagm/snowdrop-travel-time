@@ -2,10 +2,10 @@
 
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header">Layers</div><ul class="layer-list"></ul><div class="clear">Clear</div>',
+        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div><ul class="layer-list"></ul><div class="clear">Clear</div>',
         controlClass: 'layer-list-control',
 
-        position: 'RIGHT_CENTER',
+        position: 'LEFT_TOP',
         alias: 'layer-list',
 
         layerList: null,
@@ -39,7 +39,7 @@
             });
 
             this.bindEvent('header', 'click', function(event) {
-                that.toggleList();
+                that.toggleList(event.target);
             });
 
             this.bindEvent('clear', 'click', function(event) {
@@ -103,11 +103,13 @@
             }
         },
 
-        toggleList: function() {
+        toggleList: function(header) {
             var style = this.layerList.style;
             if (style.display !== 'none') {
+                header.classList.add('collapse');
                 style.display = 'none';
             } else {
+                header.classList.remove('collapse');
                 style.display = 'block';
             }
 
