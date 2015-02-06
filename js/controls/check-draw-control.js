@@ -3,7 +3,7 @@
     MapViewer.CheckDrawControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-draw-control-outer"><div class="check-draw-control-border">' +
-            '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> <span>Draw a polygon into de map</span></div></div></div>',
+            '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> <span>Draw to search</span></div></div></div>',
         controlClass: 'check-draw-control',
 
         position: 'LEFT_BOTTOM',

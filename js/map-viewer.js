@@ -128,6 +128,7 @@ function MapViewer(id, api, modules) {
                     map: this.map
                 };
                 markers.push(this.drawMarker(marker));
+               
             }
 
             this.cluster.addMarkers(markers);

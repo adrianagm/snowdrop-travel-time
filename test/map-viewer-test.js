@@ -97,14 +97,14 @@ function MapViewerTest() {
 			},
 			Hospitals: {
 				type: 'hospital',
-				iconClass: 'fa fa-hospital-o fa-lg' //fontawesome icon
+				iconClass: 'fa fa-hospital-o fa-2x' //fontawesome icon
 			},
 			Supermarkets: {
 				type: 'grocery_or_supermarket' //css defined icon
 			},
 			Restaurants: {
 				type: 'restaurant',
-				iconClass: "fa fa-cutlery fa-lg"
+				iconClass: "fa fa-cutlery fa-2x"
 			}
 		}
 	};
@@ -122,12 +122,6 @@ function MapViewerTest() {
 				layerId: "10446176163891957399-13516001307527776624",
 				layerName: 'layer_00002'
 			},
-			"WMS Layer": {
-				type: "wms",
-				url: "http://webservices.nationalatlas.gov/wms",
-				layers: 'seihaz'
-
-			},
 			"WMS Layer states": {
 				type: "wms",
 				url: "http://webservices.nationalatlas.gov/wms",
@@ -137,7 +131,6 @@ function MapViewerTest() {
 	};
 
 	mapViewer = new MapViewer('map', IntegrationAPI, [
-		"button",
 		layerListControl,
 		placesToolbar,
 		"search-on-pan", "check-draw"

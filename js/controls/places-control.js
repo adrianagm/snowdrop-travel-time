@@ -5,7 +5,7 @@
         template: '<div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>',
         controlClass: 'places-control',
 
-        position: 'BOTTOM_CENTER',
+        position: 'RIGHT_BOTTOM',
         alias: 'places-list',
 
         placesList: null,
@@ -73,7 +73,7 @@
                 place.iconClass = 'places-marker places-marker-' + type;
             }
             var that = this;
-            this.service.nearbySearch(request, function(results, status) {
+            this.service.radarSearch(request, function(results, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                     //that.map.setZoom(12);
                     that.markers[type] = [];
@@ -96,11 +96,11 @@
             
             this.markers[type].push(marker);
 
-            var that = this;
-            google.maps.event.addListener(marker, 'click', function() {
+            /*var that = this;
+           google.maps.event.addListener(marker, 'click', function() {
                 that.infowindow.setContent(place.name);
                 that.infowindow.open(that.map, this);
-            });
+            });*/
         },
 
         placesDeselected: function(li) {
@@ -113,8 +113,8 @@
 
         removePlacesToMap: function(type) {
             var markers = this.markers[type];
+            this.clusterPlaces.removeMarkers(markers);
             for (var m = 0; m < markers.length; m++) {
-                this.clusterPlaces.removeMarker(markers[m]);
                 markers[m].setMap(null);
             }
             this.markers[type] = [];
