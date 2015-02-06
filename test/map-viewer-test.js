@@ -131,7 +131,6 @@ function MapViewerTest() {
 	};
 
 	mapViewer = new MapViewer('map', IntegrationAPI, [
-		"button",
 		layerListControl,
 		placesToolbar,
 		"search-on-pan", "check-draw"

@@ -7,6 +7,8 @@
 
 @padding-control: 10px;
 @border-radius-control: 3px;
+@shadow-control:1px 1px 8px #888;
+
 
 
 .map-widget .map-control{
@@ -17,8 +19,9 @@
       
 }
 
-.map-widget .map-control div{
+.map-widget .map-control > div{
     border-radius: @border-radius-control;
+    box-shadow: @shadow-control;
 }
 
 .map-widget .button-control-outer {
@@ -50,8 +53,8 @@
     padding: @padding-control;
     background-color: @custom-red;
     color: white;
-    border-bottom-left-radius:0;
-    border-bottom-right-radius:0;
+    border-top-left-radius:@border-radius-control;
+    border-top-right-radius:@border-radius-control;
 
 }
 
@@ -59,7 +62,7 @@
     padding: @padding-control;
     border-top-left-radius:0;
     border-top-right-radius:0;
-     color:@text-color-control + #333;
+    color:@text-color-control + #333;
 
 }
 
@@ -94,9 +97,13 @@
     background-color: @custom-red;
     color: white;
     display: inline-block;
-    border-top-right-radius:0;
-    border-bottom-right-radius:0;
+    border-top-left-radius:@border-radius-control;
+    border-bottom-left-radius:@border-radius-control;
    
+}
+
+.map-widget .header.collapse{
+    border-radius: @border-radius-control;
 }
 
 .map-widget .header::before {
@@ -109,6 +116,7 @@
     content: url('../images/maximize.png');
     float:left;
     padding-right: @padding-control;
+
 }
 
 .map-widget .places-control ul {
@@ -134,11 +142,11 @@
 .map-widget .check-pan-control, .map-widget .check-draw-control{
     position:relative;
     bottom: 7px;  
+    margin: 5px;
     
 }
 
-.map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer {
-    padding: 5px;
+.map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer { 
     width: 250px;
 
 }
@@ -147,11 +155,13 @@
     cursor: pointer;
     text-align: left;
     background-color: white;
+    border-radius: @border-radius-control;
 }
 
 .map-widget .check-pan-control-inner, .map-widget .check-draw-control-inner {
     font-size: 14px;
     padding:@padding-control;
+
 
 }
 
