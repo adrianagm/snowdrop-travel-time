@@ -1,14 +1,24 @@
-@font-face {
-    font-family: droidSans;
-    src: url('../fonts/DroidSans.ttf');
-}
+
+@import url(http://fonts.googleapis.com/css?family=Droid+Sans);
+
+@custom-red: rgb(188, 20, 26);
+@text-color-control: #555;
+@text-color-hover-control: #888;
+
+@padding-control: 10px;
+@border-radius-control: 3px;
+
 
 .map-widget .map-control{
-    font-family: droidSans, sans-serif;
+    font-family: "Droid Sans", sans-serif;
     margin-left: 20px;
     margin-right:20px;
-    color: #555;
-    
+    color: @text-color-control;
+      
+}
+
+.map-widget .map-control div{
+    border-radius: @border-radius-control;
 }
 
 .map-widget .button-control-outer {
@@ -37,30 +47,38 @@
 }
 
 .map-widget .layer-list-control .header {
-    padding: 5px;
-    background-color: rgb(188, 20, 26);
+    padding: @padding-control;
+    background-color: @custom-red;
     color: white;
+    border-bottom-left-radius:0;
+    border-bottom-right-radius:0;
 
 }
 
 .map-widget .layer-list-control .clear {
-    padding: 5px;
-    background-color: #BBB;
-    color: white;
+    padding: @padding-control;
+    border-top-left-radius:0;
+    border-top-right-radius:0;
+     color:@text-color-control + #333;
+
+}
+
+.map-widget .layer-list-control .clear:hover {
+    color:@text-color-hover-control + #333;
 }
 
 .map-widget .layer-list-control ul li{
-    padding: 5px;
+    padding: @padding-control;
     list-style: none;
 
 }
 
 .map-widget .layer-list-control ul li:hover {
-    color:rgb(109, 113, 116);
+    color:@text-color-hover-control;
 }
 
 .map-widget .layer-list-control ul li.active {
-    color:rgb(188, 20, 26);
+    color:@custom-red;
 }
 
 
@@ -72,29 +90,25 @@
 }
 
 .map-widget .places-control .header {
-    padding: 5px;
-    background-color: rgb(188, 20, 26);
+    padding: @padding-control;
+    background-color: @custom-red;
     color: white;
     display: inline-block;
+    border-top-right-radius:0;
+    border-bottom-right-radius:0;
    
 }
 
 .map-widget .header::before {
     content: url('../images/minimize.png');
     float:left;
-    padding-right: 10px;
+    padding-right: @padding-control;
 }
 
 .map-widget .header.collapse::before {
     content: url('../images/maximize.png');
     float:left;
-    padding-right: 10px;
-}
-
-.map-widget .places-control .clear {
-    padding: 5px;
-    color:rgb(109, 113, 116);
-    color: white;
+    padding-right: @padding-control;
 }
 
 .map-widget .places-control ul {
@@ -102,7 +116,7 @@
 }
 
 .map-widget .places-control ul li{
-    padding: 5px;
+    padding: @padding-control;
     list-style: none;
     display: inline;
     background-color: white;
@@ -110,11 +124,11 @@
 }
 
 .map-widget .places-control ul .places:hover {
-    color:rgb(109, 113, 116);
+    color:@text-color-hover-control;
 }
 
 .map-widget .places-control ul .places.active {
-    color:rgb(188, 20, 26);
+    color:@custom-red;
 }
 
 .map-widget .check-pan-control, .map-widget .check-draw-control{
@@ -125,20 +139,19 @@
 
 .map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer {
     padding: 5px;
-    float:left;
     width: 250px;
 
 }
 
 .map-widget .check-pan-control-border, .map-widget .check-draw-control-border {
     cursor: pointer;
-    text-align: center;
+    text-align: left;
     background-color: white;
 }
 
 .map-widget .check-pan-control-inner, .map-widget .check-draw-control-inner {
     font-size: 14px;
-    padding:10px;
+    padding:@padding-control;
 
 }
 
@@ -152,8 +165,10 @@
     background-image: url('../images/precise_pin_inactive_white.png');
     background-repeat: no-repeat;
     background-color: transparent;
-    height: 50px;
-    width: 50px;
+    background-position: center;
+    background-size: cover;
+    height: 48px;
+    width: 34px;
 }
 
 .property-cluster-marker {
@@ -191,7 +206,7 @@
 
 .places-marker {
     background-image: url('../images/placesMarker.png');
-    background-size: 15px 15px;
+    background-size: 20px 20px;
     height: 20px;
     width: 20px;
     background-repeat: no-repeat;
@@ -201,21 +216,22 @@
 .places-cluster-marker {
     color: #fff ;
     background-image: url('../images/cluster-places.png');
-    background-size: 30px 30px;
-    height: 30px;
-    width: 30px;
-    line-height: 30px;
+    background-size: 35px 35px;
+    background-repeat: no-repeat;
+    height: 35px;
+    width: 35px;
+    line-height: 35px;
     cursor: pointer;
-    font-weight: bold;
+    font-size: 9px;
+    
 
 }
 
 .places-marker.places-marker-grocery_or_supermarket{
     background-image: url('../images/shopping-card.png');
-    background-size: 15px 15px;
+    background-size: 20px 20px;
     height: 20px;
     width: 20px;
     background-repeat: no-repeat;
     background-color: transparent;
 }
-
