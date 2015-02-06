@@ -26,7 +26,7 @@
             var draw = document.getElementsByClassName('check-draw-class')[0];
             if (link.classList.contains("checked-pan")) {
                 that.controls(draw, 'checked-pan', 'unchecked-pan');
-                var evento = new Event('change');
+                var evento = document.createEventObject('change');
                 draw.dispatchEvent(evento);
             }
         });
