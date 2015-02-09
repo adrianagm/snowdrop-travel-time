@@ -7,8 +7,7 @@
         controlClass: 'check-pan-control',
 
         position: 'LEFT_BOTTOM',
-        alias: 'check-pan',
-
+        //alias: 'check-pan',
         text: 'Default',
         defaultChecked: false,
         checked: "",

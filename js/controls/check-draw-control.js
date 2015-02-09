@@ -7,7 +7,7 @@
         controlClass: 'check-draw-control',
 
         position: 'LEFT_BOTTOM',
-        alias: 'check-draw',
+        //alias: 'check-draw',
 
         text: 'Default',
         defaultChecked: false,

@@ -6,7 +6,7 @@
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
-        alias: 'places-list',
+        //alias: 'places-list',
 
         placesList: null,
         places: {},
@@ -93,7 +93,7 @@
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
-            
+
             this.markers[type].push(marker);
 
             /*var that = this;
