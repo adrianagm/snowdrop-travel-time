@@ -11,8 +11,8 @@
         alias: CONTROL_CLASS,
         text: 'Default',
         defaultChecked: false,
-        InnerPolygon: null,
-        OuterPolygon: null,
+        innerPolygon: null,
+        outerPolygon: null,
         listener: null,
         pan: null,
         dragFlag: null,
@@ -26,6 +26,7 @@
                 new google.maps.LatLng(-180, 90),
                 new google.maps.LatLng(180, 90)
             ];
+
             this.link = this.getElementsByClass('check-draw-class')[0];
 
             this.drawingManager = this._getDrawingManager();
@@ -39,19 +40,6 @@
             }
 
             var that = this;
-
-            //Custom event to control the controllers collisions
-            this.bindEvent('check-draw-class', 'change', function(event) {
-                if (that.InnerPolygon !== null) {
-                    that.basicSearch();
-                    that.cleanMap();
-                } else {
-                    that.drawingManager.setOptions({
-                        drawingControl: false
-                    });
-                    that.drawingManager.setDrawingMode(null);
-                }
-            });
 
             this.bindEvent('check-draw-control-outer', 'click', function(event) {
 
@@ -92,11 +80,11 @@
             }
 
             //Polygon substraction and mask
-            if (this.OuterPolygon !== null) {
-                this.OuterPolygon.setMap(null);
+            if (this.outerPolygon !== null) {
+                this.outerPolygon.setMap(null);
             }
 
-            this.OuterPolygon = new google.maps.Polygon({
+            this.outerPolygon = new google.maps.Polygon({
                 paths: [this.rectangleCoords, boundsPoly],
                 map: this.map,
                 strokeOpacity: 1,
@@ -123,18 +111,18 @@
         },
 
         cleanMap: function() {
-            this.OuterPolygon.setMap(null);
-            this.InnerPolygon.setMap(null);
-            this.InnerPolygon = null;
-            this.OuterPolygon = null;
+            this.outerPolygon.setMap(null);
+            this.innerPolygon.setMap(null);
+            this.innerPolygon = null;
+            this.outerPolygon = null;
         },
 
         deactivate: function() {
             MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
 
-            this.disableDrawing()
+            this.disableDrawing();
 
-            if (this.InnerPolygon !== null) {
+            if (this.innerPolygon !== null) {
                 this.basicSearch();
                 this.cleanMap();
             } else {
@@ -171,7 +159,7 @@
 
             var _listener = google.maps.event.addListenerOnce(that.drawingManager, 'polygoncomplete', function(polygon) {
                 that.dragFlag = false;
-                that.InnerPolygon = polygon;
+                that.innerPolygon = polygon;
                 //Draw the complet polygon
                 that.search(polygon, "creation");
 
