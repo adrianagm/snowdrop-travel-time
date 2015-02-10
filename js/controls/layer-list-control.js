@@ -1,12 +1,14 @@
 (function() {
 
+    var CONTROL_CLASS = 'layer-list';
+
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div><ul class="layer-list"></ul><div class="clear">Clear</div>',
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
-        //alias: 'layer-list', 
+        alias: CONTROL_CLASS,
 
         layerList: null,
         layers: [],
@@ -135,5 +137,5 @@
 
     });
 
-    MapViewer.registerModule(MapViewer.LayerList, "layer-list");
+    MapViewer.registerModule(MapViewer.LayerList, CONTROL_CLASS);
 })();

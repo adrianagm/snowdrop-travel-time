@@ -1,4 +1,5 @@
 (function() {
+    var CONTROL_CLASS = 'search-on-pan';
 
     MapViewer.SearchOnPanControl = MapViewer.extend(MapViewer.MapControl, {
 
@@ -7,11 +8,11 @@
         controlClass: 'check-pan-control',
 
         position: 'LEFT_BOTTOM',
-        //alias: 'check-pan',
+        alias: CONTROL_CLASS,
         text: 'Default',
         defaultChecked: false,
         checked: "",
-        toggleGroup: ['check-draw'],
+        toggleGroup: ['search-group'],
         initialize: function() {
             this.link = this.getElementsByClass('check-class')[0];
 
@@ -52,5 +53,5 @@
 
     });
 
-    MapViewer.registerModule(MapViewer.SearchOnPanControl, "search-on-pan");
+    MapViewer.registerModule(MapViewer.SearchOnPanControl, CONTROL_CLASS);
 })();

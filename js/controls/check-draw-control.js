@@ -1,5 +1,6 @@
 (function() {
 
+    var CONTROL_CLASS = 'check-draw';
     MapViewer.CheckDrawControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-draw-control-outer"><div class="check-draw-control-border">' +
@@ -7,7 +8,7 @@
         controlClass: 'check-draw-control',
 
         position: 'LEFT_BOTTOM',
-        //alias: 'check-draw',
+        alias: CONTROL_CLASS,
 
         text: 'Default',
         defaultChecked: false,
@@ -17,7 +18,7 @@
         pan: null,
         dragFlag: null,
         rectangleCoords: null,
-        toggleGroup: ['search-on-pan'], // toggleGroup:["search-group"]
+        toggleGroup: ['search-group'],
         initialize: function() {
             this.rectangleCoords = [
                 new google.maps.LatLng(180, -90),
@@ -208,5 +209,5 @@
         }
     });
 
-    MapViewer.registerModule(MapViewer.CheckDrawControl, "check-draw");
+    MapViewer.registerModule(MapViewer.CheckDrawControl, CONTROL_CLASS);
 })();

@@ -1,12 +1,13 @@
 (function() {
 
+    var CONTROL_CLASS = 'places';
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
-        //alias: 'places-list',
+        alias: CONTROL_CLASS,
 
         placesList: null,
         places: {},
@@ -140,5 +141,5 @@
         }
     });
 
-    MapViewer.registerModule(MapViewer.Places, "places");
+    MapViewer.registerModule(MapViewer.Places, CONTROL_CLASS);
 })();

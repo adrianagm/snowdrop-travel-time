@@ -19,7 +19,7 @@
         controlClass: "",
         position: 'TOP_CENTER',
         toggleGroup: null,
-
+        alias: null,
         initialize: function() {
 
         },
