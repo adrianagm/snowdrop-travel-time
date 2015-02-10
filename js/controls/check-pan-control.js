@@ -11,7 +11,7 @@
         text: 'Default',
         defaultChecked: false,
         checked: "",
-
+        toggleGroup: ['check-draw'],
         initialize: function() {
             this.link = this.getElementsByClass('check-class')[0];
 
@@ -25,15 +25,10 @@
             var that = this;
 
             this.bindEvent('check-pan-control-outer', 'click', function(event) {
-
                 if (that.link.classList.contains("unchecked-pan")) {
-                    that.link.classList.remove('unchecked-pan');
-                    that.link.classList.add('checked-pan');
-                    that.checked = true;
+                    that.activate();
                 } else {
-                    that.link.classList.remove('checked-pan');
-                    that.link.classList.add('unchecked-pan');
-                    that.checked = false;
+                    that.deactivate();
                 }
 
                 google.maps.event.addListener(that.map, 'idle', function() {

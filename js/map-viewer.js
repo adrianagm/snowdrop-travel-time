@@ -21,6 +21,7 @@ function MapViewer(id, api, modules) {
     "use strict";
     MapViewer.prototype = {
         cluster: null,
+        toggleGroups: [],
         createMap: function(id, api) {
             var mapOptions = {
                 zoom: 12,
@@ -49,6 +50,7 @@ function MapViewer(id, api, modules) {
 
             this.setModulesMap();
             this.setModulesApi();
+            this.setModulesOwner();
             this.activeModules = {};
         },
 
@@ -56,6 +58,13 @@ function MapViewer(id, api, modules) {
             MapViewer.MapControl.prototype.map = this.map;
             for (var module in MapViewer.modules) {
                 MapViewer.modules[module].prototype.map = this.map;
+            }
+        },
+
+        setModulesOwner: function() {
+            MapViewer.MapControl.prototype.owner = this;
+            for (var module in MapViewer.modules) {
+                MapViewer.modules[module].prototype.owner = this;
             }
         },
 
@@ -70,14 +79,37 @@ function MapViewer(id, api, modules) {
         loadModule: function(control) {
             var ModuleObject;
             var module;
+            var controlType;
+
             if (typeof(control) === 'string') {
                 ModuleObject = MapViewer.modules[control];
+                this.toggleGroups[control] = null;
+                controlType = control;
+
             } else if (typeof(control) === 'object') {
                 ModuleObject = MapViewer.modules[control.type];
+                this.toggleGroups[control.type] = null;
+                controlType = control.type;
             }
 
             module = new ModuleObject(control);
             module.addToMap();
+            if (controlType && module) {
+                this.activeModules[controlType] = module;
+
+                // this.toggleGroups[module.toggleGroup].push(module); { 'search-group': [..]}
+            }
+        },
+
+        notifyActivation: function(activeModule) {
+            if (activeModule.toggleGroup) {
+                var _toggleGroup = activeModule.toggleGroup;
+                for (var i in _toggleGroup) {
+                    if (this.activeModules[_toggleGroup[i]]) {
+                        this.activeModules[_toggleGroup[i]].deactivate();
+                    }
+                }
+            }
         },
 
         loadModules: function(modulesList) {
@@ -128,7 +160,7 @@ function MapViewer(id, api, modules) {
                     map: this.map
                 };
                 markers.push(this.drawMarker(marker));
-               
+
             }
 
             this.cluster.addMarkers(markers);
@@ -145,7 +177,8 @@ function MapViewer(id, api, modules) {
             });
 
             return richMarker;
-        },
+        }
+
     };
 
     //Class functions

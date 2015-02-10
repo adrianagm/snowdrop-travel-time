@@ -6,7 +6,7 @@
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
-        //alias: 'layer-list',
+        //alias: 'layer-list', 
 
         layerList: null,
         layers: [],

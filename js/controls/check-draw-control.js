@@ -17,6 +17,7 @@
         pan: null,
         dragFlag: null,
         rectangleCoords: null,
+        toggleGroup: ['search-on-pan'], // toggleGroup:["search-group"]
         initialize: function() {
             this.rectangleCoords = [
                 new google.maps.LatLng(180, -90),
@@ -58,36 +59,19 @@
 
             var that = this;
 
-            //Custom event to control the controllers collisions
-            this.bindEvent('check-draw-class', 'change', function(event) {
-                if (that.InnerPolygon !== null) {
-                    that.basicSearch();
-                    that.cleanMap();
-                } else {
-                    that.drawingManager.setOptions({
-                        drawingControl: false
-                    });
-                    that.drawingManager.setDrawingMode(null);
-                }
-            });
-
             this.bindEvent('check-draw-control-outer', 'click', function(event) {
 
                 if (that.link.classList.contains("unchecked-pan")) {
-                    that.link.classList.remove('unchecked-pan');
-                    that.link.classList.add('checked-pan');
-                    that.checked = true;
+                    that.activate();
                 } else {
-                    that.link.classList.remove('checked-pan');
-                    that.link.classList.add('unchecked-pan');
-                    that.checked = false;
+                    that.deactivate();
                 }
 
                 if (that.checked) {
                     that.drawingManager.setDrawingMode(google.maps.drawing.OverlayType.POLYGON);
                     that.drawingManager.setMap(that.map);
                     that.drawingManager.setOptions({
-                        drawingControl: false,
+                        drawingControl: false
 
                     });
 
@@ -205,9 +189,23 @@
             });
 
             this.api.searchByPolygon(boundsPoly);
+        },
+
+        deactivate: function() {
+            MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
+
+
+            if (this.InnerPolygon !== null) {
+                this.basicSearch();
+                this.cleanMap();
+            } else {
+                this.drawingManager.setOptions({
+                    drawingControl: false
+                });
+                this.drawingManager.setDrawingMode(null);
+            }
+
         }
-
-
     });
 
     MapViewer.registerModule(MapViewer.CheckDrawControl, "check-draw");
