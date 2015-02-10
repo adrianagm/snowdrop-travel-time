@@ -6,7 +6,7 @@
         controlClass: 'button-control',
 
         position: 'TOP_RIGHT',
-        //alias: 'button',
+        alias: 'button',
 
         text: 'Default',
         clickFunction: alert,
