@@ -4,7 +4,7 @@
     MapViewer.CheckDrawControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-draw-control-outer"><div class="check-draw-control-border">' +
-            '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> <span>Draw to search</span></div></div></div>',
+        '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> <span>Draw to search</span></div></div></div>',
 
         controlClass: 'check-draw-control',
         position: 'LEFT_BOTTOM',
@@ -16,17 +16,31 @@
         listener: null,
         pan: null,
         dragFlag: null,
-        rectangleCoords: null,
+        //  rectangleCoords: null,
+        rectangleLeftCoords: null,
+        rectangleRightCoords: null,
         toggleGroup: ['search-group'],
         initialize: function() {
-
-            this.rectangleCoords = [
-                new google.maps.LatLng(180, -90),
-                new google.maps.LatLng(-180, -90),
-                new google.maps.LatLng(-180, 90),
-                new google.maps.LatLng(180, 90)
+            /*
+             this.rectangleCoords = [
+             new google.maps.LatLng(180, -90),
+             new google.maps.LatLng(-180, -90),
+             new google.maps.LatLng(-180, 90),
+             new google.maps.LatLng(180, 90)
+             ];
+             */
+            this.rectangleLeftCoords = [
+                new google.maps.LatLng(-85, -180),
+                new google.maps.LatLng(-85, 0),
+                new google.maps.LatLng(85, 0),
+                new google.maps.LatLng(85, -180),
             ];
-
+            this.rectangleRightCoords = [
+                new google.maps.LatLng(-85, 0),
+                new google.maps.LatLng(-85, 180),
+                new google.maps.LatLng(85, 180),
+                new google.maps.LatLng(85, 0),
+            ];
             this.link = this.getElementsByClass('check-draw-class')[0];
 
             this.drawingManager = this._getDrawingManager();
@@ -85,7 +99,7 @@
             }
 
             this.outerPolygon = new google.maps.Polygon({
-                paths: [this.rectangleCoords, boundsPoly],
+                paths: [this.rectangleLeftCoords, this.rectangleRightCoords, boundsPoly],
                 map: this.map,
                 strokeOpacity: 1,
                 strokeWeight: 0,
