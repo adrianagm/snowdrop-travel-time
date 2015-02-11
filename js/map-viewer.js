@@ -105,12 +105,8 @@ function MapViewer(id, api, modules) {
                     for (var i = 0; i < _toggleGroup.length; i++) {
                         if (!this.toggleGroups[_toggleGroup[i]]) {
                             this.toggleGroups[_toggleGroup[i]] = [];
-                            this.toggleGroups[_toggleGroup[i]].push(controlClass);
-                        } else {
-                            if (!this.toggleGroups[_toggleGroup[i]][controlClass]) {
-                                this.toggleGroups[_toggleGroup[i]].push(controlClass);
-                            }
                         }
+                        this.toggleGroups[_toggleGroup[i]].push(controlClass);
                     }
                 }
             }
