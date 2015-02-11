@@ -21,9 +21,7 @@ function MapViewer(id, api, modules) {
     "use strict";
     MapViewer.prototype = {
         cluster: null,
-        toggleGroups: {
-            'search-group': ['check-draw', 'search-on-pan']
-        },
+        toggleGroups: {},
         createMap: function(id, api) {
             var mapOptions = {
                 zoom: 12,
@@ -93,10 +91,30 @@ function MapViewer(id, api, modules) {
             }
 
             module = new ModuleObject(control);
-            module.addToMap();
+
             if (controlClass && module) {
+
+                module.addToMap();
+
+                //all modules loaded will be stored
                 this.loadedModules[controlClass] = module;
+
+                //it fill toggleGroups with the information of the modules
+                if (module.toggleGroup) {
+                    var _toggleGroup = module.toggleGroup;
+                    for (var i = 0; i < _toggleGroup.length; i++) {
+                        if (!this.toggleGroups[_toggleGroup[i]]) {
+                            this.toggleGroups[_toggleGroup[i]] = [];
+                            this.toggleGroups[_toggleGroup[i]].push(controlClass);
+                        } else {
+                            if (!this.toggleGroups[_toggleGroup[i]][controlClass]) {
+                                this.toggleGroups[_toggleGroup[i]].push(controlClass);
+                            }
+                        }
+                    }
+                }
             }
+
         },
 
         notifyActivation: function(activeModule) {
