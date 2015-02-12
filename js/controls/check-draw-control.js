@@ -1,6 +1,7 @@
 (function() {
 
     var CONTROL_CLASS = 'check-draw';
+
     MapViewer.CheckDrawControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-draw-control-outer"><div class="check-draw-control-border">' +
@@ -16,6 +17,7 @@
         listener: null,
         pan: null,
         dragFlag: null,
+
         rectangleLeftCoords: null,
         rectangleRightCoords: null,
         reverseRectangleLeftCoords: null,
@@ -23,30 +25,34 @@
         toggleGroup: ['search-group'],
         initialize: function() {
 
+            /*
+             We have to initialize rectangle coordinates here because 'google' var doesn't exist before.
+             */
             this.rectangleLeftCoords = [
                 new google.maps.LatLng(-150, -180),
                 new google.maps.LatLng(-150, 0),
                 new google.maps.LatLng(150, 0),
-                new google.maps.LatLng(150, -180),
+                new google.maps.LatLng(150, -180)
             ];
             this.reverseRectangleLeftCoords = [
                 new google.maps.LatLng(150, -180),
                 new google.maps.LatLng(150, 0),
                 new google.maps.LatLng(-150, 0),
-                new google.maps.LatLng(-150, -180),
+                new google.maps.LatLng(-150, -180)
             ];
             this.rectangleRightCoords = [
                 new google.maps.LatLng(-150, 0),
                 new google.maps.LatLng(-150, 180),
                 new google.maps.LatLng(150, 180),
-                new google.maps.LatLng(150, 0),
+                new google.maps.LatLng(150, 0)
             ];
             this.reverseRectangleRightCoords = [
                 new google.maps.LatLng(150, 0),
                 new google.maps.LatLng(150, 180),
                 new google.maps.LatLng(-150, 180),
-                new google.maps.LatLng(-150, 0),
+                new google.maps.LatLng(-150, 0)
             ];
+
             this.link = this.getElementsByClass('check-draw-class')[0];
 
             this.drawingManager = this._getDrawingManager();
@@ -54,7 +60,7 @@
 
             if (this.defaultChecked) {
                 this.link.classList.add('checked-pan');
-                this.activate();
+                this.notifyActivation();
             } else {
                 this.link.classList.add('unchecked-pan');
             }
@@ -64,23 +70,22 @@
             this.bindEvent('check-draw-control-outer', 'click', function(event) {
 
                 if (that.link.classList.contains("unchecked-pan")) {
-                    that.activate();
+                    that.notifyActivation();
                 } else {
                     that.deactivate();
                 }
             });
         },
+
         search: function(polygon, event) {
             var boundsPoly = null;
-            var polyObject = null;
             var rectangleLeftCoords = null;
             var rectangleRightCoords = null;
 
             if (event === "edit") {
-                polyObject = boundsPoly = polygon;
+                boundsPoly = polygon;
             } else {
-                polyObject = polygon.getPath();
-                boundsPoly = polyObject.getArray();
+                boundsPoly = polygon.getPath().getArray();
             }
 
             if (boundsPoly.length > 2) {
@@ -98,48 +103,34 @@
                     this._cleanOuterPolygon();
                 }
 
-                this.outerPolygon = new google.maps.Polygon({
-                    paths: [rectangleLeftCoords, rectangleRightCoords, boundsPoly],
-                    map: this.map,
-                    strokeOpacity: 1,
-                    strokeWeight: 0,
-                    fillColor: '#000000',
-                    fillOpacity: 0.7,
-                    zIndex: 0
-                });
+                if (this.currentlyActivate) {
+                    this.outerPolygon = new google.maps.Polygon({
+                        paths: [rectangleLeftCoords, rectangleRightCoords, boundsPoly],
+                        map: this.map,
+                        strokeOpacity: 1,
+                        strokeWeight: 0,
+                        fillColor: '#000000',
+                        fillOpacity: 0.7,
+                        zIndex: 0
+                    });
 
-                this.api.searchByPolygon(boundsPoly);
-
+                    this.api.searchByPolygon(boundsPoly);
+                } else {
+                    this._cleanInnerPolygon();
+                }
             }
-
-        },
-
-
-        disableDrawing: function() {
-            this.drawingManager.setMap(null);
-        },
-
-        basicSearch: function() {
-            var list = [];
-            var bounds = this.map.getBounds();
-            list.push(bounds.getNorthEast());
-            list.push(bounds.getSouthWest());
-            this.api.searchByPolygon(list);
-        },
-
-        cleanMap: function() {
-            this._cleanOuterPolygon();
-            this._cleanInnerPolygon();
         },
 
         deactivate: function() {
+
+            // if (!this.drawingManager.drawingMode) {
             MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
 
-            this.disableDrawing();
+            this.drawingManager.setMap(null);
 
             if (this.innerPolygon !== null) {
-                this.basicSearch();
-                this.cleanMap();
+                this._basicSearch();
+                this._cleanMap();
             } else {
 
                 this.drawingManager.setOptions({
@@ -149,6 +140,9 @@
                 this.drawingManager.setDrawingMode(null);
             }
             this._removeGmapListener();
+            //}
+
+
         },
 
         activate: function() {
@@ -203,7 +197,6 @@
                         that.search(this.j, "edit");
                 });
 
-
                 google.maps.event.addListener(polygon.getPath(), 'insert_at', function() {
                     that.search(this.j, "edit");
                 });
@@ -246,6 +239,7 @@
             });
             return _drawingManager;
         },
+
         _polygonArea: function(vertices) {
             var area = 0;
             for (var i = 0; i < vertices.length; i++) {
@@ -254,6 +248,19 @@
                 area -= vertices[j].lat() * vertices[i].lng();
             }
             return area / 2;
+        },
+
+        _basicSearch: function() {
+            var list = [];
+            var bounds = this.map.getBounds();
+            list.push(bounds.getNorthEast());
+            list.push(bounds.getSouthWest());
+            this.api.searchByPolygon(list);
+        },
+
+        _cleanMap: function() {
+            this._cleanOuterPolygon();
+            this._cleanInnerPolygon();
         }
     });
 

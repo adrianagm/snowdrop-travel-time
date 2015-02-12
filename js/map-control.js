@@ -67,14 +67,15 @@
         },
 
         deactivate: function() {
-            this.controls(this.link, 'checked-pan', 'unchecked-pan');
-            this.checked = false;
+            this.link.classList.remove('checked-pan');
+            this.link.classList.add('unchecked-pan');
+            this.currentlyActivate = false;
         },
 
         activate: function() {
-            this.controls(this.link, 'unchecked-pan', 'checked-pan');
-            this.checked = true;
-            this.notifyActivation();
+            this.link.classList.remove('unchecked-pan');
+            this.link.classList.add('checked-pan');
+            this.currentlyActivate = true;
         }
     };
 

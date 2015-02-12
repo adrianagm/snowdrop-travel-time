@@ -127,6 +127,7 @@ function MapViewer(id, api, modules) {
                     }
                 }
             }
+            activeModule.activate();
         },
 
         loadModules: function(modulesList) {
