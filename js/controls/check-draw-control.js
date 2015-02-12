@@ -24,28 +24,28 @@
         initialize: function() {
 
             this.rectangleLeftCoords = [
-                new google.maps.LatLng(-85, -180),
-                new google.maps.LatLng(-85, 0),
-                new google.maps.LatLng(85, 0),
-                new google.maps.LatLng(85, -180),
+                new google.maps.LatLng(-150, -180),
+                new google.maps.LatLng(-150, 0),
+                new google.maps.LatLng(150, 0),
+                new google.maps.LatLng(150, -180),
             ];
             this.reverseRectangleLeftCoords = [
-                new google.maps.LatLng(85, -180),
-                new google.maps.LatLng(85, 0),
-                new google.maps.LatLng(-85, 0),
-                new google.maps.LatLng(-85, -180),
+                new google.maps.LatLng(150, -180),
+                new google.maps.LatLng(150, 0),
+                new google.maps.LatLng(-150, 0),
+                new google.maps.LatLng(-150, -180),
             ];
             this.rectangleRightCoords = [
-                new google.maps.LatLng(-85, 0),
-                new google.maps.LatLng(-85, 180),
-                new google.maps.LatLng(85, 180),
-                new google.maps.LatLng(85, 0),
+                new google.maps.LatLng(-150, 0),
+                new google.maps.LatLng(-150, 180),
+                new google.maps.LatLng(150, 180),
+                new google.maps.LatLng(150, 0),
             ];
             this.reverseRectangleRightCoords = [
-                new google.maps.LatLng(85, 0),
-                new google.maps.LatLng(85, 180),
-                new google.maps.LatLng(-85, 180),
-                new google.maps.LatLng(-85, 0),
+                new google.maps.LatLng(150, 0),
+                new google.maps.LatLng(150, 180),
+                new google.maps.LatLng(-150, 180),
+                new google.maps.LatLng(-150, 0),
             ];
             this.link = this.getElementsByClass('check-draw-class')[0];
 
@@ -85,31 +85,33 @@
 
             if (boundsPoly.length > 2) {
                 var clockwise = this._polygonArea(boundsPoly) > 0;
-                if (!clockwise && event !== "drag") {
+                if (!clockwise) {
                     rectangleLeftCoords = this.reverseRectangleLeftCoords;
                     rectangleRightCoords = this.reverseRectangleRightCoords;
                 } else {
                     rectangleLeftCoords = this.rectangleLeftCoords;
                     rectangleRightCoords = this.rectangleRightCoords;
                 }
+
+                //Polygon substraction and mask
+                if (this.outerPolygon !== null) {
+                    this._cleanOuterPolygon();
+                }
+
+                this.outerPolygon = new google.maps.Polygon({
+                    paths: [rectangleLeftCoords, rectangleRightCoords, boundsPoly],
+                    map: this.map,
+                    strokeOpacity: 1,
+                    strokeWeight: 0,
+                    fillColor: '#000000',
+                    fillOpacity: 0.7,
+                    zIndex: 0
+                });
+
+                this.api.searchByPolygon(boundsPoly);
+
             }
 
-            //Polygon substraction and mask
-            if (this.outerPolygon !== null) {
-                this._cleanOuterPolygon();
-            }
-
-            this.outerPolygon = new google.maps.Polygon({
-                paths: [rectangleLeftCoords, rectangleRightCoords, boundsPoly],
-                map: this.map,
-                strokeOpacity: 1,
-                strokeWeight: 0,
-                fillColor: '#000000',
-                fillOpacity: 0.7,
-                zIndex: 0
-            });
-
-            this.api.searchByPolygon(boundsPoly);
         },
 
 
