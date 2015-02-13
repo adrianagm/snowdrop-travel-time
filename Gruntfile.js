@@ -8,7 +8,13 @@ module.exports = function(grunt) {
             },
             target: {
                 files: {
-                    'dist/<%= pkg.name %>.dist.js': ['js/map-viewer.js', 'js/map-control.js', 'js/controls/**/*.js']
+                    'dist/<%= pkg.name %>.dist.js': [
+                        'js/libs/console-stub.js', 
+                        'js/libs/Promise.js', 
+                        'js/map-viewer.js', 
+                        'js/map-control.js', 
+                        'js/controls/**/*.js'
+                    ]
                 }
             }
         },
