@@ -61,7 +61,7 @@
                 version: "1.1.1",
                 format: 'image/png',
                 transparent: true,
-                srs: 'EPSG:900913',
+                srs: 'EPSG:3857',
                 width: 256,
                 height: 256,
             };
@@ -69,6 +69,7 @@
                 for (var p in layer.requestParams) {
                     requestParams[p] = layer.requestParams[p];
                 }
+                
             }
 
             var wms = MercatorProjectionLayer.loadWMS(layer, requestParams);
