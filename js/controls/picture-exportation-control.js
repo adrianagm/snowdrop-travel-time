@@ -7,20 +7,20 @@
 
         position: 'TOP_RIGHT',
         alias: CONTROL_CLASS,
-
+        link: null,
         controls: null,
         bounds: null,
         zoom: null,
         initialize: function() {
-            this.buttonText = this.getElementsByClass('picture-exportation-control-inner')[0];
-            this.elem = this.map.getDiv();
             var that = this;
+            this.buttonText = this.getElementsByClass('picture-exportation-control-inner')[0];
+            this.link = this.getElementsByClass('picture-exportation-control-outer')[0]
+            this.elem = this.map.getDiv();
+
             this.bindEvent('picture-exportation-control-outer', 'click', function() {
                 if (this.classList.contains("complete-screen")) {
-                    this.classList.remove('complete-screen');
                     that.deactivate();
                 } else {
-                    this.classList.add('complete-screen');
                     that.activate();
                 }
             });
@@ -30,7 +30,9 @@
         deactivate: function() {
 
             var that = this;
-            //Normal screen
+
+            this.link.classList.remove('complete-screen');
+
             this.buttonText.innerHTML = "<b>Picture Exportation</b>";
             this.map.set('disableDefaultUI', false);
             this.map.set('mapTypeControl', true);
@@ -49,9 +51,11 @@
         },
 
         activate: function() {
-            this.controls = document.getElementsByClassName('map-control');
-            
             var that = this;
+
+            this.controls = document.getElementsByClassName('map-control');
+            this.link.classList.add('complete-screen');
+
             //Complete screen
             this.buttonText.innerHTML = "<b>X</b>";
             this.map.set('disableDefaultUI', true);
