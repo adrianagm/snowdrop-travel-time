@@ -64,12 +64,18 @@
                 srs: 'EPSG:3857',
                 width: 256,
                 height: 256,
+
             };
+           
             if (layer.requestParams) {
                 for (var p in layer.requestParams) {
-                    requestParams[p] = layer.requestParams[p];
+                        requestParams[p] = layer.requestParams[p];
                 }
-                
+
+            }
+
+            if(!layer.opacity){
+                 layer.opacity = 1;
             }
 
             var wms = MercatorProjectionLayer.loadWMS(layer, requestParams);

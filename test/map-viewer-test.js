@@ -130,7 +130,8 @@ function MapViewerTest() {
 			"WMS House Prices": {
 				type: "wms",
 				url: "https://mapit.jll.com/arcgis/services/EMEA/House_Prices_WMS_test2/MapServer/WMSServer",
-				layers: '0'
+				layers: '0',
+				opacity: 0.5
 			},
 
 		}
