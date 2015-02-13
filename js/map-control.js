@@ -12,32 +12,14 @@
         this.setContent();
         this.initialize();
         var that = this;
-
-        this.bindEvent('check-draw-control-outer', 'click', function(event) {
-            var link = document.getElementsByClassName('check-draw-class')[0];
-            var pan = document.getElementsByClassName('check-class')[0];
-            if (link.classList.contains("checked-pan")) {
-                that.controls(pan, 'checked-pan', 'unchecked-pan');
-            }
-        });
-
-        this.bindEvent('check-pan-control-outer', 'click', function(event) {
-            var link = document.getElementsByClassName('check-class')[0];
-            var draw = document.getElementsByClassName('check-draw-class')[0];
-            if (link.classList.contains("checked-pan")) {
-                that.controls(draw, 'checked-pan', 'unchecked-pan');
-                var evento = document.createEventObject('change');
-                draw.dispatchEvent(evento);
-            }
-        });
-
     };
 
     MapViewer.MapControl.prototype = {
         template: "",
         controlClass: "",
         position: 'TOP_CENTER',
-
+        toggleGroup: null,
+        alias: null,
         initialize: function() {
 
         },
@@ -78,6 +60,23 @@
             for (var el = 0; el < elements.length; el++) {
                 google.maps.event.addDomListener(elements[el], event, callback);
             }
+        },
+
+        notifyActivation: function() {
+            this.owner.notifyActivation(this);
+        },
+
+        deactivate: function() {
+            this.link.classList.remove('checked-pan');
+            this.link.classList.add('unchecked-pan');
+            this.currentlyActivate = false;
+        },
+
+        activate: function() {
+            this.link.classList.remove('unchecked-pan');
+            this.link.classList.add('checked-pan');
+            this.currentlyActivate = true;
         }
     };
+
 })();
