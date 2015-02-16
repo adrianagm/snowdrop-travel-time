@@ -1,4 +1,4 @@
-#map {
+.map-widget {
     #JLLOverlay {
         position: fixed;
         z-index: 100;
@@ -20,6 +20,14 @@
             width: 40%;
             height: 50%;
             transform: translate(-50%, -50%);
+            .JLLOverlay-close-btn {
+                content: url('../images/close_cross.png');
+                padding: 3px;
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                display: block
+            }
         }
     }
 }

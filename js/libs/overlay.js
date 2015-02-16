@@ -35,7 +35,7 @@
 
     JLLOverlay.prototype._setOverlayModal = function() {
         var modal = document.createElement('div');
-        modal.innerHTML = '<span id="' + this.id + '-close-btn">Close</span>';
+        modal.innerHTML = '<span class="' + this.id + '-close-btn"></span>';
         modal.className = this.id + '-modal-default';
 
 
@@ -51,7 +51,7 @@
 
     JLLOverlay.prototype._binding = function() {
         var that = this;
-        document.getElementById(this.id + '-close-btn').onclick = function() {
+        document.getElementsByClassName(this.id + '-close-btn')[0].onclick = function() {
             that.destroy();
         };
 
