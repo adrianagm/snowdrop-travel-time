@@ -4,7 +4,8 @@
 
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div><ul class="layer-list"></ul><div class="clear">Clear</div>',
+        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div><ul class="layer-list"></ul>' +
+        '<div class="search-dataset">Search Dataset</div><ul class="search-list"></ul><div class="clear">Clear</div>',
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
@@ -47,6 +48,24 @@
             this.bindEvent('clear', 'click', function(event) {
                 that.clearList();
             });
+
+
+            this.bindEvent('search-dataset', 'click', function(event) {
+                console.log('aaaaaaaaaaaaaaaaaaaa');
+                var overlayOptions = {
+                    parent: that.owner.element,
+                    modalClasses: 'example-class',
+                    modalInnerContent: '<div class="example-div"><button class="example-btn">Try it</button></div>',
+                    scripts: function() {
+                        document.getElementsByClassName('example-btn')[0].onclick = function() {
+                            alert('TESTING OVERLAY');
+                        };
+                    }
+                };
+                var overlay = new JLLOverlay(overlayOptions);
+            });
+
+
         },
 
         addLayerGme: function(layer) {
