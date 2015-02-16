@@ -20,8 +20,10 @@ function MapViewer(id, api, modules) {
 (function() {
     "use strict";
     MapViewer.prototype = {
+        markers: [],
         cluster: null,
         toggleGroups: {},
+
         createMap: function(id, api) {
             var mapOptions = {
                 zoom: 12,
@@ -163,12 +165,17 @@ function MapViewer(id, api, modules) {
             this.cluster = new MarkerClusterer(this.map, null, mcOptions);
         },
 
+        getMarkers: function() {
+            return this.markers;
+        },
+
         removeMarkers: function() {
+            this.markers = [];
             this.cluster.clearMarkers();
         },
 
         setMarkers: function(searchResults) {
-            var markers = [];
+            this.markers = [];
 
             for (var i = 0; i < searchResults.length; i++) {
                 var marker = {
@@ -177,12 +184,11 @@ function MapViewer(id, api, modules) {
                     properties: searchResults[i],
                     map: this.map
                 };
-                markers.push(this.drawMarker(marker));
+                this.markers.push(this.drawMarker(marker));
 
             }
 
-            this.cluster.addMarkers(markers);
-
+            this.cluster.addMarkers(this.markers);
         },
 
         drawMarker: function(marker) {

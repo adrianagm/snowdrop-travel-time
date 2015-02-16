@@ -2,6 +2,7 @@
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans);
 
 @custom-red: rgb(188, 20, 26);
+@custom-green: green;
 @text-color-control: #555;
 @text-color-hover-control: #888;
 
@@ -16,7 +17,7 @@
     margin-left: 20px;
     margin-right:20px;
     color: @text-color-control;
-      
+
 }
 
 .map-widget .map-control > div{
@@ -99,7 +100,7 @@
     display: inline-block;
     border-top-left-radius:@border-radius-control;
     border-bottom-left-radius:@border-radius-control;
-   
+
 }
 
 .map-widget .header.collapse{
@@ -128,7 +129,7 @@
     list-style: none;
     display: inline;
     background-color: white;
-    
+
 }
 
 .map-widget .places-control ul .places:hover {
@@ -139,33 +140,43 @@
     color:@custom-red;
 }
 
-.map-widget .check-pan-control, .map-widget .check-draw-control{
+.map-widget .check-pan-control,
+.map-widget .check-draw-control,
+.map-widget .refine-search-control {
     position:relative;
-    bottom: 7px;  
+    bottom: 7px;
     margin: 5px;
-    
+
 }
 
-.map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer { 
+.map-widget .check-pan-control-outer,
+.map-widget .check-draw-control-outer,
+.map-widget .refine-search-control-outer {
     width: 250px;
 
 }
 
-.map-widget .check-pan-control-border, .map-widget .check-draw-control-border {
+.map-widget .check-pan-control-border,
+.map-widget .check-draw-control-border,
+.map-widget .refine-search-control-border {
     cursor: pointer;
     text-align: left;
     background-color: white;
     border-radius: @border-radius-control;
 }
 
-.map-widget .check-pan-control-inner, .map-widget .check-draw-control-inner {
+.map-widget .check-pan-control-inner,
+.map-widget .check-draw-control-inner,
+.map-widget .refine-search-control-inner {
     font-size: 14px;
     padding:@padding-control;
 
 
 }
 
-.map-widget .check-pan-control-inner span, .map-widget .check-draw-control-inner span{
+.map-widget .check-pan-control-inner span,
+.map-widget .check-draw-control-inner span,
+.map-widget .refine-search-control-inner span {
     padding:5px;
     text-align: left;
 }
@@ -233,7 +244,7 @@
     line-height: 35px;
     cursor: pointer;
     font-size: 9px;
-    
+
 
 }
 
@@ -245,3 +256,5 @@
     background-repeat: no-repeat;
     background-color: transparent;
 }
+
+@import 'refine-control';

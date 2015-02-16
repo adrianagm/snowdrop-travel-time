@@ -33,7 +33,7 @@ var IntegrationAPI = {
 			paths: poligonPoints
 		});
 
-		for (var j = 0; j < 20; j++) {
+		for (var j = 0; j < 25; j++) {
 			var lat = RandomCoordinate(minLat, maxLat);
 			var lng = RandomCoordinate(minLng, maxLng);
 
@@ -133,7 +133,7 @@ function MapViewerTest() {
 	var mapViewer = new MapViewer('map', IntegrationAPI, [
 		layerListControl,
 		placesToolbar,
-		"search-on-pan", "check-draw"
+		"search-on-pan", "check-draw", "refine-search"
 
 	]);
 }
