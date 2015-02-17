@@ -1,11 +1,16 @@
 .refine-popup {
     width: 200px;
 
+    .refine-travelmode {
+        width: 50%;
+    }
+
     .refine-button {
         text-align: center;
         float:left;
         width: 50%;
         padding: 5px 0;
+        margin-bottom: 5px;
         background-color: #EEE;
         color: #333;
         font-weight: 400;
@@ -13,11 +18,11 @@
         cursor: pointer;
 
         border-radius: @border-radius-control;
-        &#refine-time {
+        &#refine-time, &#travel-car {
             border-bottom-right-radius: 0;
             border-top-right-radius: 0;
         }
-        &#refine-distance {
+        &#refine-distance, &#travel-walking {
             border-bottom-left-radius: 0;
             border-top-left-radius: 0;
         }
