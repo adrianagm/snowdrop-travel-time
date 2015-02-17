@@ -48,6 +48,7 @@ function MapViewer(id, api, modules) {
             this.api.addSearchListener(function(results) {
                 that.removeMarkers();
                 that.setMarkers(results);
+                that.notifySearchResults(results);
             });
 
             this.setModulesMap();
@@ -132,6 +133,12 @@ function MapViewer(id, api, modules) {
             activeModule.activate();
         },
 
+        notifySearchResults: function(searchResults) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onSearchResults(searchResults);
+            }
+        },
+
         loadModules: function(modulesList) {
             for (var m = 0; m < modulesList.length; m++) {
                 this.loadModule(modulesList[m]);
@@ -201,7 +208,12 @@ function MapViewer(id, api, modules) {
             });
 
             return richMarker;
-        }
+        },
+
+        redrawMarkers: function() {
+            this.cluster.clearMarkers();
+            this.cluster.addMarkers(this.markers);
+        },
 
     };
 

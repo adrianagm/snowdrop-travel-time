@@ -76,7 +76,9 @@
             this.link.classList.remove('unchecked-pan');
             this.link.classList.add('checked-pan');
             this.currentlyActivate = true;
-        }
+        },
+
+        onSearchResults: function(searchResults) {}
     };
 
 })();

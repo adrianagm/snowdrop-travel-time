@@ -16,6 +16,7 @@
 
         marker: null,
         infoWindow: null,
+        infoWindowContent: null,
         eventsActivated: false,
 
         matrix: null,
@@ -32,7 +33,10 @@
             } else {
                 this.link.classList.add('unchecked-pan');
             }
+            this.setCheckEvent();
+        },
 
+        setCheckEvent: function() {
             var that = this;
             this.bindEvent('refine-search-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
@@ -40,14 +44,19 @@
                         that.createMarker();
                     }
                     that.marker.setMap(that.map);
+
+                    //reset control
                     that.mode = 'duration';
                     that.travelMode = google.maps.TravelMode.DRIVING;
-                    that.value = 1;
+                    that.value = 60;
+                    that.getMatrix();
+
                     that.notifyActivation();
                 } else {
                     that.marker.setMap(null);
                     that.eventsActivated = false;
                     that.deactivate();
+                    that.owner.redrawMarkers();
                 }
             });
         },
@@ -75,58 +84,68 @@
         },
 
         createInfowindow: function() {
-            this.infowindow = new google.maps.InfoWindow({
-                content: '<div class="refine-popup">' +
-                    '<div class="refine-mode">' +
-                    '<div class="refine-button active" id="refine-time">Time</div><div class="refine-button inactive" id="refine-distance">Distance</div>' +
-                    '</div>' +
-                    '<div class="refine-travelmode">' +
-                    '<span class="refine-button active fa fa-car" id="travel-car"></span><span class="refine-button inactive fa fa-male" id="travel-walking"></span>' +
-                    '</div>' + '<input type="number" value="1" min="0" step="any" id="refine-value"/>' +
-                    '</div>'
-            });
+            this.infoWindowContent = document.createElement('div');
+            this.infoWindowContent.innerHTML = '<div class="refine-popup">' +
+                '<div class="refine-mode">' +
+                '<div class="refine-button active refine-time">Time</div><div class="refine-button inactive refine-distance">Distance</div>' +
+                '</div>' +
+                '<div class="refine-travelmode">' +
+                '<span class="refine-button active fa fa-car travel-car"></span><span class="refine-button inactive fa fa-male travel-walking"></span>' +
+                '</div>' +
+                '<div class="refine-value">' +
+                '<input type="number" value="60" min="0" step="any" class="refine-input"/><span class="refine-label">min.</span>' +
+                '</div>' +
+                '</div>';
+
+            this.infowindow = new google.maps.InfoWindow();
+            this.infowindow.setContent(this.infoWindowContent);
 
             var that = this;
             google.maps.event.addListener(this.marker, 'click', function() {
                 that.infowindow.open(that.map, that.marker);
-
-                if (!that.eventsActivated) {
-                    google.maps.event.addDomListener(document.getElementById('refine-time'), 'click', function(event) {
-                        that.mode = 'duration';
-                        that.activateButton('refine-time');
-                        that.deactivateButton('refine-distance');
-                        that.filterMarkers();
-                    });
-
-                    google.maps.event.addDomListener(document.getElementById('refine-distance'), 'click', function(event) {
-                        that.mode = 'distance';
-                        that.activateButton('refine-distance');
-                        that.deactivateButton('refine-time');
-                        that.filterMarkers();
-                    });
-
-                    google.maps.event.addDomListener(document.getElementById('travel-car'), 'click', function(event) {
-                        that.travelMode = google.maps.TravelMode.DRIVING;
-                        that.activateButton('travel-car');
-                        that.deactivateButton('travel-walking');
-                        that.getMatrix();
-                    });
-
-                    google.maps.event.addDomListener(document.getElementById('travel-walking'), 'click', function(event) {
-                        that.travelMode = google.maps.TravelMode.WALKING;
-                        that.activateButton('travel-walking');
-                        that.deactivateButton('travel-car');
-                        that.getMatrix();
-                    });
-
-                    google.maps.event.addDomListener(document.getElementById('refine-value'), 'change', function(event) {
-                        //km or minutes
-                        that.value = event.target.value;
-                        that.filterMarkers();
-                    });
-                    that.eventsActivated = true;
-                }
             });
+
+            this.infowindow.open(this.map, this.marker);
+            this.setInfoWindowEvents();
+        },
+
+        setInfoWindowEvents: function() {
+            if (!this.eventsActivated) {
+                var that = this;
+                google.maps.event.addDomListener(this.getButton('refine-time'), 'click', function(event) {
+                    that.mode = 'duration';
+                    that.activateButton('refine-time');
+                    that.deactivateButton('refine-distance');
+                    that.filterMarkers();
+                });
+
+                google.maps.event.addDomListener(this.getButton('refine-distance'), 'click', function(event) {
+                    that.mode = 'distance';
+                    that.activateButton('refine-distance');
+                    that.deactivateButton('refine-time');
+                    that.filterMarkers();
+                });
+
+                google.maps.event.addDomListener(this.getButton('travel-car'), 'click', function(event) {
+                    that.travelMode = google.maps.TravelMode.DRIVING;
+                    that.activateButton('travel-car');
+                    that.deactivateButton('travel-walking');
+                    that.getMatrix();
+                });
+
+                google.maps.event.addDomListener(this.getButton('travel-walking'), 'click', function(event) {
+                    that.travelMode = google.maps.TravelMode.WALKING;
+                    that.activateButton('travel-walking');
+                    that.deactivateButton('travel-car');
+                    that.getMatrix();
+                });
+
+                google.maps.event.addDomListener(this.getButton('refine-input'), 'change', function(event) {
+                    that.value = event.target.value;
+                    that.filterMarkers();
+                });
+                that.eventsActivated = true;
+            }
         },
 
         activateButton: function(id) {
@@ -140,10 +159,16 @@
         },
 
         getButton: function(id) {
-            return document.getElementById(id);
+            return this.infoWindowContent.getElementsByClassName(id)[0];
+        },
+
+        onSearchResults: function(searchResults) {
+            if (!this.marker || !this.marker.getMap()) return;
+            this.getMatrix();
         },
 
         getMatrix: function() {
+            if (this.owner.getMarkers().length === 0) return;
             var service = new google.maps.DistanceMatrixService(),
                 that = this;
 
@@ -157,8 +182,10 @@
                 avoidTolls: false
 
             }, function(res, status) {
-                that.matrix = res.rows[0].elements;
-                that.filterMarkers();
+                if (status === 'OK') {
+                    that.matrix = res.rows[0].elements;
+                    that.filterMarkers();
+                }
             });
         },
 
@@ -173,11 +200,14 @@
 
             for (var m = 0; m < markers.length; m++) {
                 var marker = markers[m];
-                var value = this.matrix[m][this.mode].value;
+                console.log(this.matrix[m]);
 
-                if (value < convertedValue) {
-                    console.log(this.matrix[m][this.mode].text);
-                    markersToAdd.push(marker);
+                if (this.matrix[m].status === 'OK') {
+                    var value = this.matrix[m][this.mode].value;
+
+                    if (value < convertedValue) {
+                        markersToAdd.push(marker);
+                    }
                 }
             }
             this.owner.cluster.addMarkers(markersToAdd);

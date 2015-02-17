@@ -5,17 +5,30 @@
         width: 45%;
     }
 
-    #refine-value {
+    .refine-value {
         width: 45%;
-        height: 26px;
         float: right;
-        padding: 0;
-        margin: 0;
-        box-sizing: border-box;
-        border: none;
-        background-color: #EEE;
-        text-align: right;
-        border-radius: @border-radius-control;
+
+        .refine-input {
+            width: 60%;
+            height: 26px;
+            float: left;
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+            border: none;
+            background-color: #EEE;
+            text-align: right;
+            border-radius: @border-radius-control;
+        }
+
+        .refine-label {
+            width: 35%;
+            height: 26px;
+            padding-top: 6px;
+            float: right;
+            text-align: center;
+        }
     }
 
     .refine-button {
@@ -31,11 +44,11 @@
         cursor: pointer;
 
         border-radius: @border-radius-control;
-        &#refine-time, &#travel-car {
+        &.refine-time, &.travel-car {
             border-bottom-right-radius: 0;
             border-top-right-radius: 0;
         }
-        &#refine-distance, &#travel-walking {
+        &.refine-distance, &.travel-walking {
             border-bottom-left-radius: 0;
             border-top-left-radius: 0;
         }

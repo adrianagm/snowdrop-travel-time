@@ -4,7 +4,7 @@
     MapViewer.SearchOnPanControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
-        '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Search when moving map</span></div></div></div>',
+            '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Search when moving map</span></div></div></div>',
         controlClass: 'check-pan-control',
 
         position: 'LEFT_BOTTOM',
@@ -32,7 +32,7 @@
                     that.deactivate();
                 }
 
-                google.maps.event.addListener(that.map, 'idle', function() {
+                google.maps.event.addListener(that.map, 'dragend', function() {
                     if (that.link.classList.contains("checked-pan")) {
                         var bounds = that.searchBounds();
                         that.api.searchByPolygon(bounds);
