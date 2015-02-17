@@ -7,28 +7,26 @@
 
 @padding-control: 10px;
 @border-radius-control: 2px;
-@shadow-control:0px 1px 8px #888;
+@shadow-control: 0px 1px 8px #888;
 
-
-
-.map-widget .map-control{
+.map-widget .map-control {
     font-family: "Droid Sans", sans-serif;
     margin-left: 20px;
-    margin-right:20px;
+    margin-right: 20px;
     color: @text-color-control;
-      
+
 }
 
-.map-widget .map-control > div{
+.map-widget .map-control > div {
     border-radius: @border-radius-control;
     box-shadow: @shadow-control;
 }
 
-.map-widget .button-control-outer {
+.map-widget .picture-exportation-control-outer {
     padding: 5px;
 }
 
-.map-widget .button-control-border {
+.map-widget .picture-exportation-control-border {
     border-style: solid;
     border-width: 2px;
     cursor: pointer;
@@ -36,7 +34,7 @@
     background-color: white;
 }
 
-.map-widget .button-control-inner {
+.map-widget .picture-exportation-control-inner {
     font-size: 12px;
     padding-left: 4px;
     padding-right: 4px;
@@ -53,37 +51,44 @@
     padding: @padding-control;
     background-color: @custom-red;
     color: white;
-    border-top-left-radius:@border-radius-control;
-    border-top-right-radius:@border-radius-control;
+    border-top-left-radius: @border-radius-control;
+    border-top-right-radius: @border-radius-control;
 
+}
+
+.map-widget .layer-list-control .search-dataset {
+    padding: @padding-control;
+    background-color: @custom-red;
+    color: white;
+    border-top-left-radius: @border-radius-control;
+    border-top-right-radius: @border-radius-control;
 }
 
 .map-widget .layer-list-control .clear {
     padding: @padding-control;
-    border-top-left-radius:0;
-    border-top-right-radius:0;
-    color:@text-color-control + #333;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    color: @text-color-control + #333;
 
 }
 
 .map-widget .layer-list-control .clear:hover {
-    color:@text-color-hover-control + #333;
+    color: @text-color-hover-control + #333;
 }
 
-.map-widget .layer-list-control ul li{
+.map-widget .layer-list-control ul li {
     padding: @padding-control;
     list-style: none;
 
 }
 
 .map-widget .layer-list-control ul li:hover {
-    color:@text-color-hover-control;
+    color: @text-color-hover-control;
 }
 
 .map-widget .layer-list-control ul li.active {
-    color:@custom-red;
+    color: @custom-red;
 }
-
 
 .map-widget .places-control {
     background-color: white;
@@ -97,24 +102,24 @@
     background-color: @custom-red;
     color: white;
     display: inline-block;
-    border-top-left-radius:@border-radius-control;
-    border-bottom-left-radius:@border-radius-control;
-   
+    border-top-left-radius: @border-radius-control;
+    border-bottom-left-radius: @border-radius-control;
+
 }
 
-.map-widget .header.collapse{
+.map-widget .header.collapse {
     border-radius: @border-radius-control;
 }
 
 .map-widget .header::before {
     content: url('../images/minimize.png');
-    float:left;
+    float: left;
     padding-right: @padding-control;
 }
 
 .map-widget .header.collapse::before {
     content: url('../images/maximize.png');
-    float:left;
+    float: left;
     padding-right: @padding-control;
 
 }
@@ -123,30 +128,30 @@
     display: inline;
 }
 
-.map-widget .places-control ul li{
+.map-widget .places-control ul li {
     padding: @padding-control;
     list-style: none;
     display: inline;
     background-color: white;
-    
+
 }
 
 .map-widget .places-control ul .places:hover {
-    color:@text-color-hover-control;
+    color: @text-color-hover-control;
 }
 
 .map-widget .places-control ul .places.active {
-    color:@custom-red;
+    color: @custom-red;
 }
 
-.map-widget .check-pan-control, .map-widget .check-draw-control{
-    position:relative;
-    bottom: 7px;  
+.map-widget .check-pan-control, .map-widget .check-draw-control {
+    position: relative;
+    bottom: 7px;
     margin: 5px;
-    
+
 }
 
-.map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer { 
+.map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer {
     width: 250px;
 
 }
@@ -160,16 +165,14 @@
 
 .map-widget .check-pan-control-inner, .map-widget .check-draw-control-inner {
     font-size: 14px;
-    padding:@padding-control;
-
+    padding: @padding-control;
 
 }
 
-.map-widget .check-pan-control-inner span, .map-widget .check-draw-control-inner span{
-    padding:5px;
+.map-widget .check-pan-control-inner span, .map-widget .check-draw-control-inner span {
+    padding: 5px;
     text-align: left;
 }
-
 
 .property-marker {
     background-image: url('../images/precise_pin_inactive_white.png');
@@ -191,7 +194,6 @@
     font-weight: bold;
     font-size: 14px;
 }
-
 
 .checked-pan {
     background-image: url('../images/check_box.png'), url('../images/checkbox.png');
@@ -224,7 +226,7 @@
 }
 
 .places-cluster-marker {
-    color: #fff ;
+    color: #fff;
     background-image: url('../images/cluster-places.png');
     background-size: 35px 35px;
     background-repeat: no-repeat;
@@ -233,11 +235,10 @@
     line-height: 35px;
     cursor: pointer;
     font-size: 9px;
-    
 
 }
 
-.places-marker.places-marker-grocery_or_supermarket{
+.places-marker.places-marker-grocery_or_supermarket {
     background-image: url('../images/shopping-card.png');
     background-size: 20px 20px;
     height: 20px;
@@ -270,3 +271,5 @@
 .map-control.layer-list-control{
     top: 20px !important;
 }
+
+@import "overlay";
