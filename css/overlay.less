@@ -7,7 +7,7 @@
         width: 100%;
         height: 100%;
         .overlay-cover {
-            background-color: rgba(0, 0, 0, 0.6);
+            background-color: rgba(0, 0, 0, 0.7); //same than the map shadow when draw
             width: 100%;
             height: 100%;
         }
@@ -20,7 +20,10 @@
             width: 40%;
             height: auto;
             transform: translate(-50%, -50%);
-            border-radius: @border-radius-control; //10px;
+            border-radius: @border-radius-control;
+            box-shadow: @shadow-control;
+            font-family: "Droid Sans", sans-serif;
+            color: @text-color-control;
             .overlay-close-btn {
                 content: url('../images/close_cross.png');
                 padding: 3px;
@@ -100,8 +103,12 @@
                     text-align: start;
                 }
 
-                .overlay-form-select-multiple {
+                select[multiple] {
                     height: auto;
+                }
+
+                option:checked {
+                    background: linear-gradient(@custom-red, @custom-red);
                 }
 
                 label {
