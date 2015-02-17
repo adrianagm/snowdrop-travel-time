@@ -18,8 +18,10 @@
         infoWindow: null,
         eventsActivated: false,
 
+        matrix: null,
         mode: null,
         travelMode: null,
+        value: 1,
 
         initialize: function() {
             this.link = this.getElementsByClass('check-class')[0];
@@ -40,6 +42,7 @@
                     that.marker.setMap(that.map);
                     that.mode = 'duration';
                     that.travelMode = google.maps.TravelMode.DRIVING;
+                    that.value = 1;
                     that.notifyActivation();
                 } else {
                     that.marker.setMap(null);
@@ -79,7 +82,7 @@
                     '</div>' +
                     '<div class="refine-travelmode">' +
                     '<span class="refine-button active fa fa-car" id="travel-car"></span><span class="refine-button inactive fa fa-male" id="travel-walking"></span>' +
-                    '</div>' +
+                    '</div>' + '<input type="number" value="1" min="0" step="any" id="refine-value"/>' +
                     '</div>'
             });
 
@@ -92,24 +95,34 @@
                         that.mode = 'duration';
                         that.activateButton('refine-time');
                         that.deactivateButton('refine-distance');
+                        that.filterMarkers();
                     });
 
                     google.maps.event.addDomListener(document.getElementById('refine-distance'), 'click', function(event) {
                         that.mode = 'distance';
                         that.activateButton('refine-distance');
                         that.deactivateButton('refine-time');
+                        that.filterMarkers();
                     });
 
                     google.maps.event.addDomListener(document.getElementById('travel-car'), 'click', function(event) {
                         that.travelMode = google.maps.TravelMode.DRIVING;
                         that.activateButton('travel-car');
                         that.deactivateButton('travel-walking');
+                        that.getMatrix();
                     });
 
                     google.maps.event.addDomListener(document.getElementById('travel-walking'), 'click', function(event) {
                         that.travelMode = google.maps.TravelMode.WALKING;
                         that.activateButton('travel-walking');
                         that.deactivateButton('travel-car');
+                        that.getMatrix();
+                    });
+
+                    google.maps.event.addDomListener(document.getElementById('refine-value'), 'change', function(event) {
+                        //km or minutes
+                        that.value = event.target.value;
+                        that.filterMarkers();
                     });
                     that.eventsActivated = true;
                 }
@@ -144,23 +157,26 @@
                 avoidTolls: false
 
             }, function(res, status) {
-                that.filterMarkers(res, status);
+                that.matrix = res.rows[0].elements;
+                that.filterMarkers();
             });
         },
 
-        filterMarkers: function(res, status) {
+        filterMarkers: function() {
             var markers = this.owner.getMarkers();
-            var matrix = res.rows[0].elements;
             var markersToAdd = [];
 
             this.owner.cluster.clearMarkers();
 
+            var unitChange = this.mode === 'duration' ? 60 : 1000;
+            var convertedValue = this.value * unitChange;
+
             for (var m = 0; m < markers.length; m++) {
                 var marker = markers[m];
-                var distance = matrix[m][this.mode].value;
+                var value = this.matrix[m][this.mode].value;
 
-                if (distance < 15 * 60) {
-                    console.log(matrix[m][this.mode].text);
+                if (value < convertedValue) {
+                    console.log(this.matrix[m][this.mode].text);
                     markersToAdd.push(marker);
                 }
             }
