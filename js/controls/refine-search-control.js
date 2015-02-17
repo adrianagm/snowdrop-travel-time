@@ -93,7 +93,7 @@
                 '<span class="refine-button active fa fa-car travel-car"></span><span class="refine-button inactive fa fa-male travel-walking"></span>' +
                 '</div>' +
                 '<div class="refine-value">' +
-                '<input type="number" value="60" min="0" step="any" class="refine-input"/><span class="refine-label">min.</span>' +
+                '<input type="number" value="60" min="0" step="1" class="refine-input"/><span class="refine-label">min.</span>' +
                 '</div>' +
                 '</div>';
 
@@ -116,6 +116,9 @@
                     that.mode = 'duration';
                     that.activateButton('refine-time');
                     that.deactivateButton('refine-distance');
+                    that.getButton('refine-label').innerHTML = 'min.';
+                    that.value = 60;
+                    that.getButton('refine-input').value = that.value;
                     that.filterMarkers();
                 });
 
@@ -123,6 +126,9 @@
                     that.mode = 'distance';
                     that.activateButton('refine-distance');
                     that.deactivateButton('refine-time');
+                    that.getButton('refine-label').innerHTML = 'Km.';
+                    that.value = 10;
+                    that.getButton('refine-input').value = that.value;
                     that.filterMarkers();
                 });
 
@@ -203,7 +209,6 @@
 
             for (var m = 0; m < markers.length; m++) {
                 var marker = markers[m];
-                console.log(this.matrix[m]);
 
                 if (this.matrix[m].status === 'OK') {
                     var value = this.matrix[m][this.mode].value;
