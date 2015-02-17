@@ -170,11 +170,11 @@
             html += '<div class="overlay-search-dataset-modal">';
             html += '   <div class="overlay-header">';
             html += '       <label for="search-dataset-input">Search Dataset:</label>';
-            html += '       <input type="text" class="overlay-form-input overlay-form-item" name="search-dataset-input">';
+            html += '       <input type="text" class="overlay-form-input overlay-form-item search-dataset-input" name="search-dataset-input">';
             html += '   </div>';
             html += '   <div class="overlay-content">';
-            html += '       <label for="search-dataset-select">Availables Dataset:</label>';
-            html += '       <select multiple class="overlay-form-select-multiple overlay-form-item" name="search-dataset-select">';
+            html += '       <label for="search-dataset-list">Availables Dataset:</label>';
+            html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-dataset-list" name="search-dataset-list">';
             for (var key in select_options) {
                 if (select_options.hasOwnProperty(key)) {
                     html += '<option value="' + key + '">' + select_options[key] + '</option>';
@@ -190,6 +190,27 @@
             return html;
         },
         _searchDatasetScript: function() {
+            /*
+             this function is execute insite JLLOverlay Class so 'this' is refered to the JLLOverlay object
+             */
+            var map = this.parent;
+            var searchInput = map.getElementsByClassName('search-dataset-input')[0];
+            var searchList = map.getElementsByClassName('search-dataset-list')[0];
+
+            if (searchInput && searchList) {
+                searchInput.addEventListener("keyup", function(e) {
+                    var inputValue = e.target.value;
+                    var options = searchList.getElementsByTagName('option');
+                    for (var i = 0; i < options.length; i++) {
+                        var optionValue = options[i].text;
+                        if (new RegExp('^' + inputValue).test(optionValue)) {
+                            options[i].style.display = 'block';
+                        } else {
+                            options[i].style.display = 'none';
+                        }
+                    }
+                }, false);
+            }
 
         }
 
