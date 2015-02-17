@@ -172,6 +172,7 @@
             var service = new google.maps.DistanceMatrixService(),
                 that = this;
 
+            this.owner.cluster.clearMarkers();
             service.getDistanceMatrix({
                 origins: [this.marker.position],
                 destinations: this.owner.getMarkers().map(function(marker) {
@@ -185,6 +186,8 @@
                 if (status === 'OK') {
                     that.matrix = res.rows[0].elements;
                     that.filterMarkers();
+                } else {
+                    that.owner.redrawMarkers();
                 }
             });
         },
