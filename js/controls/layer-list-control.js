@@ -4,7 +4,8 @@
 
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div><ul class="layer-list"></ul><div class="clear">Clear</div>',
+        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div><ul class="layer-list"></ul>' +
+        '<div class="search-dataset">Search Dataset</div><ul class="search-list"></ul><div class="clear">Clear</div>',
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
@@ -47,6 +48,20 @@
             this.bindEvent('clear', 'click', function(event) {
                 that.clearList();
             });
+
+
+            this.bindEvent('search-dataset', 'click', function(event) {
+                var overlayOptions = {
+                    parent: that.owner.element,
+                    modalClasses: 'search-dataset-overlay-modal',
+                    modalInnerContent: that._searchDatasetModalTemplate(),
+                    scripts: that._searchDatasetScript
+                };
+
+                var overlay = new JLLOverlay(overlayOptions);
+            });
+
+
         },
 
         addLayerGme: function(layer) {
@@ -140,6 +155,70 @@
             li.className = 'layer';
             li.innerHTML = text;
             this.layerList.appendChild(li);
+        },
+
+        _searchDatasetModalTemplate: function() {
+            var select_options = {
+                'item_a': 'item-A',
+                'item_b': 'item-B',
+                'item_c': 'item-C',
+                'item_d': 'item-D',
+                'item_e': 'item-E',
+                'item_f': 'item-F',
+                'item_g': 'item-G',
+                'item_h': 'item-H',
+                'item_i': 'item-I',
+                'item_j': 'item-J',
+                'item_k': 'item-K',
+                'item_l': 'item-L',
+                'item_m': 'item-M'
+            };
+            var html = '';
+            html += '<div class="overlay-search-dataset-modal">';
+            html += '   <div class="overlay-header">';
+            html += '       <label for="search-dataset-input">Search Dataset:</label>';
+            html += '       <input type="text" class="overlay-form-input overlay-form-item search-dataset-input" name="search-dataset-input">';
+            html += '   </div>';
+            html += '   <div class="overlay-content">';
+            html += '       <label for="search-dataset-list">Availables Dataset:</label>';
+            html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-dataset-list" name="search-dataset-list">';
+            for (var key in select_options) {
+                if (select_options.hasOwnProperty(key)) {
+                    html += '<option value="' + key + '">' + select_options[key] + '</option>';
+                }
+            }
+            html += '       </select>';
+            html += '   </div>';
+            html += '   <div class="overlay-footer">';
+            html += '       <button type="button" class="overlay-btn">Add</button>';
+            html += '   </div>';
+            html += '</div>';
+
+            return html;
+        },
+        _searchDatasetScript: function() {
+            /*
+             this function is execute insite JLLOverlay Class so 'this' is refered to the JLLOverlay object
+             */
+            var map = this.parent;
+            var searchInput = map.getElementsByClassName('search-dataset-input')[0];
+            var searchList = map.getElementsByClassName('search-dataset-list')[0];
+
+            if (searchInput && searchList) {
+                searchInput.addEventListener("keyup", function(e) {
+                    var inputValue = e.target.value;
+                    var options = searchList.getElementsByTagName('option');
+                    for (var i = 0; i < options.length; i++) {
+                        var optionValue = options[i].text;
+                        if (new RegExp('^' + inputValue).test(optionValue)) {
+                            options[i].style.display = 'block';
+                        } else {
+                            options[i].style.display = 'none';
+                        }
+                    }
+                }, false);
+            }
+
         }
 
     });

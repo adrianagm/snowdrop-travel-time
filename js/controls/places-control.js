@@ -3,7 +3,7 @@
     var CONTROL_CLASS = 'places';
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>',
+        template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul></div>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
@@ -25,7 +25,7 @@
                 className: "places-cluster-marker"
             };
 
-            this.clusterPlaces = new MarkerClusterer(this.map, null, mcOptions);
+            MapViewer.clusterPlaces = new MarkerClusterer(this.map, null, mcOptions);
             this.placesList = this.getElementsByClass('places-list')[0];
             for (var place in places) {
                 this.addLI(place);
@@ -56,12 +56,21 @@
                     var place = that.places[activePlaces[i].innerHTML];
                     var type = place.type;
                     that.removePlacesToMap(type);
-                    that.placesSelected(activePlaces[i]);
+                    that.placesSelected(activePlaces[i], function() {
+                        var heatMapButton = document.getElementsByClassName('heatmap-view-button')[0];
+                        if (heatMapButton) {
+                            if (heatMapButton.classList.contains('active')) {
+                                MapViewer.heatmap.setMap(null);
+                                MapViewer.Heatmap.prototype.createHeatMap();
+
+                            }
+                        }
+                    });
                 }
             });
         },
 
-        placesSelected: function(li) {
+        placesSelected: function(li, callback) {
             li.classList.add('active');
             var place = this.places[li.innerHTML];
             var type = place.type;
@@ -81,7 +90,9 @@
                     for (var i = 0; i < results.length; i++) {
                         that.createMarker(results[i], type, place.iconClass);
                     }
-                    that.clusterPlaces.addMarkers(that.markers[type]);
+                    MapViewer.clusterPlaces.addMarkers(that.markers[type]);
+                    if (callback)
+                        callback();
                 }
             });
         },
@@ -109,12 +120,17 @@
             var place = this.places[li.innerHTML];
             var type = place.type;
             this.removePlacesToMap(type);
+            if (MapViewer.heatmap) {
+                if (type === MapViewer.heatPlaces) {
+                    MapViewer.heatmap.setMap(null);
+                }
+            }
 
         },
 
         removePlacesToMap: function(type) {
             var markers = this.markers[type];
-            this.clusterPlaces.removeMarkers(markers);
+            MapViewer.clusterPlaces.removeMarkers(markers);
             for (var m = 0; m < markers.length; m++) {
                 markers[m].setMap(null);
             }
