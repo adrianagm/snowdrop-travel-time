@@ -4,7 +4,7 @@
 
         this.options = _options || {};
 
-        this.id = this.options.id || 'JLLOverlay';
+        this.id = this.options.id || 'overlay';
 
         this.overlayParent = null;
         if (typeof this.options.parent === 'string') {
@@ -24,26 +24,26 @@
 
     JLLOverlay.prototype._createOverlay = function() {
         this.overlay = document.createElement('div');
-        this.overlay.id = this.id;
+        this.overlay.className = this.id;
     };
 
     JLLOverlay.prototype._setOverlayCover = function() {
         var cover = document.createElement('div');
-        cover.id = this.id + '-cover';
+        cover.className = this.id + '-cover';
         this.overlay.appendChild(cover);
     };
 
     JLLOverlay.prototype._setOverlayModal = function() {
         var modal = document.createElement('div');
         modal.innerHTML = '<span class="' + this.id + '-close-btn"></span>';
-        modal.className = this.id + '-modal-default';
+        modal.className = this.id + '-modal';
 
 
         if (this.options.modalClasses && typeof this.options.modalClasses === 'string') {
             modal.className += ' ' + this.options.modalClasses;
         }
         if (this.options.modalInnerContent && typeof this.options.modalInnerContent === 'string') {
-            modal.innerHTML += '<div id="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
+            modal.innerHTML += '<div class="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
         }
 
         this.overlay.appendChild(modal);

@@ -51,17 +51,13 @@
 
 
             this.bindEvent('search-dataset', 'click', function(event) {
-                console.log('aaaaaaaaaaaaaaaaaaaa');
                 var overlayOptions = {
                     parent: that.owner.element,
-                    modalClasses: 'example-class',
-                    modalInnerContent: '<div class="example-div"><button class="example-btn">Try it</button></div>',
-                    scripts: function() {
-                        document.getElementsByClassName('example-btn')[0].onclick = function() {
-                            alert('TESTING OVERLAY');
-                        };
-                    }
+                    modalClasses: 'search-dataset-overlay-modal',
+                    modalInnerContent: that._searchDatasetModalTemplate(),
+                    scripts: that._searchDatasetScript
                 };
+
                 var overlay = new JLLOverlay(overlayOptions);
             });
 
@@ -152,6 +148,49 @@
             li.className = 'layer';
             li.innerHTML = text;
             this.layerList.appendChild(li);
+        },
+
+        _searchDatasetModalTemplate: function() {
+            var select_options = {
+                'item_a': 'item-A',
+                'item_b': 'item-B',
+                'item_c': 'item-C',
+                'item_d': 'item-D',
+                'item_e': 'item-E',
+                'item_f': 'item-F',
+                'item_g': 'item-G',
+                'item_h': 'item-H',
+                'item_i': 'item-I',
+                'item_j': 'item-J',
+                'item_k': 'item-K',
+                'item_l': 'item-L',
+                'item_m': 'item-M'
+            };
+            var html = '';
+            html += '<div class="overlay-search-dataset-modal">';
+            html += '   <div class="overlay-header">';
+            html += '       <label for="search-dataset-input">Search Dataset:</label>';
+            html += '       <input type="text" class="overlay-form-input overlay-form-item" name="search-dataset-input">';
+            html += '   </div>';
+            html += '   <div class="overlay-content">';
+            html += '       <label for="search-dataset-select">Availables Dataset:</label>';
+            html += '       <select multiple class="overlay-form-select-multiple overlay-form-item" name="search-dataset-select">';
+            for (var key in select_options) {
+                if (select_options.hasOwnProperty(key)) {
+                    html += '<option value="' + key + '">' + select_options[key] + '</option>';
+                }
+            }
+            html += '       </select>';
+            html += '   </div>';
+            html += '   <div class="overlay-footer">';
+            html += '       <button type="button" class="overlay-btn">Add</button>';
+            html += '   </div>';
+            html += '</div>';
+
+            return html;
+        },
+        _searchDatasetScript: function() {
+
         }
 
     });
