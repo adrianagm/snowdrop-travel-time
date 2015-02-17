@@ -31,13 +31,13 @@
                 } else {
                     that.deactivate();
                 }
+            });
 
-                google.maps.event.addListener(that.map, 'dragend', function() {
-                    if (that.link.classList.contains("checked-pan")) {
-                        var bounds = that.searchBounds();
-                        that.api.searchByPolygon(bounds);
-                    }
-                });
+            google.maps.event.addListener(that.map, 'dragend', function() {
+                if (that.link.classList.contains("checked-pan")) {
+                    var bounds = that.searchBounds();
+                    that.api.searchByPolygon(bounds);
+                }
             });
         },
 
