@@ -18,6 +18,7 @@
         infoWindow: null,
         infoWindowContent: null,
         eventsActivated: false,
+        labelsCluster: null,
         labels: [],
 
         matrix: null,
@@ -42,6 +43,7 @@
             this.bindEvent('refine-search-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
                     if (!this.marker) {
+                        that.createCluster();
                         that.createMarker();
                     }
                     that.marker.setMap(that.map);
@@ -61,6 +63,13 @@
                     that.owner.redrawMarkers();
                 }
             });
+        },
+
+        createCluster: function() {
+            var options = {
+                className: "refine-cluster-marker"
+            };
+            this.labelsCluster = new MarkerClusterer(this.map, null, options);
         },
 
         createMarker: function() {
@@ -223,6 +232,7 @@
                     }
                 }
             }
+            this.labelsCluster.addMarkers(this.labels);
             this.owner.cluster.addMarkers(markersToAdd);
         },
 
@@ -242,6 +252,7 @@
                 this.labels[l].setMap(null);
             }
             this.labels = [];
+            this.labelsCluster.clearMarkers();
         }
     });
 
