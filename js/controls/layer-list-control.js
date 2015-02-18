@@ -151,7 +151,8 @@
                 'item_j': 'item-J',
                 'item_k': 'item-K',
                 'item_l': 'item-L',
-                'item_m': 'item-M'
+                'item_m': 'item-M',
+                'a': 'GME Layer'
             };
             var html = '';
             html += '<div class="overlay-search-dataset-modal">';
@@ -164,7 +165,7 @@
             html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-dataset-list" name="search-dataset-list">';
             for (var key in select_options) {
                 if (select_options.hasOwnProperty(key)) {
-                    html += '<option value="' + key + '">' + select_options[key] + '</option>';
+                    html += '<option <li class="layer" style="display: none;" value="' + key + '">' + select_options[key] + '</option>';
                 }
             }
             html += '       </select>';
@@ -184,18 +185,33 @@
             var searchInput = map.getElementsByClassName('search-dataset-input')[0];
             var searchList = map.getElementsByClassName('search-dataset-list')[0];
             var addBtn = map.getElementsByClassName('add-dataset-btn')[0];
+            var layerList = this.parentObj.layerList;
+            var layerListOptions = layerList.getElementsByClassName('layer');
             var that = this.parentObj;
+            var disabledOptions = [];
 
+            for (var i = 0; i < layerListOptions.length; i++) {
+                disabledOptions.push(layerListOptions[i].innerText);
+            }
+
+            var searchListOptions = searchList.options;
+            for (var i = 0; i < searchListOptions.length; i++) {
+                if (disabledOptions.lastIndexOf(searchListOptions[i].text) > -1) {
+                    searchList[i].disabled = true;
+                } else {
+                    searchListOptions[i].style.display = 'block';
+                }
+            }
             if (searchInput && searchList) {
                 searchInput.addEventListener("keyup", function(e) {
                     var inputValue = e.target.value.toLowerCase();
-                    var options = searchList.options;
-                    for (var i = 0; i < options.length; i++) {
-                        var optionValue = options[i].text.toLowerCase();
-                        if (new RegExp(inputValue).test(optionValue)) {
-                            options[i].style.display = 'block';
+                    //var options = searchList.options;
+                    for (var i = 0; i < searchListOptions.length; i++) {
+                        var optionValue = searchListOptions[i].text.toLowerCase();
+                        if (!searchListOptions[i].disabled && new RegExp(inputValue).test(optionValue)) {
+                            searchListOptions[i].style.display = 'block';
                         } else {
-                            options[i].style.display = 'none';
+                            searchListOptions[i].style.display = 'none';
                         }
                     }
                 }, false);
@@ -204,15 +220,21 @@
             addBtn.onclick = function() {
                 for (var i = 0; i < searchList.length; i++) {
                     if (searchList[i]) {
-                        if (searchList[i].selected) {
-                            that._addNewLayerLi(searchList[i].text, true);
+                        var option = searchList[i];
+                        if (option.selected) {
+                            that._addNewLayerLi(option.text, true);
+                            option.style.display = 'none';
+                            option.selected = false;
+                            option.disabled = true;
                         }
                     }
                 }
 
             };
 
-        },
+        }
+        ,
+
         _addNewLayerLi: function(layerName, _removable) {
             var removable = _removable ? true : false;
             if (layerName) {
@@ -239,7 +261,8 @@
                     };
                 }
             }
-        },
+        }
+        ,
         _onClickLayerItem: function(event) {
             var li = event.currentTarget;
             if (li.classList.contains('active')) {
@@ -249,7 +272,8 @@
             }
         }
 
-    });
+    })
+    ;
 
     MapViewer.registerModule(MapViewer.LayerList, CONTROL_CLASS);
 })
