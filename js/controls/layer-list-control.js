@@ -92,26 +92,28 @@
 
         layerSelected: function(li) {
             li.classList.add('active');
-            var layer = this.layers[li.innerHTML];
-            var type = layer.type;
-
-            if (type == 'gme') {
-                this.layersLoaded[li.innerHTML] = this.addLayerGme(layer);
+            var layer = this.layers[li.innerText];
+            if (layer) {
+                var type = layer.type;
+                if (type == 'gme') {
+                    this.layersLoaded[li.innerText] = this.addLayerGme(layer);
+                }
+                if (type == 'wms') {
+                    this.layersLoaded[li.innerText] = this.addLayerWms(layer);
+                }
             }
-            if (type == 'wms') {
-                this.layersLoaded[li.innerHTML] = this.addLayerWms(layer);
-            }
-
         },
 
         layerDeselected: function(li) {
             li.classList.remove('active');
-            var layer = this.layers[li.innerHTML];
-            var type = layer.type;
-            if (type == 'wms') {
-                this.map.overlayMapTypes.setAt(layer.index, null);
-            } else {
-                this.layersLoaded[li.innerHTML].setMap(null);
+            var layer = this.layers[li.innerText];
+            if (layer) {
+                var type = layer.type;
+                if (type == 'wms') {
+                    this.map.overlayMapTypes.setAt(layer.index, null);
+                } else {
+                    this.layersLoaded[li.innerText].setMap(null);
+                }
             }
         },
 
@@ -212,13 +214,18 @@
             addBtn.onclick = function() {
                 var layerList = map.getElementsByClassName('layer-list')[0];
                 var li = document.createElement('li');
+                var span = document.createElement('span');
                 li.className = 'layer';
-                li.innerHTML = 'GME Layer' + '<span class="remove-layer"></span>';
+                li.innerHTML = 'GME Layer';
+                span.className = 'remove-layer';
+                li.appendChild(span);
                 layerList.appendChild(li);
 
                 google.maps.event.addDomListener(li, 'click', function(event) {
                     that._onClickLayerItem(event);
                 });
+
+
             };
 
         },
