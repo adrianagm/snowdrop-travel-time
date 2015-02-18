@@ -225,6 +225,14 @@
                     that._onClickLayerItem(event);
                 });
 
+                span.onclick = function(event) {
+                    event.stopPropagation();
+                    if (li.classList.contains('active')) {
+                        that.layerDeselected(li);
+                    }
+                    li.remove();
+                };
+
 
             };
 
