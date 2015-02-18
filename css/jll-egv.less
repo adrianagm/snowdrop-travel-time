@@ -8,30 +8,29 @@
 
 @padding-control: 10px;
 @border-radius-control: 2px;
-@shadow-control:0px 1px 8px #888;
+@shadow-control: 0px 1px 8px #888;
 
 @main-font-family: "Droid Sans", sans-serif;
-
 
 
 .map-widget .map-control{
     font-family: "Droid Sans", sans-serif;
     margin-left: 20px;
-    margin-right:20px;
+    margin-right: 20px;
     color: @text-color-control;
 
 }
 
-.map-widget .map-control > div{
+.map-widget .map-control > div {
     border-radius: @border-radius-control;
     box-shadow: @shadow-control;
 }
 
-.map-widget .button-control-outer {
+.map-widget .picture-exportation-control-outer {
     padding: 5px;
 }
 
-.map-widget .button-control-border {
+.map-widget .picture-exportation-control-border {
     border-style: solid;
     border-width: 2px;
     cursor: pointer;
@@ -39,7 +38,7 @@
     background-color: white;
 }
 
-.map-widget .button-control-inner {
+.map-widget .picture-exportation-control-inner {
     font-size: 12px;
     padding-left: 4px;
     padding-right: 4px;
@@ -49,48 +48,55 @@
     background-color: white;
     font-size: 16px;
     cursor: pointer;
-    margin-top: 20px;
+
 }
 
 .map-widget .layer-list-control .header {
     padding: @padding-control;
     background-color: @custom-red;
     color: white;
-    border-top-left-radius:@border-radius-control;
-    border-top-right-radius:@border-radius-control;
+    border-top-left-radius: @border-radius-control;
+    border-top-right-radius: @border-radius-control;
 
+}
+
+.map-widget .layer-list-control .search-dataset {
+    padding: @padding-control;
+    background-color: @custom-red;
+    color: white;
+    border-top-left-radius: @border-radius-control;
+    border-top-right-radius: @border-radius-control;
 }
 
 .map-widget .layer-list-control .clear {
     padding: @padding-control;
-    border-top-left-radius:0;
-    border-top-right-radius:0;
-    color:@text-color-control + #333;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    color: @text-color-control + #333;
 
 }
 
 .map-widget .layer-list-control .clear:hover {
-    color:@text-color-hover-control + #333;
+    color: @text-color-hover-control + #333;
 }
 
-.map-widget .layer-list-control ul li{
+.map-widget .layer-list-control ul li {
     padding: @padding-control;
     list-style: none;
 
 }
 
 .map-widget .layer-list-control ul li:hover {
-    color:@text-color-hover-control;
+    color: @text-color-hover-control;
 }
 
 .map-widget .layer-list-control ul li.active {
-    color:@custom-red;
+    color: @custom-red;
 }
-
 
 .map-widget .places-control {
     background-color: white;
-    margin-bottom: 40px;
+
     font-size: 16px;
     cursor: pointer;
 }
@@ -102,22 +108,21 @@
     display: inline-block;
     border-top-left-radius:@border-radius-control;
     border-bottom-left-radius:@border-radius-control;
-
 }
 
-.map-widget .header.collapse{
+.map-widget .header.collapse {
     border-radius: @border-radius-control;
 }
 
 .map-widget .header::before {
     content: url('../images/minimize.png');
-    float:left;
+    float: left;
     padding-right: @padding-control;
 }
 
 .map-widget .header.collapse::before {
     content: url('../images/maximize.png');
-    float:left;
+    float: left;
     padding-right: @padding-control;
 
 }
@@ -126,7 +131,7 @@
     display: inline;
 }
 
-.map-widget .places-control ul li{
+.map-widget .places-control ul li {
     padding: @padding-control;
     list-style: none;
     display: inline;
@@ -135,11 +140,11 @@
 }
 
 .map-widget .places-control ul .places:hover {
-    color:@text-color-hover-control;
+    color: @text-color-hover-control;
 }
 
 .map-widget .places-control ul .places.active {
-    color:@custom-red;
+    color: @custom-red;
 }
 
 .map-widget .check-pan-control,
@@ -148,14 +153,12 @@
     position:relative;
     bottom: 7px;
     margin: 5px;
-
 }
 
 .map-widget .check-pan-control-outer,
 .map-widget .check-draw-control-outer,
 .map-widget .refine-search-control-outer {
     width: 250px;
-
 }
 
 .map-widget .check-pan-control-border,
@@ -171,9 +174,7 @@
 .map-widget .check-draw-control-inner,
 .map-widget .refine-search-control-inner {
     font-size: 14px;
-    padding:@padding-control;
-
-
+    padding: @padding-control;
 }
 
 .map-widget .check-pan-control-inner span,
@@ -182,7 +183,6 @@
     padding:5px;
     text-align: left;
 }
-
 
 .property-marker {
     background-image: url('../images/precise_pin_inactive_white.png');
@@ -204,7 +204,6 @@
     font-weight: bold;
     font-size: 14px;
 }
-
 
 .checked-pan {
     background-image: url('../images/check_box.png'), url('../images/checkbox.png');
@@ -237,7 +236,7 @@
 }
 
 .places-cluster-marker {
-    color: #fff ;
+    color: #fff;
     background-image: url('../images/cluster-places.png');
     background-size: 35px 35px;
     background-repeat: no-repeat;
@@ -247,10 +246,9 @@
     cursor: pointer;
     font-size: 9px;
 
-
 }
 
-.places-marker.places-marker-grocery_or_supermarket{
+.places-marker.places-marker-grocery_or_supermarket {
     background-image: url('../images/shopping-card.png');
     background-size: 20px 20px;
     height: 20px;
@@ -259,4 +257,32 @@
     background-color: transparent;
 }
 
+
+.heatmap-view-button{
+  background-image: url('../images/heatmap.png');
+  background-size: 40px 40px;
+  height: 39px;
+  width: 40px;
+  background-repeat: no-repeat;
+  background-color: white;
+  cursor:pointer;
+
+}
+
+//change position of google controls
+.map-control.places-control{
+    right: 50px !important;
+    bottom: 41px !important;
+}
+.map-control.heatmap-view-control{
+    height: 40px;
+    width: 40px;
+    bottom:41px !important;
+}
+.map-control.layer-list-control{
+    top: 20px !important;
+}
+
+
+@import "overlay";
 @import 'refine-control';
