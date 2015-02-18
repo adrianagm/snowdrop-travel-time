@@ -199,11 +199,11 @@
 
             if (searchInput && searchList) {
                 searchInput.addEventListener("keyup", function(e) {
-                    var inputValue = e.target.value;
+                    var inputValue = e.target.value.toLowerCase();
                     var options = searchList.getElementsByTagName('option');
                     for (var i = 0; i < options.length; i++) {
-                        var optionValue = options[i].text;
-                        if (new RegExp('^' + inputValue).test(optionValue)) {
+                        var optionValue = options[i].text.toLowerCase();
+                        if (new RegExp(inputValue).test(optionValue)) {
                             options[i].style.display = 'block';
                         } else {
                             options[i].style.display = 'none';
