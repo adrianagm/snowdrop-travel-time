@@ -7,10 +7,10 @@
         this.id = this.options.id || 'overlay';
 
         this.overlayParent = null;
-        if (typeof this.options.parent === 'string') {
+        if (typeof this.options.appendTo === 'string') {
             this.overlayParent = document.getElementById('map');
-        } else if (typeof this.options.parent === 'object') {
-            this.overlayParent = this.options.parent;
+        } else if (typeof this.options.appendTo === 'object') {
+            this.overlayParent = this.options.appendTo;
         }
 
         //create the overlay

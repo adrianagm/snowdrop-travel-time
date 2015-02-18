@@ -78,15 +78,19 @@
 .map-widget .layer-list-control ul li {
     padding: @padding-control;
     list-style: none;
+    &:hover {
+        color: @text-color-hover-control;
+    }
+    &.active {
+        color: @custom-red;
+    }
 
-}
+    span.remove-layer {
+        content: url('../images/exit_draw_map.png');
+        float: right;
+        transform: translate(0%, 50%);
+    }
 
-.map-widget .layer-list-control ul li:hover {
-    color: @text-color-hover-control;
-}
-
-.map-widget .layer-list-control ul li.active {
-    color: @custom-red;
 }
 
 .map-widget .places-control {

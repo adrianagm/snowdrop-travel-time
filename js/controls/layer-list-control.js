@@ -32,13 +32,7 @@
             }
             var that = this;
             this.bindEvent('layer', 'click', function(event) {
-                var li = event.currentTarget;
-
-                if (li.classList.contains('active')) {
-                    that.layerDeselected(li);
-                } else {
-                    that.layerSelected(li);
-                }
+                that._onClickLayerItem(event);
             });
 
             this.bindEvent('header', 'click', function(event) {
@@ -52,7 +46,8 @@
 
             this.bindEvent('search-dataset', 'click', function(event) {
                 var overlayOptions = {
-                    parent: that.owner.element,
+                    parentObj: that,
+                    appendTo: that.owner.element,
                     modalClasses: 'search-dataset-overlay-modal',
                     modalInnerContent: that._searchDatasetModalTemplate(),
                     scripts: that._searchDatasetScript
@@ -183,7 +178,7 @@
             html += '       </select>';
             html += '   </div>';
             html += '   <div class="overlay-footer">';
-            html += '       <button type="button" class="overlay-btn">Add</button>';
+            html += '       <button type="button" class="overlay-btn add-dataset-btn">Add</button>';
             html += '   </div>';
             html += '</div>';
 
@@ -193,9 +188,11 @@
             /*
              this function is execute insite JLLOverlay Class so 'this' is refered to the JLLOverlay object
              */
-            var map = this.parent;
+            var map = this.parentObj.owner.element;
             var searchInput = map.getElementsByClassName('search-dataset-input')[0];
             var searchList = map.getElementsByClassName('search-dataset-list')[0];
+            var addBtn = map.getElementsByClassName('add-dataset-btn')[0];
+            var that = this.parentObj;
 
             if (searchInput && searchList) {
                 searchInput.addEventListener("keyup", function(e) {
@@ -212,6 +209,27 @@
                 }, false);
             }
 
+            addBtn.onclick = function() {
+                var layerList = map.getElementsByClassName('layer-list')[0];
+                var li = document.createElement('li');
+                li.className = 'layer';
+                li.innerHTML = 'GME Layer' + '<span class="remove-layer"></span>';
+                layerList.appendChild(li);
+
+                google.maps.event.addDomListener(li, 'click', function(event) {
+                    that._onClickLayerItem(event);
+                });
+            };
+
+        },
+
+        _onClickLayerItem: function(event) {
+            var li = event.currentTarget;
+            if (li.classList.contains('active')) {
+                this.layerDeselected(li);
+            } else {
+                this.layerSelected(li);
+            }
         }
 
     });
