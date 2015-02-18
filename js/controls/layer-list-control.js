@@ -44,7 +44,7 @@
             this.bindEvent('search-dataset', 'click', function(event) {
                 var overlayOptions = {
                     parentObj: that,
-                    appendTo: that.owner.element,
+                    appendToParent: that.owner.element,
                     modalClasses: 'search-dataset-overlay-modal',
                     modalInnerContent: that._searchDatasetModalTemplate(),
                     scripts: that._searchDatasetScript
@@ -165,7 +165,7 @@
             html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-dataset-list" name="search-dataset-list">';
             for (var key in select_options) {
                 if (select_options.hasOwnProperty(key)) {
-                    html += '<option <li class="layer" style="display: none;" value="' + key + '">' + select_options[key] + '</option>';
+                    html += '<option class="layer" value="' + key + '">' + select_options[key] + '</option>';
                 }
             }
             html += '       </select>';
@@ -190,28 +190,33 @@
             var that = this.parentObj;
             var disabledOptions = [];
 
+
             for (var i = 0; i < layerListOptions.length; i++) {
                 disabledOptions.push(layerListOptions[i].innerText);
             }
 
-            var searchListOptions = searchList.options;
-            for (var i = 0; i < searchListOptions.length; i++) {
-                if (disabledOptions.lastIndexOf(searchListOptions[i].text) > -1) {
-                    searchList[i].disabled = true;
+            var searchListOptions = [];
+
+
+            for (var i = 0; i < searchList.options.length; i++) {
+                if (disabledOptions.lastIndexOf(searchList.options[i].text) > -1) {
+                    searchList.removeChild(searchList.options[i]);
+                    //searchList[i].remove();
                 } else {
-                    searchListOptions[i].style.display = 'block';
+                    searchListOptions.push(searchList.options[i].text);
                 }
             }
             if (searchInput && searchList) {
                 searchInput.addEventListener("keyup", function(e) {
                     var inputValue = e.target.value.toLowerCase();
-                    //var options = searchList.options;
+                    searchList.innerHTML = '';
                     for (var i = 0; i < searchListOptions.length; i++) {
-                        var optionValue = searchListOptions[i].text.toLowerCase();
-                        if (!searchListOptions[i].disabled && new RegExp(inputValue).test(optionValue)) {
-                            searchListOptions[i].style.display = 'block';
-                        } else {
-                            searchListOptions[i].style.display = 'none';
+                        var optionValue = searchListOptions[i];
+                        if (new RegExp(inputValue).test(optionValue.toLowerCase())) {
+                            var op = document.createElement('option');
+                            op.className = 'layer';
+                            op.innerText = optionValue;
+                            searchList.appendChild(op);
                         }
                     }
                 }, false);
@@ -223,17 +228,16 @@
                         var option = searchList[i];
                         if (option.selected) {
                             that._addNewLayerLi(option.text, true);
-                            option.style.display = 'none';
-                            option.selected = false;
-                            option.disabled = true;
+                            searchList.removeChild(option);
+                            var index = searchListOptions.indexOf(option.text);
+                            searchListOptions.splice(index, 1);
                         }
                     }
                 }
 
             };
 
-        }
-        ,
+        },
 
         _addNewLayerLi: function(layerName, _removable) {
             var removable = _removable ? true : false;
@@ -261,8 +265,7 @@
                     };
                 }
             }
-        }
-        ,
+        },
         _onClickLayerItem: function(event) {
             var li = event.currentTarget;
             if (li.classList.contains('active')) {
