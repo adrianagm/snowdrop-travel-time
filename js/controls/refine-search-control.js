@@ -19,7 +19,6 @@
         infoWindowContent: null,
         eventsActivated: false,
         labelsCluster: null,
-        labels: [],
 
         matrix: null,
         mode: null,
@@ -213,6 +212,7 @@
         filterMarkers: function() {
             var markers = this.owner.getMarkers();
             var markersToAdd = [];
+            var labelsToAdd = [];
 
             this.clearLabels();
             this.owner.cluster.clearMarkers();
@@ -228,11 +228,13 @@
 
                     if (value < convertedValue) {
                         markersToAdd.push(marker);
-                        this.setMarkerLabel(marker, this.matrix[m][this.mode].text);
+
+                        var label = this.setMarkerLabel(marker, this.matrix[m][this.mode].text);
+                        labelsToAdd.push(label);
                     }
                 }
             }
-            this.labelsCluster.addMarkers(this.labels);
+            this.labelsCluster.addMarkers(labelsToAdd);
             this.owner.cluster.addMarkers(markersToAdd);
         },
 
@@ -243,15 +245,10 @@
                 content: '<div class="refine-marker-label">' + text + '</div>',
                 map: this.map
             });
-
-            this.labels.push(label);
+            return label;
         },
 
         clearLabels: function() {
-            for (var l = 0; l < this.labels.length; l++) {
-                this.labels[l].setMap(null);
-            }
-            this.labels = [];
             this.labelsCluster.clearMarkers();
         }
     });
