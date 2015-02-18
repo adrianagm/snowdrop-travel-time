@@ -206,7 +206,7 @@ function MapViewer(id, api, modules) {
                 content: content,
                 map: marker.map
             });
-
+            richMarker.isInCluster = true;
             return richMarker;
         },
 

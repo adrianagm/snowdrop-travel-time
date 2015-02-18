@@ -1,5 +1,6 @@
 (function() {
     var CONTROL_CLASS = 'refine-search';
+    var MAX_REQUESTS = 25;
 
     MapViewer.RefineSearchControl = MapViewer.extend(MapViewer.MapControl, {
 
@@ -20,7 +21,7 @@
         eventsActivated: false,
         labelsCluster: null,
 
-        matrix: null,
+        matrix: [],
         mode: null,
         travelMode: null,
         value: 1,
@@ -89,6 +90,13 @@
 
             var that = this;
             google.maps.event.addListener(this.marker, 'dragend', function() {
+                that.owner.cluster.clearMarkers();
+                that.labelsCluster.clearMarkers();
+                var markers = that.owner.getMarkers();
+                for (var m = 0; m < markers.length; m++) {
+                    markers[m].isInCluster = false;
+                }
+
                 that.getMatrix();
             });
         },
@@ -180,42 +188,68 @@
 
         onSearchResults: function(searchResults) {
             if (!this.marker || !this.marker.getMap()) return;
+            this.clearLabels();
             this.getMatrix();
         },
 
         getMatrix: function() {
             if (this.owner.getMarkers().length === 0) return;
-            var service = new google.maps.DistanceMatrixService(),
-                that = this;
 
-            this.owner.cluster.clearMarkers();
-            this.clearLabels();
-            service.getDistanceMatrix({
-                origins: [this.marker.position],
-                destinations: this.owner.getMarkers().map(function(marker) {
-                    return marker.position;
-                }),
-                travelMode: this.travelMode,
-                avoidHighways: false,
-                avoidTolls: false
+            var service = new google.maps.DistanceMatrixService();
+            var ownerMarkers = this.owner.getMarkers();
+            var slices = ownerMarkers.length / MAX_REQUESTS;
+            var that = this;
+            var promises = [];
 
-            }, function(res, status) {
-                if (status === 'OK') {
-                    that.matrix = res.rows[0].elements;
-                    that.filterMarkers();
-                } else {
-                    that.owner.redrawMarkers();
-                }
+            that.matrix = [];
+            for (var s = 0; s < slices; s++) {
+
+                var promise = new Promise(function(resolve, reject) {
+                    var destinations = ownerMarkers.slice(MAX_REQUESTS * s, MAX_REQUESTS * s + MAX_REQUESTS);
+
+                    setTimeout(function() {
+                        service.getDistanceMatrix({
+                            origins: [that.marker.position],
+                            destinations: destinations.map(function(marker) {
+                                return marker.position;
+                            }),
+                            travelMode: that.travelMode,
+                            avoidHighways: false,
+                            avoidTolls: false
+                        }, function(res, status) {
+                            if (!that.marker.getMap()) return;
+
+                            if (status === 'OK') {
+                                resolve(res.rows[0].elements);
+
+                                var args = [MAX_REQUESTS * s, MAX_REQUESTS].concat(res.rows[0].elements);
+                                Array.prototype.splice.apply(that.matrix, args);
+                                that.filterMarkers();
+                            } else {
+                                console.log(status);
+                                reject();
+                                that.owner.redrawMarkers();
+                            }
+                        });
+                    }, 1100 * s);
+                });
+                promises.push(promise);
+            }
+
+            Promise.all(promises).then(function(values) {
+                console.log(that.matrix);
             });
         },
 
         filterMarkers: function() {
             var markers = this.owner.getMarkers();
             var markersToAdd = [];
+            var markersToRemove = [];
             var labelsToAdd = [];
+            var labelsToRemove = [];
 
             this.clearLabels();
-            this.owner.cluster.clearMarkers();
+            //this.owner.cluster.clearMarkers();
 
             var unitChange = this.mode === 'duration' ? 60 : 1000;
             var convertedValue = this.value * unitChange;
@@ -223,19 +257,30 @@
             for (var m = 0; m < markers.length; m++) {
                 var marker = markers[m];
 
-                if (this.matrix[m].status === 'OK') {
+                if (this.matrix[m] && this.matrix[m].status === 'OK') {
                     var value = this.matrix[m][this.mode].value;
 
                     if (value < convertedValue) {
-                        markersToAdd.push(marker);
 
-                        var label = this.setMarkerLabel(marker, this.matrix[m][this.mode].text);
-                        labelsToAdd.push(label);
+                        if (!marker.isInCluster) {
+                            markersToAdd.push(marker);
+                            marker.isInCluster = true;
+                        }
+
+                        if (!marker.refineLabel) {
+                            var label = this.setMarkerLabel(marker, this.matrix[m][this.mode].text);
+                            labelsToAdd.push(label);
+                        }
+
+                    } else if (marker.isInCluster) {
+                        markersToRemove.push(marker);
+                        marker.isInCluster = false;
                     }
                 }
             }
             this.labelsCluster.addMarkers(labelsToAdd);
             this.owner.cluster.addMarkers(markersToAdd);
+            this.owner.cluster.removeMarkers(markersToRemove);
         },
 
         setMarkerLabel: function(marker, text) {
