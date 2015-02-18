@@ -61,7 +61,7 @@
     };
 
     JLLOverlay.prototype.destroy = function() {
-        this.overlayParent.removeChild(this.overlay);
+        this.overlay.remove();
     };
 
     if (typeof window.JLLOverlay == 'undefined') {

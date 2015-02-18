@@ -24,16 +24,13 @@
             var i = 0;
             for (var layer in layers) {
                 layers[layer].index = i;
-                this.addLI(layer);
+                this._addNewLayerLi(layer);
                 i++;
             }
             if (this.startCollapse) {
                 this.toggleList();
             }
             var that = this;
-            this.bindEvent('layer', 'click', function(event) {
-                that._onClickLayerItem(event);
-            });
 
             this.bindEvent('header', 'click', function(event) {
                 that.toggleList(event.target);
@@ -140,13 +137,6 @@
             }
         },
 
-        addLI: function(text) {
-            var li = document.createElement('li');
-            li.className = 'layer';
-            li.innerHTML = text;
-            this.layerList.appendChild(li);
-        },
-
         _searchDatasetModalTemplate: function() {
             var select_options = {
                 'item_a': 'item-A',
@@ -199,7 +189,7 @@
             if (searchInput && searchList) {
                 searchInput.addEventListener("keyup", function(e) {
                     var inputValue = e.target.value.toLowerCase();
-                    var options = searchList.getElementsByTagName('option');
+                    var options = searchList.options;
                     for (var i = 0; i < options.length; i++) {
                         var optionValue = options[i].text.toLowerCase();
                         if (new RegExp(inputValue).test(optionValue)) {
@@ -212,32 +202,44 @@
             }
 
             addBtn.onclick = function() {
-                var layerList = map.getElementsByClassName('layer-list')[0];
-                var li = document.createElement('li');
-                var span = document.createElement('span');
-                li.className = 'layer';
-                li.innerHTML = 'GME Layer';
-                span.className = 'remove-layer';
-                li.appendChild(span);
-                layerList.appendChild(li);
-
-                google.maps.event.addDomListener(li, 'click', function(event) {
-                    that._onClickLayerItem(event);
-                });
-
-                span.onclick = function(event) {
-                    event.stopPropagation();
-                    if (li.classList.contains('active')) {
-                        that.layerDeselected(li);
+                for (var i = 0; i < searchList.length; i++) {
+                    if (searchList[i]) {
+                        if (searchList[i].selected) {
+                            that._addNewLayerLi(searchList[i].text, true);
+                        }
                     }
-                    li.remove();
-                };
-
+                }
 
             };
 
         },
+        _addNewLayerLi: function(layerName, _removable) {
+            var removable = _removable ? true : false;
+            if (layerName) {
+                var li = document.createElement('li');
+                var span = document.createElement('span');
+                li.className = 'layer';
+                li.innerHTML = layerName;
 
+                this.layerList.appendChild(li);
+                var that = this;
+                google.maps.event.addDomListener(li, 'click', function(event) {
+                    that._onClickLayerItem(event);
+                });
+
+                if (removable) {
+                    span.className = 'remove-layer';
+                    li.appendChild(span);
+                    span.onclick = function(event) {
+                        event.stopPropagation();
+                        if (li.classList.contains('active')) {
+                            that.layerDeselected(li);
+                        }
+                        li.remove();
+                    };
+                }
+            }
+        },
         _onClickLayerItem: function(event) {
             var li = event.currentTarget;
             if (li.classList.contains('active')) {
@@ -250,4 +252,5 @@
     });
 
     MapViewer.registerModule(MapViewer.LayerList, CONTROL_CLASS);
-})();
+})
+();
