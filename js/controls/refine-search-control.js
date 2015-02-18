@@ -18,6 +18,7 @@
         infoWindow: null,
         infoWindowContent: null,
         eventsActivated: false,
+        labels: [],
 
         matrix: null,
         mode: null,
@@ -56,6 +57,7 @@
                     that.marker.setMap(null);
                     that.eventsActivated = false;
                     that.deactivate();
+                    that.clearLabels();
                     that.owner.redrawMarkers();
                 }
             });
@@ -179,6 +181,7 @@
                 that = this;
 
             this.owner.cluster.clearMarkers();
+            this.clearLabels();
             service.getDistanceMatrix({
                 origins: [this.marker.position],
                 destinations: this.owner.getMarkers().map(function(marker) {
@@ -202,6 +205,7 @@
             var markers = this.owner.getMarkers();
             var markersToAdd = [];
 
+            this.clearLabels();
             this.owner.cluster.clearMarkers();
 
             var unitChange = this.mode === 'duration' ? 60 : 1000;
@@ -215,10 +219,29 @@
 
                     if (value < convertedValue) {
                         markersToAdd.push(marker);
+                        this.setMarkerLabel(marker, this.matrix[m][this.mode].text);
                     }
                 }
             }
             this.owner.cluster.addMarkers(markersToAdd);
+        },
+
+        setMarkerLabel: function(marker, text) {
+            var label = new RichMarker({
+                position: marker.position,
+                flat: true,
+                content: '<div class="refine-marker-label">' + text + '</div>',
+                map: this.map
+            });
+
+            this.labels.push(label);
+        },
+
+        clearLabels: function() {
+            for (var l = 0; l < this.labels.length; l++) {
+                this.labels[l].setMap(null);
+            }
+            this.labels = [];
         }
     });
 
