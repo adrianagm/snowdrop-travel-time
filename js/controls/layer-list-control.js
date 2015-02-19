@@ -47,11 +47,15 @@
 
                 var datasetsPromise = that.api.retrieveDatasets();
                 datasetsPromise.then(function(datasets) {
+                    
                     that.internalDataset = datasets;
                     var options = [];
 
+                    var index = that.layers.length;
                     for (var layer in datasets) {
                         if (datasets.hasOwnProperty(layer)) {
+                            that.internalDataset[layer].index = index;
+                            index++;
                             options.push(datasets[layer].label);
                         }
                     }

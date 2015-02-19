@@ -76,12 +76,13 @@ var IntegrationAPI = {
             {
                 label: "Dataset 1", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "10446176163891957399-01658747114625264102"
+                id: "10446176163891957399-12677872887550376890"
             },
             {
                 label: "Dataset 2",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
             {
                 label: "Dataset 3", // Alternatively a translation key
@@ -91,7 +92,8 @@ var IntegrationAPI = {
             {
                 label: "Dataset 4",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
             {
                 label: "Dataset 5", // Alternatively a translation key
@@ -101,7 +103,8 @@ var IntegrationAPI = {
             {
                 label: "Dataset 6",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
             {
                 label: "Dataset 7", // Alternatively a translation key
@@ -111,17 +114,19 @@ var IntegrationAPI = {
             {
                 label: "Dataset 8",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
             {
                 label: "Dataset 9", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "10446176163891957399-01658747114625264102"
+                id: "10446176163891957399-12677872887550376890"
             },
             {
                 label: "Dataset 10",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
             {
                 label: "Dataset 11", // Alternatively a translation key
@@ -131,7 +136,8 @@ var IntegrationAPI = {
             {
                 label: "Dataset 12",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
             {
                 label: "Dataset 13", // Alternatively a translation key
@@ -141,7 +147,8 @@ var IntegrationAPI = {
             {
                 label: "Dataset 14",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
             {
                 label: "Dataset 15", // Alternatively a translation key
@@ -151,7 +158,8 @@ var IntegrationAPI = {
             {
                 label: "Dataset 16",
                 type: "wms", // WMS layers
-                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
             },
         ];
         return new Promise(function(resolve) {
