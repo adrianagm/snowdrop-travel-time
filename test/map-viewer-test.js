@@ -68,23 +68,102 @@ var IntegrationAPI = {
 
     setPropertiesFilter: function(propertiesIds) {
 
+    },
+
+    retrieveDatasets: function() {
+
+
+        var datasets = [
+            {
+                label: "Dataset 1", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 2",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+            {
+                label: "Dataset 3", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 4",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+            {
+                label: "Dataset 5", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 6",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+            {
+                label: "Dataset 7", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 8",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+            {
+                label: "Dataset 9", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 10",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+            {
+                label: "Dataset 11", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 12",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+            {
+                label: "Dataset 13", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 14",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+            {
+                label: "Dataset 15", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "3094830980934-2932803843"
+            },
+            {
+                label: "Dataset 16",
+                type: "wms", // WMS layers
+                url: "http://example.com/wmsServer?request=GetMap&layer=layerId"
+            },
+        ];
+        return new Promise(function(resolve) {
+            window.setTimeout(
+                function() {
+                    resolve(datasets);
+                }, 1000);
+        });
+
     }
 };
-
-function hide() {
-    var controls = document.getElementsByClassName("button-control");
-    for (var i = 0; i < controls.length; i++) {
-        var control = controls[i];
-        if (control.classList.contains('nhide')) {
-            continue;
-        }
-        if (control.style.display !== 'none') {
-            control.style.display = 'none';
-        } else {
-            control.style.display = 'initial';
-        }
-    }
-}
 
 function MapViewerTest() {
     console.log("Map Viewer");

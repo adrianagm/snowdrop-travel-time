@@ -42,15 +42,21 @@
 
 
             this.bindEvent('search-dataset', 'click', function(event) {
-                var overlayOptions = {
-                    parentObj: that,
-                    appendToParent: that.owner.element,
-                    modalClasses: 'search-dataset-overlay-modal',
-                    modalInnerContent: that._searchDatasetModalTemplate(),
-                    scripts: that._searchDatasetScript
-                };
 
-                var overlay = new JLLOverlay(overlayOptions);
+                var datasetsPromise = that.api.retrieveDatasets();
+                datasetsPromise.then(function(datasets) {
+                    console.log(datasets);
+                    var overlayOptions = {
+                        parentObj: that,
+                        appendToParent: that.owner.element,
+                        modalClasses: 'search-dataset-overlay-modal',
+                        modalInnerContent: that._searchDatasetModalTemplate(),
+                        scripts: that._searchDatasetScript
+                    };
+
+                    var overlay = new JLLOverlay(overlayOptions);
+                });
+
             });
 
 
