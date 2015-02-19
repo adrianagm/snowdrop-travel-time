@@ -20,13 +20,22 @@
 
         initialize: function() {
             var layers = this.layers;
+
             this.layerList = this.getElementsByClass('layer-list')[0];
-            var i = 0;
-            for (var layer in layers) {
-                layers[layer].index = i;
-                this._addNewLayerLi(layer);
-                i++;
+
+            var layersLength = layers.length;
+            for (var i = 0; i < layersLength; i++) {
+                layers[i].index = i;
+                this._addNewLayerLi(layers[i].label);
             }
+            /*
+             var i = 0;
+             for (var layer in layers) {
+             layers[layer].index = i;
+             this._addNewLayerLi(layer);
+             i++;
+             }
+             */
             if (this.startCollapse) {
                 this.toggleList();
             }
@@ -45,7 +54,6 @@
 
                 var datasetsPromise = that.api.retrieveDatasets();
                 datasetsPromise.then(function(datasets) {
-                    console.log(datasets);
                     var overlayOptions = {
                         parentObj: that,
                         appendToParent: that.owner.element,
@@ -64,8 +72,8 @@
 
         addLayerGme: function(layer) {
             return new google.maps.visualization.MapsEngineLayer({
-                mapId: layer.layerId,
-                layerKey: layer.layerName,
+                layerId: layer.id,
+                //layerKey: layer.layerName,
                 map: this.map
             });
         },
@@ -95,13 +103,13 @@
 
         layerSelected: function(li) {
             li.classList.add('active');
-            var layer = this.layers[li.innerText];
+            var layer = this._getLayerByLabel(li.innerText);
             if (layer) {
                 var type = layer.type;
-                if (type == 'gme') {
+                if (type === 'gme') {
                     this.layersLoaded[li.innerText] = this.addLayerGme(layer);
                 }
-                if (type == 'wms') {
+                if (type === 'wms') {
                     this.layersLoaded[li.innerText] = this.addLayerWms(layer);
                 }
             }
@@ -109,10 +117,10 @@
 
         layerDeselected: function(li) {
             li.classList.remove('active');
-            var layer = this.layers[li.innerText];
+            var layer = this._getLayerByLabel(li.innerText);
             if (layer) {
                 var type = layer.type;
-                if (type == 'wms') {
+                if (type === 'wms') {
                     this.map.overlayMapTypes.setAt(layer.index, null);
                 } else {
                     this.layersLoaded[li.innerText].setMap(null);
@@ -141,6 +149,19 @@
                     this.layerDeselected(lis[l]);
                 }
             }
+        },
+
+        _getLayerByLabel: function(labelName) {
+            var layer = {};
+            var layers = this.layers;
+            var layersLength = layers.length;
+            for (var i = 0; i < layersLength; i++) {
+                if (labelName === layers[i].label) {
+                    layer = layers[i];
+                    break;
+                }
+            }
+            return layer;
         },
 
         _searchDatasetModalTemplate: function() {

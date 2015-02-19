@@ -72,12 +72,11 @@ var IntegrationAPI = {
 
     retrieveDatasets: function() {
 
-
         var datasets = [
             {
                 label: "Dataset 1", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 2",
@@ -87,7 +86,7 @@ var IntegrationAPI = {
             {
                 label: "Dataset 3", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 4",
@@ -97,7 +96,7 @@ var IntegrationAPI = {
             {
                 label: "Dataset 5", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 6",
@@ -107,7 +106,7 @@ var IntegrationAPI = {
             {
                 label: "Dataset 7", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 8",
@@ -117,7 +116,7 @@ var IntegrationAPI = {
             {
                 label: "Dataset 9", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 10",
@@ -127,7 +126,7 @@ var IntegrationAPI = {
             {
                 label: "Dataset 11", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 12",
@@ -137,7 +136,7 @@ var IntegrationAPI = {
             {
                 label: "Dataset 13", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 14",
@@ -147,7 +146,7 @@ var IntegrationAPI = {
             {
                 label: "Dataset 15", // Alternatively a translation key
                 type: "gme", // layers coming from MapsEngine,
-                id: "3094830980934-2932803843"
+                id: "10446176163891957399-01658747114625264102"
             },
             {
                 label: "Dataset 16",
@@ -190,23 +189,26 @@ function MapViewerTest() {
 
     var layerListControl = {
         type: 'layer-list',
-        layers: {
-            "GME Layer": {
+        layers: [
+            {
                 type: "gme",
-                layerId: "10446176163891957399-13516001307527776624",
-                layerName: 'layer_00001'
+                id: '10446176163891957399-01658747114625264102',//"10446176163891957399-13516001307527776624",
+                label: "GME Layer"
+                // layerName: 'layer_00001'
             },
-            "GME Layer 2": {
+            {
                 type: "gme",
-                layerId: "10446176163891957399-13516001307527776624",
-                layerName: 'layer_00002'
+                id: '10446176163891957399-12677872887550376890',//"10446176163891957399-13516001307527776624",
+                label: "GME Layer 2"
+                //   layerName: 'layer_00002'
             },
-            "WMS Layer states": {
+            {
+                label: "WMS Layer states",
                 type: "wms",
                 url: "http://webservices.nationalatlas.gov/wms",
                 layers: 'states'
-            },
-        }
+            }
+        ]
     };
 
     var mapViewer = new MapViewer('map', IntegrationAPI, [
