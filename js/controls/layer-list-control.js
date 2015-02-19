@@ -223,16 +223,25 @@
             }
 
             addBtn.onclick = function() {
-                for (var i = 0; i < searchList.length; i++) {
+                var removed = [];
+                var searchListlength = searchList.length;
+                for (var i = 0; i < searchListlength; i++) {
                     if (searchList[i]) {
                         var option = searchList[i];
                         if (option.selected) {
                             that._addNewLayerLi(option.text, true);
-                            searchList.removeChild(option);
-                            var index = searchListOptions.indexOf(option.text);
-                            searchListOptions.splice(index, 1);
+                            removed.push(option);
+
                         }
                     }
+                }
+
+                var removedLength = removed.length;
+                for (var i = 0; i < removedLength; i++) {
+                    var option = removed[i];
+                    var index = searchListOptions.indexOf(option.text);
+                    searchList.removeChild(option);
+                    searchListOptions.splice(index, 1);
                 }
 
             };
@@ -261,7 +270,7 @@
                         if (li.classList.contains('active')) {
                             that.layerDeselected(li);
                         }
-                        li.remove();
+                        that.layerList.removeChild(li);
                     };
                 }
             }
