@@ -14,7 +14,7 @@
         layerList: null,
         layers: [],
         layersLoaded: [],
-
+        internalDataset: [],
         startCollapse: false,
 
 
@@ -28,14 +28,7 @@
                 layers[i].index = i;
                 this._addNewLayerLi(layers[i].label);
             }
-            /*
-             var i = 0;
-             for (var layer in layers) {
-             layers[layer].index = i;
-             this._addNewLayerLi(layer);
-             i++;
-             }
-             */
+
             if (this.startCollapse) {
                 this.toggleList();
             }
@@ -54,7 +47,7 @@
 
                 var datasetsPromise = that.api.retrieveDatasets();
                 datasetsPromise.then(function(datasets) {
-
+                    that.internalDataset = datasets;
                     var options = [];
 
                     for (var layer in datasets) {
@@ -110,23 +103,29 @@
             return wms;
         },
 
-        layerSelected: function(li) {
+        layerSelected: function(li, _layer) {
             li.classList.add('active');
-            var layer = this._getLayerByLabel(li.innerText);
+            var layers = li.classList.contains('internal') ? this.internalDataset : this.layers;
+            var layer = _layer || this._getLayerByLabel(li.innerText, layers);
+            this._loadLayer(layer);
+        },
+
+        _loadLayer: function(layer) {
             if (layer) {
                 var type = layer.type;
                 if (type === 'gme') {
-                    this.layersLoaded[li.innerText] = this.addLayerGme(layer);
+                    this.layersLoaded[layer.label] = this.addLayerGme(layer);
                 }
                 if (type === 'wms') {
-                    this.layersLoaded[li.innerText] = this.addLayerWms(layer);
+                    this.layersLoaded[layer.label] = this.addLayerWms(layer);
                 }
             }
         },
 
         layerDeselected: function(li) {
             li.classList.remove('active');
-            var layer = this._getLayerByLabel(li.innerText);
+            var layers = li.classList.contains('internal') ? this.internalDataset : this.layers;
+            var layer = this._getLayerByLabel(li.innerText, layers);
             if (layer) {
                 var type = layer.type;
                 if (type === 'wms') {
@@ -160,9 +159,9 @@
             }
         },
 
-        _getLayerByLabel: function(labelName) {
+        _getLayerByLabel: function(labelName, from) {
             var layer = {};
-            var layers = this.layers;
+            var layers = from || this.layers;
             var layersLength = layers.length;
             for (var i = 0; i < layersLength; i++) {
                 if (labelName === layers[i].label) {
@@ -174,24 +173,7 @@
         },
 
         _searchDatasetModalTemplate: function(select_options) {
-            /*
-             var select_options = {
-             'item_a': 'item-A',
-             'item_b': 'item-B',
-             'item_c': 'item-C',
-             'item_d': 'item-D',
-             'item_e': 'item-E',
-             'item_f': 'item-F',
-             'item_g': 'item-G',
-             'item_h': 'item-H',
-             'item_i': 'item-I',
-             'item_j': 'item-J',
-             'item_k': 'item-K',
-             'item_l': 'item-L',
-             'item_m': 'item-M',
-             'a': 'GME Layer'
-             };
-             */
+
             var html = '';
             html += '<div class="overlay-search-dataset-modal">';
             html += '   <div class="overlay-header">';
@@ -265,7 +247,10 @@
                     if (searchList[i]) {
                         var option = searchList[i];
                         if (option.selected) {
-                            that._addNewLayerLi(option.text, true);
+                            var li = that._addNewLayerLi(option.text, true);
+                            var layer = that._getLayerByLabel(option.text, that.internalDataset);
+                            //that._loadLayer(layer)
+                            that.layerSelected(li, layer);
                             removed.push(option);
 
                         }
@@ -300,6 +285,7 @@
 
                 if (removable) {
                     span.className = 'remove-layer';
+                    li.classList.add('internal');
                     li.appendChild(span);
                     span.onclick = function(event) {
                         event.stopPropagation();
@@ -309,6 +295,7 @@
                         that.layerList.removeChild(li);
                     };
                 }
+                return li;
             }
         },
         _onClickLayerItem: function(event) {
@@ -320,8 +307,7 @@
             }
         }
 
-    })
-    ;
+    });
 
     MapViewer.registerModule(MapViewer.LayerList, CONTROL_CLASS);
 })
