@@ -54,11 +54,20 @@
 
                 var datasetsPromise = that.api.retrieveDatasets();
                 datasetsPromise.then(function(datasets) {
+
+                    var options = [];
+
+                    for (var layer in datasets) {
+                        if (datasets.hasOwnProperty(layer)) {
+                            options.push(datasets[layer].label);
+                        }
+                    }
+
                     var overlayOptions = {
                         parentObj: that,
                         appendToParent: that.owner.element,
                         modalClasses: 'search-dataset-overlay-modal',
-                        modalInnerContent: that._searchDatasetModalTemplate(),
+                        modalInnerContent: that._searchDatasetModalTemplate(options),
                         scripts: that._searchDatasetScript
                     };
 
@@ -164,23 +173,25 @@
             return layer;
         },
 
-        _searchDatasetModalTemplate: function() {
-            var select_options = {
-                'item_a': 'item-A',
-                'item_b': 'item-B',
-                'item_c': 'item-C',
-                'item_d': 'item-D',
-                'item_e': 'item-E',
-                'item_f': 'item-F',
-                'item_g': 'item-G',
-                'item_h': 'item-H',
-                'item_i': 'item-I',
-                'item_j': 'item-J',
-                'item_k': 'item-K',
-                'item_l': 'item-L',
-                'item_m': 'item-M',
-                'a': 'GME Layer'
-            };
+        _searchDatasetModalTemplate: function(select_options) {
+            /*
+             var select_options = {
+             'item_a': 'item-A',
+             'item_b': 'item-B',
+             'item_c': 'item-C',
+             'item_d': 'item-D',
+             'item_e': 'item-E',
+             'item_f': 'item-F',
+             'item_g': 'item-G',
+             'item_h': 'item-H',
+             'item_i': 'item-I',
+             'item_j': 'item-J',
+             'item_k': 'item-K',
+             'item_l': 'item-L',
+             'item_m': 'item-M',
+             'a': 'GME Layer'
+             };
+             */
             var html = '';
             html += '<div class="overlay-search-dataset-modal">';
             html += '   <div class="overlay-header">';
@@ -190,10 +201,8 @@
             html += '   <div class="overlay-content">';
             html += '       <label for="search-dataset-list">Availables Dataset:</label>';
             html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-dataset-list" name="search-dataset-list">';
-            for (var key in select_options) {
-                if (select_options.hasOwnProperty(key)) {
-                    html += '<option class="layer" value="' + key + '">' + select_options[key] + '</option>';
-                }
+            for (var i = 0; i < select_options.length; i++) {
+                html += '<option class="layer" value="' + i + '">' + select_options[i] + '</option>';
             }
             html += '       </select>';
             html += '   </div>';
