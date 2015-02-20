@@ -183,7 +183,7 @@
             html += '       </select>';
             html += '   </div>';
             html += '   <div class="overlay-footer">';
-            html += '       <button type="button" class="overlay-btn">Add</button>';
+            html += '       <button type="button" class="overlay-btn" >Add</button>';
             html += '   </div>';
             html += '</div>';
 
