@@ -4,8 +4,14 @@
 
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div><div class="search-dataset">Search Dataset</div>' +
-        '<ul class="layer-list"></ul><div class="clear">Clear</div>',
+        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div>' +
+        '<div class="layer-list-collapsible-wrap">' +
+        '<div class="search-dataset">Search Dataset</div>' +
+        '<div class="layer-list-options-wrap">' +
+        '<ul class="layer-list"></ul>' +
+        '</div>' +
+        '<div class="clear">Clear</div>' +
+        '</div>',
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
@@ -141,7 +147,8 @@
         },
 
         toggleList: function(header) {
-            var style = this.layerList.style;
+
+            var style = document.getElementsByClassName('layer-list-collapsible-wrap')[0].style;
             if (style.display !== 'none') {
                 header.classList.add('collapse');
                 style.display = 'none';
@@ -150,8 +157,6 @@
                 style.display = 'block';
             }
 
-            var clear = this.getElementsByClass('clear')[0];
-            clear.style.display = style.display;
         },
 
         clearList: function() {
@@ -260,7 +265,7 @@
                         }
                     }
                 }
-
+                that._ajustHeight();
                 var removedLength = removed.length;
                 for (var i = 0; i < removedLength; i++) {
                     var option = removed[i];
@@ -297,11 +302,23 @@
                             that.layerDeselected(li);
                         }
                         that.layerList.removeChild(li);
+                        that._ajustHeight();
                     };
                 }
+
                 return li;
             }
         },
+
+        _ajustHeight: function() {
+            var controlHeight = document.getElementsByClassName('layer-list-control')[0].offsetHeight;
+            if (controlHeight > 420) {
+                document.getElementsByClassName('layer-list-options-wrap')[0].classList.add('enable-scroll');
+            } else {
+                document.getElementsByClassName('layer-list-options-wrap')[0].classList.remove('enable-scroll');
+            }
+        },
+
         _onClickLayerItem: function(event) {
             var li = event.currentTarget;
             if (li.classList.contains('active')) {

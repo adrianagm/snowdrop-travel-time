@@ -5,6 +5,7 @@
         font-size: 16px;
         cursor: pointer;
         margin-top: 20px;
+        width: @left-controls-width;
 
         .header {
             padding: @padding-control;
@@ -33,6 +34,13 @@
             }
         }
 
+        .layer-list-options-wrap {
+            &.enable-scroll {
+                overflow-y: scroll;
+                height: 300px;
+            }
+        }
+
         ul {
             li {
                 padding: @padding-control;
@@ -54,5 +62,6 @@
 
             }
         }
+
     }
 }
