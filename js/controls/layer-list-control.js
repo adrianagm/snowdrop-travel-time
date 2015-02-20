@@ -48,11 +48,10 @@
                 that.clearList();
             });
 
-
+            this.internalDatasetsPromise = that.api.retrieveDatasets();
             this.bindEvent('search-dataset', 'click', function(event) {
 
-                var datasetsPromise = that.api.retrieveDatasets();
-                datasetsPromise.then(function(datasets) {
+                that.internalDatasetsPromise.then(function(datasets) {
                     
                     that.internalDataset = datasets;
                     var options = [];
@@ -311,8 +310,8 @@
         },
 
         _ajustHeight: function() {
-            var controlHeight = document.getElementsByClassName('layer-list-control')[0].offsetHeight;
-            if (controlHeight > 420) {
+            var layerListOptions = this.layerList.getElementsByClassName('layer');
+            if (layerListOptions.length > 8) {
                 document.getElementsByClassName('layer-list-options-wrap')[0].classList.add('enable-scroll');
             } else {
                 document.getElementsByClassName('layer-list-options-wrap')[0].classList.remove('enable-scroll');
@@ -327,7 +326,7 @@
                 this.layerSelected(li);
             }
         }
-
+        
     });
 
     MapViewer.registerModule(MapViewer.LayerList, CONTROL_CLASS);
