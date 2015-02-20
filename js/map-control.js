@@ -41,6 +41,7 @@
             }
 
             wrapperDiv.className = 'map-control';
+            wrapperDiv.classList.add(this.controlClass);
             wrapperDiv.appendChild(controlDiv);
 
             helperDiv.appendChild(wrapperDiv);
