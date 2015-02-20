@@ -326,7 +326,7 @@
                 this.layerSelected(li);
             }
         }
-        
+
     });
 
     MapViewer.registerModule(MapViewer.LayerList, CONTROL_CLASS);
