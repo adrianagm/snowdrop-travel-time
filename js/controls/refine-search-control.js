@@ -5,7 +5,7 @@
     MapViewer.RefineSearchControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="refine-search-control-outer"><div class="refine-search-control-border">' +
-            '<div class="refine-search-control-inner"><a class="check-class" href="#"> </a><span> Refine search</span></div></div></div>',
+            '<div class="refine-search-control-inner"><a class="check-class" href="#"> </a><span> Travel time/distance</span></div></div></div>',
         controlClass: 'refine-search-control',
 
         position: 'LEFT_BOTTOM',
@@ -203,42 +203,30 @@
 
             that.matrix = [];
             for (var s = 0; s < slices; s++) {
+                var destinations = ownerMarkers.slice(MAX_REQUESTS * s, MAX_REQUESTS * s + MAX_REQUESTS);
 
-                var promise = new Promise(function(resolve, reject) {
-                    var destinations = ownerMarkers.slice(MAX_REQUESTS * s, MAX_REQUESTS * s + MAX_REQUESTS);
+                setTimeout(function() {
+                    service.getDistanceMatrix({
+                        origins: [that.marker.position],
+                        destinations: destinations.map(function(marker) {
+                            return marker.position;
+                        }),
+                        travelMode: that.travelMode,
+                        avoidHighways: false,
+                        avoidTolls: false
+                    }, function(res, status) {
+                        if (!that.marker.getMap()) return;
 
-                    setTimeout(function() {
-                        service.getDistanceMatrix({
-                            origins: [that.marker.position],
-                            destinations: destinations.map(function(marker) {
-                                return marker.position;
-                            }),
-                            travelMode: that.travelMode,
-                            avoidHighways: false,
-                            avoidTolls: false
-                        }, function(res, status) {
-                            if (!that.marker.getMap()) return;
-
-                            if (status === 'OK') {
-                                resolve(res.rows[0].elements);
-
-                                var args = [MAX_REQUESTS * s, MAX_REQUESTS].concat(res.rows[0].elements);
-                                Array.prototype.splice.apply(that.matrix, args);
-                                that.filterMarkers();
-                            } else {
-                                console.log(status);
-                                reject();
-                                that.owner.redrawMarkers();
-                            }
-                        });
-                    }, 1100 * s);
-                });
-                promises.push(promise);
+                        if (status === 'OK') {
+                            var args = [MAX_REQUESTS * s, MAX_REQUESTS].concat(res.rows[0].elements);
+                            Array.prototype.splice.apply(that.matrix, args);
+                            that.filterMarkers();
+                        } else {
+                            that.owner.redrawMarkers();
+                        }
+                    });
+                }, 1100 * s);
             }
-
-            Promise.all(promises).then(function(values) {
-                console.log(that.matrix);
-            });
         },
 
         filterMarkers: function() {
