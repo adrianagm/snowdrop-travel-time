@@ -251,11 +251,7 @@
         },
 
         _basicSearch: function() {
-            var list = [];
-            var bounds = this.map.getBounds();
-            list.push(bounds.getNorthEast());
-            list.push(bounds.getSouthWest());
-            this.api.searchByPolygon(list);
+            this.basicSearch();
         },
 
         _cleanMap: function() {

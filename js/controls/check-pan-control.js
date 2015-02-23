@@ -24,7 +24,6 @@
             }
 
             var that = this;
-
             this.bindEvent('check-pan-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
@@ -34,21 +33,10 @@
 
                 google.maps.event.addListener(that.map, 'idle', function() {
                     if (that.link.classList.contains("checked-pan")) {
-                        var bounds = that.searchBounds();
-                        that.api.searchByPolygon(bounds);
+                        that.basicSearch();
                     }
                 });
             });
-        },
-
-        searchBounds: function() {
-            var bounds = this.map.getBounds();
-            var array = [];
-
-            array.push(bounds.getNorthEast());
-            array.push(bounds.getSouthWest());
-
-            return array;
         }
 
     });

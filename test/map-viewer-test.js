@@ -47,7 +47,7 @@ var IntegrationAPI = {
 
             var point = new google.maps.LatLng(lat, lng);
 
-            if (poligonPoints.length != 2) {
+            if (poligonPoints.length > 2) {
                 if (google.maps.geometry.poly.containsLocation(point, poligon)) {
                     list.push(elem);
                 }
@@ -106,12 +106,12 @@ function MapViewerTest() {
                 type: 'restaurant',
                 iconClass: "fa fa-cutlery fa-2x"
             },
-		"WMS House Prices": {
-				type: "wms",
-				url: "https://mapit.jll.com/arcgis/services/EMEA/House_Prices_WMS_test2/MapServer/WMSServer",
-				layers: '0',
-				opacity: 0.5
-}
+            "WMS House Prices": {
+                type: "wms",
+                url: "https://mapit.jll.com/arcgis/services/EMEA/House_Prices_WMS_test2/MapServer/WMSServer",
+                layers: '0',
+                opacity: 0.5
+            }
         }
     };
 
@@ -132,7 +132,7 @@ function MapViewerTest() {
                 type: "wms",
                 url: "http://webservices.nationalatlas.gov/wms",
                 layers: 'states'
-            },
+            }
         }
     };
 
