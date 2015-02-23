@@ -14,7 +14,7 @@
         initialize: function() {
             var that = this;
             this.buttonText = this.getElementsByClass('picture-exportation-control-inner')[0];
-            this.link = this.getElementsByClass('picture-exportation-control-outer')[0]
+            this.link = this.getElementsByClass('picture-exportation-control-outer')[0];
             this.elem = this.map.getDiv();
 
             this.bindEvent('picture-exportation-control-outer', 'click', function() {
@@ -40,7 +40,7 @@
             this.elem.style.width = "initial";
             for (var j = 0; j < this.controls.length; j++) {
                 if (!this.controls[j].firstChild.classList.contains('picture-exportation-control')) {
-                    this.controls[j].style.display = "initial";
+                    this.controls[j].style.display = 'block';
                 }
             }
             this._deactivateFullScreen();
@@ -90,7 +90,7 @@
                 }, false);
             } else if (this.elem.msRequestFullscreen) {
                 this.elem.msRequestFullscreen();
-                document.addEventListener("msfullscreenchange", function() {
+                document.addEventListener("MSFullscreenChange", function() {
                     if (!document.msFullscreenElement) {
                         that.deactivate();
                     }
