@@ -79,6 +79,8 @@
             this.currentlyActivate = true;
         },
 
+        onSearchResults: function(searchResults) {},
+
         searchInBounds: function() {
             var bounds = this.map.getBounds();
             var cornerBounds = [];
