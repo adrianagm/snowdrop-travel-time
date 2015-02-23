@@ -105,6 +105,12 @@ function MapViewerTest() {
             Restaurants: {
                 type: 'restaurant',
                 iconClass: "fa fa-cutlery fa-2x"
+            },
+            "WMS House Prices": {
+                type: "wms",
+                url: "https://mapit.jll.com/arcgis/services/EMEA/House_Prices_WMS_test2/MapServer/WMSServer",
+                layers: '0',
+                opacity: 0.5
             }
         }
     };
@@ -133,7 +139,7 @@ function MapViewerTest() {
     var mapViewer = new MapViewer('map', IntegrationAPI, [
         layerListControl,
         placesToolbar,
-        "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view'
+        "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view', 'refine-search'
 
     ]);
 }

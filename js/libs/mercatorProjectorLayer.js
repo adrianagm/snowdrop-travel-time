@@ -111,7 +111,7 @@ MercatorProjectionLayer.loadWMS = function loadWMS(layer, requestParams) {
 
         minZoom: minZoomLevel,
         maxZoom: maxZoomLevel,
-        opacity: 1,
+        opacity: layer.opacity,
         isPng: isPng
     };
 

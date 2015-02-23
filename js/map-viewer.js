@@ -20,8 +20,10 @@ function MapViewer(id, api, modules) {
 (function() {
     "use strict";
     MapViewer.prototype = {
+        markers: [],
         cluster: null,
         toggleGroups: {},
+
         createMap: function(id, api) {
             var mapOptions = {
                 zoom: 12,
@@ -46,6 +48,7 @@ function MapViewer(id, api, modules) {
             this.api.addSearchListener(function(results) {
                 that.removeMarkers();
                 that.setMarkers(results);
+                that.notifySearchResults(results);
             });
 
             this.setModulesMap();
@@ -130,6 +133,12 @@ function MapViewer(id, api, modules) {
             activeModule.activate();
         },
 
+        notifySearchResults: function(searchResults) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onSearchResults(searchResults);
+            }
+        },
+
         loadModules: function(modulesList) {
             for (var m = 0; m < modulesList.length; m++) {
                 this.loadModule(modulesList[m]);
@@ -163,12 +172,17 @@ function MapViewer(id, api, modules) {
             this.cluster = new MarkerClusterer(this.map, null, mcOptions);
         },
 
+        getMarkers: function() {
+            return this.markers;
+        },
+
         removeMarkers: function() {
+            this.markers = [];
             this.cluster.clearMarkers();
         },
 
         setMarkers: function(searchResults) {
-            var markers = [];
+            this.markers = [];
 
             for (var i = 0; i < searchResults.length; i++) {
                 var marker = {
@@ -177,12 +191,11 @@ function MapViewer(id, api, modules) {
                     properties: searchResults[i],
                     map: this.map
                 };
-                markers.push(this.drawMarker(marker));
+                this.markers.push(this.drawMarker(marker));
 
             }
 
-            this.cluster.addMarkers(markers);
-
+            this.cluster.addMarkers(this.markers);
         },
 
         drawMarker: function(marker) {
@@ -193,9 +206,14 @@ function MapViewer(id, api, modules) {
                 content: content,
                 map: marker.map
             });
-
+            richMarker.isInCluster = true;
             return richMarker;
-        }
+        },
+
+        redrawMarkers: function() {
+            this.cluster.clearMarkers();
+            this.cluster.addMarkers(this.markers);
+        },
 
     };
 
