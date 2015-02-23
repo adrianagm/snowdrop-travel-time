@@ -31,24 +31,13 @@
                 } else {
                     that.deactivate();
                 }
+
+                google.maps.event.addListener(that.map, 'idle', function() {
+                    if (that.link.classList.contains("checked-pan")) {
+                        that.searchInBounds();
+                    }
+                });
             });
-
-            google.maps.event.addListener(that.map, 'bounds_changed', function() {
-                if (that.link.classList.contains("checked-pan")) {
-                    var bounds = that.searchBounds();
-                    that.api.searchByPolygon(bounds);
-                }
-            });
-        },
-
-        searchBounds: function() {
-            var bounds = this.map.getBounds();
-            var array = [];
-
-            array.push(bounds.getNorthEast());
-            array.push(bounds.getSouthWest());
-
-            return array;
         }
 
     });

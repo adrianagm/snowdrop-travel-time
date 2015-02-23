@@ -47,7 +47,7 @@ var IntegrationAPI = {
 
             var point = new google.maps.LatLng(lat, lng);
 
-            if (poligonPoints.length != 2) {
+            if (poligonPoints.length > 2) {
                 if (google.maps.geometry.poly.containsLocation(point, poligon)) {
                     list.push(elem);
                 }
@@ -132,7 +132,7 @@ function MapViewerTest() {
                 type: "wms",
                 url: "http://webservices.nationalatlas.gov/wms",
                 layers: 'states'
-            },
+            }
         }
     };
 
