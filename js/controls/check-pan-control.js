@@ -33,7 +33,7 @@
                 }
             });
 
-            google.maps.event.addListener(that.map, 'dragend', function() {
+            google.maps.event.addListener(that.map, 'bounds_changed', function() {
                 if (that.link.classList.contains("checked-pan")) {
                     var bounds = that.searchBounds();
                     that.api.searchByPolygon(bounds);
