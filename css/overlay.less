@@ -25,13 +25,15 @@
             font-family: "Droid Sans", sans-serif;
             color: @text-color-control;
             .overlay-close-btn {
-                content: url('../images/close_cross.png');
-                padding: 3px;
+                background: url('../images/close_cross.png');
+                margin: 3px;
                 position: absolute;
                 top: 5px;
                 right: 5px;
                 display: block;
                 cursor: pointer;
+                min-width: 10px;
+                min-height: 10px;
             }
             .overlay-modal-inner {
                 .overlay-header {
@@ -105,10 +107,6 @@
 
                 select[multiple] {
                     height: auto;
-                }
-
-                option:checked {
-                    background: linear-gradient(@custom-red, @custom-red);
                 }
 
                 label {
