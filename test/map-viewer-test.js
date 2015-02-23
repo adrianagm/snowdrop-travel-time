@@ -68,23 +68,109 @@ var IntegrationAPI = {
 
     setPropertiesFilter: function(propertiesIds) {
 
+    },
+
+    retrieveDatasets: function() {
+
+        var datasets = [
+            {
+                label: "Dataset 1", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-12677872887550376890"
+            },
+            {
+                label: "Dataset 2",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'states'
+            },
+            {
+                label: "Dataset 3", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-01658747114625264102"
+            },
+            {
+                label: "Dataset 4",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'seihaz'
+            },
+            {
+                label: "Dataset 5", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-01658747114625264102"
+            },
+            {
+                label: "Dataset 6",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'srcoi0100g'
+            },
+            {
+                label: "Dataset 7", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-01658747114625264102"
+            },
+            {
+                label: "Dataset 8",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'sfgeo'
+            },
+            {
+                label: "Dataset 9", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-12677872887550376890"
+            },
+            {
+                label: "Dataset 10",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'glag'
+            },
+            {
+                label: "Dataset 11", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-01658747114625264102"
+            },
+            {
+                label: "Dataset 12",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'volcanoes'
+            },
+            {
+                label: "Dataset 13", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-01658747114625264102"
+            },
+            {
+                label: "Dataset 14",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'dodexp_1'
+            },
+            {
+                label: "Dataset 15", // Alternatively a translation key
+                type: "gme", // layers coming from MapsEngine,
+                id: "10446176163891957399-01658747114625264102"
+            },
+            {
+                label: "Dataset 16",
+                type: "wms", // WMS layers
+                url: "http://webservices.nationalatlas.gov/wms",
+                layers: 'fa0007_1'
+            },
+        ];
+        return new Promise(function(resolve) {
+            window.setTimeout(
+                function() {
+                    resolve(datasets);
+                }, 1000);
+        });
+
     }
 };
-
-function hide() {
-    var controls = document.getElementsByClassName("button-control");
-    for (var i = 0; i < controls.length; i++) {
-        var control = controls[i];
-        if (control.classList.contains('nhide')) {
-            continue;
-        }
-        if (control.style.display !== 'none') {
-            control.style.display = 'none';
-        } else {
-            control.style.display = 'initial';
-        }
-    }
-}
 
 function MapViewerTest() {
     console.log("Map Viewer");
@@ -117,23 +203,26 @@ function MapViewerTest() {
 
     var layerListControl = {
         type: 'layer-list',
-        layers: {
-            "GME Layer": {
+        layers: [
+            {
                 type: "gme",
-                layerId: "10446176163891957399-13516001307527776624",
-                layerName: 'layer_00001'
+                id: '10446176163891957399-01658747114625264102',//"10446176163891957399-13516001307527776624",
+                label: "GME Layer"
+                // layerName: 'layer_00001'
             },
-            "GME Layer 2": {
+            {
                 type: "gme",
-                layerId: "10446176163891957399-13516001307527776624",
-                layerName: 'layer_00002'
+                id: '10446176163891957399-12677872887550376890',//"10446176163891957399-13516001307527776624",
+                label: "GME Layer 2"
+                //   layerName: 'layer_00002'
             },
-            "WMS Layer states": {
+            {
+                label: "WMS Layer states",
                 type: "wms",
                 url: "http://webservices.nationalatlas.gov/wms",
                 layers: 'states'
             }
-        }
+        ]
     };
 
     var mapViewer = new MapViewer('map', IntegrationAPI, [
