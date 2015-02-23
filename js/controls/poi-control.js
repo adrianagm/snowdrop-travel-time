@@ -5,7 +5,7 @@
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
             '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Points of interest</span></div></div></div>' +
-            '<input id="pac-input" class="controls pac-input" type="text" placeholder="Search Box">',
+            '<input id="pac-input" class="controls pac-input" type="text" placeholder="Add new point of interest">',
         controlClass: 'check-pan-control',
 
         position: 'LEFT_BOTTOM',
