@@ -139,7 +139,7 @@ function MapViewerTest() {
     var mapViewer = new MapViewer('map', IntegrationAPI, [
         layerListControl,
         placesToolbar,
-        "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view'
+        "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view', 'points-of-interest'
 
     ]);
 }
