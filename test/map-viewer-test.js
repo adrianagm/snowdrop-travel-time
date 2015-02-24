@@ -8,14 +8,13 @@ var IntegrationAPI = {
 
     searchByPolygon: function(poligonPoints) {
         var list = [];
-        var bounds = [];
 
         var minLat = poligonPoints[0].lat();
         var maxLat = poligonPoints[0].lat();
         var minLng = poligonPoints[0].lng();
         var maxLng = poligonPoints[0].lng();
 
-        for (var i = 0; i < poligonPoints.length; i++) {
+        for (var i = 1; i < poligonPoints.length; i++) {
             if (poligonPoints[i].lat() < minLat)
                 minLat = poligonPoints[i].lat();
 
@@ -33,7 +32,14 @@ var IntegrationAPI = {
             paths: poligonPoints
         });
 
-        for (var j = 0; j < 20; j++) {
+
+        var maxItems = 2000;
+        var scopeLat = maxLat - minLat;
+        // var scopeLat = Math.abs(minLat) + Math.abs(maxLat);
+        var totalItems = scopeLat * maxItems / 180;
+        totalItems = (totalItems < 3) ? 3 : totalItems;
+
+        for (var j = 0; j < totalItems; j++) {
             var lat = RandomCoordinate(minLat, maxLat);
             var lng = RandomCoordinate(minLng, maxLng);
 
