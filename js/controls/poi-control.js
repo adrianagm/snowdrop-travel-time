@@ -5,7 +5,7 @@
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
             '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Points of interest</span></div></div></div>' +
-            '<input id="pac-input" class="controls pac-input" type="text" placeholder="Add new point of interest">',
+            '<input id="poi-input" class="controls poi-input hide" type="text" placeholder="Add new point of interest">',
         controlClass: 'check-pan-control',
 
         position: 'LEFT_BOTTOM',
@@ -15,6 +15,7 @@
         checked: "",
         toggleGroup: [],
 
+        input: null,
         searchBox: null,
         markers: [],
         infoWindows: [],
@@ -43,17 +44,22 @@
                 } else {
                     that.deactivate();
                     that.clearMarkers();
+                    that.input.classList.add('hide');
                 }
             });
         },
 
         showSearchBar: function() {
-            var input = this.getElementsByClass('pac-input')[0];
-            this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
+            if (!this.input) {
+                this.input = this.getElementsByClass('poi-input')[0];
+                this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(this.input);
+            }
 
             if (!this.searchBox) {
-                this.createSearchBar(input);
+                this.createSearchBar(this.input);
             }
+
+            this.input.classList.remove('hide');
         },
 
         createSearchBar: function(input) {
