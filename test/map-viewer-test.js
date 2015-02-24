@@ -8,7 +8,6 @@ var IntegrationAPI = {
 
     searchByPolygon: function(poligonPoints) {
         var list = [];
-        var bounds = [];
 
         var minLat = poligonPoints[0].lat();
         var maxLat = poligonPoints[0].lat();

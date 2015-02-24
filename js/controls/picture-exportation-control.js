@@ -38,6 +38,7 @@
             this.map.set('mapTypeControl', true);
 
             this.elem.style.width = "initial";
+            this.elem.style.height = this.oldHeight;
             for (var j = 0; j < this.controls.length; j++) {
                 if (!this.controls[j].firstChild.classList.contains('picture-exportation-control')) {
                     this.controls[j].style.display = "initial";
@@ -52,10 +53,8 @@
 
         activate: function() {
             var that = this;
-
             this.controls = document.getElementsByClassName('map-control');
             this.link.classList.add('complete-screen');
-
             //Complete screen
             this.buttonText.innerHTML = "<b>X</b>";
             this.map.set('disableDefaultUI', true);
@@ -66,7 +65,9 @@
                 }
             }
 
-            this.elem.style.width = "100%";
+            this.elem.style.width = '100%';
+            this.oldHeight = this.elem.clientHeight + 'px';
+            this.elem.style.height = '100%';
             this.bounds = this.map.getBounds();
             this.zoom = this.map.getZoom();
 
