@@ -237,6 +237,8 @@ function MapViewerTest() {
     };
     var mapOptions = {
         id:'map',
+        center:[7.3753707,-5.9550583],
+        zoom:12
     };
 
     var mapViewer = new MapViewer(mapOptions, IntegrationAPI, [
