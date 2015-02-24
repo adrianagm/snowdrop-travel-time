@@ -65,6 +65,11 @@
                 that.addMarker(that.searchBox.getPlace());
                 that.setMapBounds();
             });
+
+            google.maps.event.addListener(this.map, 'idle', function() {
+                that.refreshMarkers(google.maps.TravelMode.DRIVING);
+                that.refreshMarkers(google.maps.TravelMode.WALKING);
+            });
         },
 
         setSearchBarBounds: function() {
@@ -114,8 +119,8 @@
         getMarkerMatrix: function(marker, travelMode) {
             var that = this;
             this.distanceService.getDistanceMatrix({
-                origins: [marker.position],
-                destinations: [this.map.getCenter()],
+                origins: [this.map.getCenter()],
+                destinations: [marker.position],
                 travelMode: travelMode,
                 avoidHighways: false,
                 avoidTolls: false
@@ -125,6 +130,34 @@
                 if (status === 'OK') {
                     var result = res.rows[0].elements[0];
                     that.setMarkerProperties(marker, result, travelMode);
+                    marker.infowindow.open(that.map, marker);
+                } else {
+                    console.log(status);
+                }
+            });
+        },
+
+        refreshMarkers: function(travelMode) {
+            var that = this;
+            var destinations = this.markers.map(function(marker) {
+                return marker.position;
+            });
+
+            this.distanceService.getDistanceMatrix({
+                origins: [this.map.getCenter()],
+                destinations: destinations,
+                travelMode: travelMode,
+                avoidHighways: false,
+                avoidTolls: false
+            }, function(res, status) {
+                if (!that.markers) return;
+
+                if (status === 'OK') {
+                    for (var i = 0; i < that.markers.length; i++) {
+                        var marker = that.markers[i];
+                        var result = res.rows[0].elements[i];
+                        that.setMarkerProperties(marker, result, travelMode);
+                    }
                 } else {
                     console.log(status);
                 }
@@ -132,16 +165,17 @@
         },
 
         setMarkerProperties: function(marker, result, travelMode) {
-            var content = '';
+            var content, mode;
             if (travelMode === google.maps.TravelMode.DRIVING) {
-                content = marker.infoWindowContent.getElementsByClassName('car-time')[0];
-                content.innerHTML = "car: " + result.distance.text + "  " + result.duration.text;
+                mode = 'car';
             } else if (travelMode === google.maps.TravelMode.WALKING) {
-                content = marker.infoWindowContent.getElementsByClassName('walking-time')[0];
-                content.innerHTML = "walking: " + result.distance.text + "  " + result.duration.text;
+                mode = 'walking';
             }
 
-            marker.infowindow.open(this.map, marker);
+            content = marker.infoWindowContent.getElementsByClassName(mode + '-distance')[0];
+            content.innerHTML = result.distance.text;
+            content = marker.infoWindowContent.getElementsByClassName(mode + '-time')[0];
+            content.innerHTML = result.duration.text;
         },
 
         clearMarkers: function() {
