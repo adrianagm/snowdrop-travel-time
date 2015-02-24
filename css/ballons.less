@@ -1,0 +1,89 @@
+/*
+    Styles for map infowindows aka ballons.
+*/
+
+.balloon.container{
+    width:300px;
+    height:220px;
+    padding:10px;
+
+    -webkit-box-sizing:border-box;
+    -moz-box-sizing:border-box;
+    box-sizing:border-box;
+    
+}
+
+
+.balloon .pano{
+    position: relative;
+    width: 100%;
+    height: 100%;
+
+}
+
+.balloon .map-pano{
+  display: none;
+
+}
+
+.balloon{
+    border-color:#eee;
+}
+
+.balloon-tab{
+    background-color: rgb(188, 20, 26);
+    color: #fff;
+    font-weight: bold;
+    border-top-left-radius:0.5em;
+    border-top-right-radius:0.5em;
+    border-bottom-right-radius:0;
+    border-bottom-left-radius:0;
+    padding:10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    border-right:1px #ccc solid;
+
+}
+
+.balloon-tab:hover{
+    background-color: rgba(188, 20, 26, 0.8);
+}
+
+.balloon-active-tab, .balloon-active-tab:hover{
+    background-color: #eee;
+    color: #000;
+}
+
+.balloon-content{
+    background-color:#eee;
+    border-top-left-radius:0;
+    border-top-right-radius:0.5em;
+    border-bottom-right-radius:0.5em;
+    border-bottom-left-radius:0.5em;
+    padding:10px;
+
+}
+
+.balloon-close-button{
+    background-image: url('../images/close_icon.png');
+    background-size: 20px 20px;
+    height: 20px;
+    width: 20px;
+
+}
+
+.balloon-arrow-container{
+   /*  background-image: url('../images/arrow.png');
+     background-size: 50px 50px;
+     margin-left: 140px;
+     height: 50px;
+     width: 50px;
+     top:-12px;*/
+}
+
+.balloon-arrow{
+     border-color: rgb(188, 20, 26) transparent transparent;
+     border-style:solid;
+     /*if backgroundImage in .balloon-arrow-container*/
+     /*display:none;*/
+}
