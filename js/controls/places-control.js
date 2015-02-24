@@ -140,10 +140,10 @@
         toggleList: function(header) {
             var style = this.placesList.style;
             if (style.display !== 'none') {
-                header.classList.add('collapse');
+                header.classList.add('control-collapse');
                 style.display = 'none';
             } else {
-                header.classList.remove('collapse');
+                header.classList.remove('control-collapse');
                 style.display = 'inline-block';
             }
         },
