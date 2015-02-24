@@ -165,10 +165,10 @@
 
             var style = document.getElementsByClassName('layer-list-collapsible-wrap')[0].style;
             if (style.display !== 'none') {
-                header.classList.add('collapse');
+                header.classList.add('control-collapse');
                 style.display = 'none';
             } else {
-                header.classList.remove('collapse');
+                header.classList.remove('control-collapse');
                 style.display = 'block';
             }          
         },

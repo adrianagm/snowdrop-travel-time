@@ -221,8 +221,13 @@ function MapViewerTest() {
             opacity: 0.5
         }]
     };
+    var mapOptions = {
+        id:'map',
+        center:[37.3753707,-5.9550583],
+        zoom:12
+    };
 
-    var mapViewer = new MapViewer('map', IntegrationAPI, [
+    var mapViewer = new MapViewer(mapOptions, IntegrationAPI, [
         layerListControl,
         placesToolbar,
         "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view', 'refine-search'

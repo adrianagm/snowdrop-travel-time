@@ -193,14 +193,14 @@
             var stylePlcSearch = this.placesSearch.style;
             var stylePlcCustom = this.placesCustom.style;
             if (style.display !== 'none') {
-                header.classList.add('collapse');
+                header.classList.add('control-collapse');
                 style.display = 'none';
                 if (this.startSearchPlaces) {
                     stylePlcSearch.display = 'none';
                     stylePlcCustom.display = 'none';
                 }
             } else {
-                header.classList.remove('collapse');
+                header.classList.remove('control-collapse');
                 style.display = 'inline-block';
                 if (this.startSearchPlaces) {
                     stylePlcSearch.display = 'inline-block';
