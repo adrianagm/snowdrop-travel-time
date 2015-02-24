@@ -16,6 +16,8 @@
         toggleGroup: [],
 
         searchBox: null,
+        markers: [],
+        infoWindows: [],
 
         initialize: function() {
             this.link = this.getElementsByClass('check-class')[0];
@@ -43,9 +45,63 @@
             var input = this.getElementsByClass('pac-input')[0];
             this.map.controls[google.maps.ControlPosition.TOP_CENTER].push(input);
 
-            this.searchBox = new google.maps.places.SearchBox((input));
+            if (!this.searchBox) {
+                this.createSearchBar(input);
+            }
         },
 
+        createSearchBar: function(input) {
+            var that = this;
+            var options = {};
+            this.searchBox = new google.maps.places.Autocomplete(input, options);
+            this.searchBox.bindTo('bounds', this.map);
+
+            google.maps.event.addListener(this.searchBox, 'place_changed', function() {
+                that.addMarker(that.searchBox.getPlace());
+                that.setMapBounds();
+            });
+        },
+
+        setSearchBarBounds: function() {
+            var bounds = this.map.getBounds();
+            this.searchBox.setBounds(bounds);
+        },
+
+        addMarker: function(place) {
+            var image = {
+                url: place.icon,
+                size: new google.maps.Size(71, 71),
+                origin: new google.maps.Point(0, 0),
+                anchor: new google.maps.Point(17, 34),
+                scaledSize: new google.maps.Size(25, 25)
+            };
+
+            // Create a marker for each place.
+            var marker = new google.maps.Marker({
+                map: this.map,
+                icon: image,
+                title: place.name,
+                position: place.geometry.location
+            });
+
+            this.markers.push(marker);
+        },
+
+        clearMarkers: function() {
+            for (var i = 0; i < this.markers.length; i++) {
+                marker = this.markers[i];
+                marker.setMap(null);
+            }
+        },
+
+        setMapBounds: function() {
+            var bounds = new google.maps.LatLngBounds();
+            for (var i = 0; i < this.markers.length; i++) {
+                bounds.extend(this.markers[i].position);
+            }
+            bounds.extend(this.map.getCenter());
+            this.map.fitBounds(bounds);
+        }
     });
 
     MapViewer.registerModule(MapViewer.POIControl, CONTROL_CLASS);
