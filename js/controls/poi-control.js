@@ -73,19 +73,12 @@
         },
 
         addMarker: function(place) {
-            var image = {
-                url: place.icon,
-                size: new google.maps.Size(71, 71),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17, 34),
-                scaledSize: new google.maps.Size(25, 25)
-            };
-
-            var marker = new google.maps.Marker({
-                map: this.map,
-                icon: image,
-                title: place.name,
-                position: place.geometry.location
+            var content = '<div class="poi-marker"></div>';
+            var marker = new RichMarker({
+                position: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
+                flat: true,
+                content: content,
+                map: this.map
             });
 
             this.markers.push(marker);
@@ -98,12 +91,18 @@
         createInfowindow: function(marker) {
             infoWindowContent = document.createElement('div');
             infoWindowContent.innerHTML = '<div class="poi-popup">' +
-                '<div class="car-time"></div>' +
-                '<div class="walking-time"></div>' +
+                '<div class="car"><div class="car-icon"><i class="fa fa-car"></i></div><div class="car-distance"></div><div class="car-time"></div></div>' +
+                '<div class="walking"><div class="walking-icon"><i class="fa fa-male"></i></div><div class="walking-distance"></div><div class="walking-time"></div></div>' +
                 '</div>';
 
-            marker.content = infoWindowContent;
-            marker.infowindow = new google.maps.InfoWindow();
+            marker.infoWindowContent = infoWindowContent;
+
+            //Half of markers height
+            var offset;
+
+            marker.infowindow = new google.maps.InfoWindow({
+                pixelOffset: new google.maps.Size(0, -15)
+            });
             marker.infowindow.setContent(infoWindowContent);
 
             var that = this;
@@ -135,10 +134,10 @@
         setMarkerProperties: function(marker, result, travelMode) {
             var content = '';
             if (travelMode === google.maps.TravelMode.DRIVING) {
-                content = marker.content.getElementsByClassName('car-time')[0];
+                content = marker.infoWindowContent.getElementsByClassName('car-time')[0];
                 content.innerHTML = "car: " + result.distance.text + "  " + result.duration.text;
             } else if (travelMode === google.maps.TravelMode.WALKING) {
-                content = marker.content.getElementsByClassName('walking-time')[0];
+                content = marker.infoWindowContent.getElementsByClassName('walking-time')[0];
                 content.innerHTML = "walking: " + result.distance.text + "  " + result.duration.text;
             }
 
