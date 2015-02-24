@@ -2,7 +2,7 @@
     var CONTROL_CLASS = 'picture-exportation';
     MapViewer.PictureExportationControl = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="picture-exportation-control-outer"><div class="picture-exportation-control-border"><div class="picture-exportation-control-inner"><b>Picture Exportation</b></div></div></div>',
+        template: '<div class="picture-exportation-control-outer"><div class="picture-exportation-control-border"><div class="picture-exportation-control-inner normal"></div></div></div>',
         controlClass: 'picture-exportation-control',
 
         position: 'TOP_RIGHT',
@@ -33,7 +33,9 @@
 
             this.link.classList.remove('complete-screen');
 
-            this.buttonText.innerHTML = "<b>Picture Exportation</b>";
+            //this.buttonText.innerHTML = "<b>Picture Exportation</b>";
+            this.buttonText.classList.remove('fullscreen');
+            this.buttonText.classList.add('normal');
             this.map.set('disableDefaultUI', false);
             this.map.set('mapTypeControl', true);
 
@@ -56,7 +58,9 @@
             this.controls = document.getElementsByClassName('map-control');
             this.link.classList.add('complete-screen');
             //Complete screen
-            this.buttonText.innerHTML = "<b>X</b>";
+            //this.buttonText.innerHTML = "<b>X</b>";
+            this.buttonText.classList.remove('normal');
+            this.buttonText.classList.add('fullscreen');
             this.map.set('disableDefaultUI', true);
             this.map.set('mapTypeControl', false);
             for (var i = 0; i < this.controls.length; i++) {
