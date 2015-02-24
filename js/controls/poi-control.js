@@ -19,8 +19,12 @@
         markers: [],
         infoWindows: [],
 
+        distanceService: null,
+
         initialize: function() {
             this.link = this.getElementsByClass('check-class')[0];
+
+            this.distanceService = new google.maps.DistanceMatrixService();
 
             if (this.defaultChecked) {
                 this.link.classList.add('checked-pan');
@@ -77,7 +81,6 @@
                 scaledSize: new google.maps.Size(25, 25)
             };
 
-            // Create a marker for each place.
             var marker = new google.maps.Marker({
                 map: this.map,
                 icon: image,
@@ -86,6 +89,55 @@
             });
 
             this.markers.push(marker);
+
+            this.createInfowindow(marker);
+            this.getMarkerMatrix(marker);
+        },
+
+        createInfowindow: function(marker) {
+            infoWindowContent = document.createElement('div');
+            infoWindowContent.innerHTML = '<div class="poi-popup">' +
+                '<div class="car-time"></div>' +
+                '<div class="walking-time"></div>' +
+                '<div class="distance"></div>' +
+                '</div>';
+
+            marker.content = infoWindowContent;
+            marker.infowindow = new google.maps.InfoWindow();
+            marker.infowindow.setContent(infoWindowContent);
+
+            var that = this;
+            google.maps.event.addListener(marker, 'click', function() {
+                marker.infowindow.open(that.map, marker);
+            });
+        },
+
+        getMarkerMatrix: function(marker) {
+            var that = this;
+            var travelMode = google.maps.TravelMode.DRIVING;
+            this.distanceService.getDistanceMatrix({
+                origins: [marker.position],
+                destinations: [this.map.getCenter()],
+                travelMode: travelMode,
+                avoidHighways: false,
+                avoidTolls: false
+            }, function(res, status) {
+                if (!marker.getMap()) return;
+
+                if (status === 'OK') {
+                    var result = res.rows[0].elements[0];
+                    that.setMarkerProperties(marker, result);
+                } else {
+                    console.log(status);
+                }
+            });
+        },
+
+        setMarkerProperties: function(marker, result) {
+            var content = marker.content.getElementsByClassName('poi-popup')[0];
+            content.innerHTML = result;
+
+            marker.infowindow.open(this.map, marker);
         },
 
         clearMarkers: function() {
@@ -103,7 +155,7 @@
             }
             bounds.extend(this.map.getCenter());
             this.map.fitBounds(bounds);
-        }
+        },
     });
 
     MapViewer.registerModule(MapViewer.POIControl, CONTROL_CLASS);
