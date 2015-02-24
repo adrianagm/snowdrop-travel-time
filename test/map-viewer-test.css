@@ -1,0 +1,9 @@
+html,
+body,
+.map-widget,
+.map-widget ul {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+  font-family: "Arial";
+}

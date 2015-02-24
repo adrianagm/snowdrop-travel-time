@@ -14,7 +14,7 @@ function MapViewer(id, api, modules) {
         });
     };
 
-    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,visualization');
+    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=geometry,places,drawing,visualization');
 }
 
 var infoWindow = null;
@@ -24,12 +24,22 @@ var infoWindow = null;
     "use strict";
 
     MapViewer.prototype = {
+        markers: [],
         cluster: null,
+        toggleGroups: {},
         templateTabs: null,
+
         createMap: function(id, api) {
             var mapOptions = {
                 zoom: 12,
-                center: new google.maps.LatLng(40.7033121, -73.979681)
+                center: new google.maps.LatLng(40.7033121, -73.979681),
+                zoomControlOptions: {
+                    style: google.maps.ZoomControlStyle.SMALL,
+                    position: google.maps.ControlPosition.RIGHT_TOP,
+
+                },
+                streetViewControl: false,
+                panControl: false
             };
 
             this.element = document.getElementById(id);
@@ -41,20 +51,28 @@ var infoWindow = null;
             this.setCluster();
 
             this.api.addSearchListener(function(results) {
-                //that.removeMarkers();
+                that.removeMarkers();
                 that.setMarkers(results);
+                that.notifySearchResults(results);
             });
-
 
             this.setModulesMap();
             this.setModulesApi();
-            this.activeModules = {};
+            this.setModulesOwner();
+            this.loadedModules = {};
         },
 
         setModulesMap: function() {
             MapViewer.MapControl.prototype.map = this.map;
             for (var module in MapViewer.modules) {
                 MapViewer.modules[module].prototype.map = this.map;
+            }
+        },
+
+        setModulesOwner: function() {
+            MapViewer.MapControl.prototype.owner = this;
+            for (var module in MapViewer.modules) {
+                MapViewer.modules[module].prototype.owner = this;
             }
         },
 
@@ -66,18 +84,64 @@ var infoWindow = null;
         },
 
 
-
         loadModule: function(control) {
             var ModuleObject;
             var module;
+            var controlClass;
+
             if (typeof(control) === 'string') {
                 ModuleObject = MapViewer.modules[control];
+                controlClass = control;
+
             } else if (typeof(control) === 'object') {
                 ModuleObject = MapViewer.modules[control.type];
+                controlClass = control.type;
             }
 
             module = new ModuleObject(control);
-            module.addToMap();
+
+            if (controlClass && module) {
+
+                module.addToMap();
+
+                //all modules loaded will be stored
+                this.loadedModules[controlClass] = module;
+
+                //it fill toggleGroups with the information of the modules
+                if (module.toggleGroup) {
+                    var _toggleGroup = module.toggleGroup;
+                    for (var i = 0; i < _toggleGroup.length; i++) {
+                        if (!this.toggleGroups[_toggleGroup[i]]) {
+                            this.toggleGroups[_toggleGroup[i]] = [];
+                        }
+                        this.toggleGroups[_toggleGroup[i]].push(controlClass);
+                    }
+                }
+            }
+
+        },
+
+        notifyActivation: function(activeModule) {
+            if (activeModule.toggleGroup) {
+                var _toggleGroup = activeModule.toggleGroup;
+                for (var i in _toggleGroup) {
+                    if (this.toggleGroups[_toggleGroup[i]]) {
+                        var _group = this.toggleGroups[_toggleGroup[i]];
+                        for (var j in _group) {
+                            if (_group[j] !== activeModule.alias && this.loadedModules[_group[j]]) {
+                                this.loadedModules[_group[j]].deactivate();
+                            }
+                        }
+                    }
+                }
+            }
+            activeModule.activate();
+        },
+
+        notifySearchResults: function(searchResults) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onSearchResults(searchResults);
+            }
         },
 
         loadModules: function(modulesList) {
@@ -113,30 +177,30 @@ var infoWindow = null;
             this.cluster = new MarkerClusterer(this.map, null, mcOptions);
         },
 
+        getMarkers: function() {
+            return this.markers;
+        },
+
         removeMarkers: function() {
+            this.markers = [];
             this.cluster.clearMarkers();
         },
 
         setMarkers: function(searchResults) {
-            var markers = [];
-            var that = this;
-            for (var i = 0; i < 20; i++) {
-                var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
-                var markerObject = {
-                    properties: searchResults[i],
-                    latLng: latLng,
-                    iconClass: 'property-marker',
-                    map: this.map,
+            this.markers = [];
 
+            for (var i = 0; i < searchResults.length; i++) {
+                var marker = {
+                    latLng: new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng),
+                    iconClass: "property-marker",
+                    properties: searchResults[i],
+                    map: this.map
                 };
-                var marker = this.drawMarker(markerObject);
-                this.showInfoWindow(marker);
-                markers.push(marker);
+                this.markers.push(this.drawMarker(marker));
 
             }
 
-            this.cluster.addMarkers(markers);
-
+            this.cluster.addMarkers(this.markers);
         },
 
         drawMarker: function(marker) {
@@ -145,12 +209,15 @@ var infoWindow = null;
                 position: marker.latLng,
                 flat: true,
                 content: content,
-                map: marker.map,
-                properties: marker.properties,
-
+                map: marker.map
             });
-
+            richMarker.isInCluster = true;
             return richMarker;
+        },
+
+        redrawMarkers: function() {
+            this.cluster.clearMarkers();
+            this.cluster.addMarkers(this.markers);
         },
 
         showInfoWindow: function(marker) {
@@ -252,8 +319,6 @@ var infoWindow = null;
 
 
     };
-
-
 
     //Class functions
     MapViewer.modules = {};

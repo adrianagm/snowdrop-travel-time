@@ -1,12 +1,13 @@
 (function() {
 
+    var CONTROL_CLASS = 'places';
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header" data-i18n="places">Places</div><ul class="places-list"></ul>',
+        template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul></div>',
         controlClass: 'places-control',
 
-        position: 'BOTTOM_CENTER',
-        alias: 'places-list',
+        position: 'RIGHT_BOTTOM',
+        alias: CONTROL_CLASS,
 
         placesList: null,
         places: {},
@@ -15,15 +16,16 @@
         service: null,
         infowindow: null,
         startCollapse: false,
+        clusterPlaces: null,
 
 
         initialize: function() {
             var places = this.places;
-             var mcOptions = {
+            var mcOptions = {
                 className: "places-cluster-marker"
             };
 
-            MapViewer.prototype.clusterPlaces = new MarkerClusterer(this.map, null, mcOptions);
+            MapViewer.clusterPlaces = new MarkerClusterer(this.map, null, mcOptions);
             this.placesList = this.getElementsByClass('places-list')[0];
             for (var place in places) {
                 this.addLI(place);
@@ -46,20 +48,29 @@
             });
 
             this.bindEvent('header', 'click', function(event) {
-                that.toggleList();
+                that.toggleList(event.target);
             });
             google.maps.event.addListener(this.map, 'dragend', function() {
                 var activePlaces = that.getElementsByClass('active');
                 for (var i = 0; i < activePlaces.length; i++) {
                     var place = that.places[activePlaces[i].innerHTML];
-                    var type = place.type; 
+                    var type = place.type;
                     that.removePlacesToMap(type);
-                    that.placesSelected(activePlaces[i]);
+                    that.placesSelected(activePlaces[i], function() {
+                        var heatMapButton = document.getElementsByClassName('heatmap-view-button')[0];
+                        if (heatMapButton) {
+                            if (heatMapButton.classList.contains('active')) {
+                                MapViewer.heatmap.setMap(null);
+                                MapViewer.Heatmap.prototype.createHeatMap();
+
+                            }
+                        }
+                    });
                 }
             });
         },
 
-        placesSelected: function(li) {
+        placesSelected: function(li, callback) {
             li.classList.add('active');
             var place = this.places[li.innerHTML];
             var type = place.type;
@@ -68,17 +79,20 @@
                 radius: 50000,
                 types: [type]
             };
-            if(!place.iconClass){
-                place.iconClass = 'places-marker places-marker-'+type;
+            if (!place.iconClass) {
+                place.iconClass = 'places-marker places-marker-' + type;
             }
             var that = this;
-            this.service.nearbySearch(request, function(results, status) {
+            this.service.radarSearch(request, function(results, status) {
                 if (status == google.maps.places.PlacesServiceStatus.OK) {
                     //that.map.setZoom(12);
                     that.markers[type] = [];
                     for (var i = 0; i < results.length; i++) {
                         that.createMarker(results[i], type, place.iconClass);
                     }
+                    MapViewer.clusterPlaces.addMarkers(that.markers[type]);
+                    if (callback)
+                        callback();
                 }
             });
         },
@@ -91,14 +105,14 @@
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
-            MapViewer.prototype.clusterPlaces.addMarkers([marker]);
+
             this.markers[type].push(marker);
 
-            var that = this;
-            google.maps.event.addListener(marker, 'click', function() {
+            /*var that = this;
+           google.maps.event.addListener(marker, 'click', function() {
                 that.infowindow.setContent(place.name);
                 that.infowindow.open(that.map, this);
-            });
+            });*/
         },
 
         placesDeselected: function(li) {
@@ -106,23 +120,30 @@
             var place = this.places[li.innerHTML];
             var type = place.type;
             this.removePlacesToMap(type);
-           
+            if (MapViewer.heatmap) {
+                if (type === MapViewer.heatPlaces) {
+                    MapViewer.heatmap.setMap(null);
+                }
+            }
+
         },
 
-        removePlacesToMap: function(type){
+        removePlacesToMap: function(type) {
             var markers = this.markers[type];
-             for (var m = 0; m < markers.length; m++) {
-                MapViewer.prototype.clusterPlaces.removeMarker(markers[m]);
+            MapViewer.clusterPlaces.removeMarkers(markers);
+            for (var m = 0; m < markers.length; m++) {
                 markers[m].setMap(null);
             }
             this.markers[type] = [];
         },
 
-        toggleList: function() {
+        toggleList: function(header) {
             var style = this.placesList.style;
             if (style.display !== 'none') {
+                header.classList.add('collapse');
                 style.display = 'none';
             } else {
+                header.classList.remove('collapse');
                 style.display = 'inline-block';
             }
         },
@@ -136,5 +157,5 @@
         }
     });
 
-    MapViewer.registerModule(MapViewer.Places, "places");
+    MapViewer.registerModule(MapViewer.Places, CONTROL_CLASS);
 })();
