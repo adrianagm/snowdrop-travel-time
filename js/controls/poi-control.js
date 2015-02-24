@@ -37,6 +37,7 @@
                     that.showSearchBar();
                 } else {
                     that.deactivate();
+                    that.clearMarkers();
                 }
             });
         },
@@ -92,6 +93,7 @@
                 marker = this.markers[i];
                 marker.setMap(null);
             }
+            this.markers = [];
         },
 
         setMapBounds: function() {
