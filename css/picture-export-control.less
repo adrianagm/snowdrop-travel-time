@@ -1,19 +1,22 @@
 .map-widget {
-    .picture-exportation-control-outer {
-        padding: 5px;
+    .picture-exportation-control > div {
+        background: white;
     }
-
-    .picture-exportation-control-border {
-        border-style: solid;
-        border-width: 2px;
-        cursor: pointer;
-        text-align: center;
-        background-color: white;
-    }
-
     .picture-exportation-control-inner {
-        font-size: 12px;
-        padding-left: 4px;
-        padding-right: 4px;
+        border-radius: @border-radius-control;
+        margin: 5px;
+        &.normal {
+            min-height: 25px;
+            min-width: 25px;
+            background-image: url('../images/camera.png');
+            cursor: pointer;
+        }
+        &.fullscreen {
+            min-height: 25px;
+            min-width: 25px;
+            background-image: url('../images/close_24.png');
+            cursor: pointer;
+        }
     }
 }
+
