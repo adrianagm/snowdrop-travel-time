@@ -246,13 +246,11 @@ function MapViewer(id, api, modules) {
                 if (that.infoWindow) {
                     that.infoWindow.close();
                     that.infoWindow.removeChildren_(that.infoWindow.content_);
-
                 }
                 that.infoWindow = that.setInfoWindow(marker);
                 that.infoWindow.open(this.map, this);
 
-
-
+                that.notifyPropertyClicked(marker);
             });
 
         },
