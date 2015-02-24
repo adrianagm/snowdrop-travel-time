@@ -1,9 +1,121 @@
-html,
-body,
-.map-widget,
-.map-widget ul {
-  height: 100%;
-  margin: 0px;
-  padding: 0px;
-  font-family: "Arial";
+html ul,
+body ul {
+    height: 100%;
+    margin: 0px;
+    padding: 0px;
+    font-family: "Arial";
 }
+
+.content {
+    height: 600px;
+}
+
+.map-widget {
+    height: 650px;
+}
+
+.panel-heading a:after {
+    font-family: 'Glyphicons Halflings';
+    content: "\e114";
+    float: right;
+    color: grey;
+}
+
+.panel-heading a.collapsed:after {
+    content: "\e080";
+}
+
+
+/*Infowindow tabs styles*/
+	/*Image Tab*/
+.balloon.image-tab .slider_wrapper{
+    overflow: hidden;
+    position:relative;
+    height:150px;
+    top:auto;
+}
+
+#balloon-image-current{
+    width:300px;
+    height:150px;
+}
+
+.balloon.image-tab #image_slider{
+    position: relative;
+    height: auto;
+    list-style: none;
+    overflow: hidden;
+    float: left;
+    /*Chrom default padding for ul is 40px */
+    padding:0px;
+    margin:0px;
+}
+.balloon.image-tab #image_slider li{
+    position: relative;
+    float: left;
+}
+.balloon.image-tab .nvgt{
+    position:absolute;
+    top: 70px;
+    height: 35px;
+    width: 20px;
+    opacity: 0.6;
+}
+.balloon.image-tab .nvgt:hover{
+    opacity: 0.9;
+}
+.balloon.image-tab #prev{
+    background: #555 url('https://dl.dropboxusercontent.com/u/65639888/image/prev.png') no-repeat center;
+    left: 0px;
+}
+.balloon.image-tab #next{
+    background: #555 url('https://dl.dropboxusercontent.com/u/65639888/image/next.png') no-repeat center;
+    right: 0px;
+}
+
+.balloon.image-tab .balloon-images-list{
+    padding:0px;
+    position:relative;
+    height:40px;
+    margin:auto;
+    margin-top:10px;
+}
+
+.balloon.image-tab .balloon-images-list li{
+    padding: 0px;
+    margin:5px;
+    width:40px;
+    height:40px;
+    border:1px solid white;
+    color:white;
+    list-style: none;
+    opacity: 0.6;
+    float:left;
+    border-radius: 3px;
+    cursor: pointer;
+}
+.balloon.image-tab .balloon-images-list li img{
+    width:40px;
+    height:40px;
+}
+
+.balloon.image-tab .balloon-images-list li:hover{
+    opacity: 0.9;
+}
+
+	/*Data tab*/
+.balloon.data-tab table{
+    width: 100%;
+}
+
+.balloon.data-tab .data-item{
+    width: 100%;
+}
+
+.balloon.data-tab .data-item td{
+    padding: 0.5em;
+   
+}
+
+
+
