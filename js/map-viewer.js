@@ -17,7 +17,6 @@ function MapViewer(id, api, modules) {
     MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=geometry,places,drawing,visualization');
 }
 
-var infoWindow = null;
 
 
 (function() {
@@ -28,6 +27,8 @@ var infoWindow = null;
         cluster: null,
         toggleGroups: {},
         templateTabs: null,
+        infoWindow: null,
+
 
         createMap: function(id, api) {
             var mapOptions = {
@@ -190,13 +191,17 @@ var infoWindow = null;
             this.markers = [];
 
             for (var i = 0; i < searchResults.length; i++) {
-                var marker = {
-                    latLng: new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng),
-                    iconClass: "property-marker",
+                var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
+                var markerObject = {
                     properties: searchResults[i],
-                    map: this.map
+                    latLng: latLng,
+                    iconClass: 'property-marker',
+                    map: this.map,
+
                 };
-                this.markers.push(this.drawMarker(marker));
+                var marker = this.drawMarker(markerObject);
+                this.showInfoWindow(marker);
+                this.markers.push(marker);
 
             }
 
@@ -209,7 +214,8 @@ var infoWindow = null;
                 position: marker.latLng,
                 flat: true,
                 content: content,
-                map: marker.map
+                map: marker.map,
+                properties: marker.properties,
             });
             richMarker.isInCluster = true;
             return richMarker;
@@ -223,13 +229,13 @@ var infoWindow = null;
         showInfoWindow: function(marker) {
             var that = this;
             marker.addListener("click", function(event) {
-                if (infoWindow) {
-                    infoWindow.close();
-                    infoWindow.removeChildren_(infoWindow.content_);
+                if (that.infoWindow) {
+                    that.infoWindow.close();
+                    that.infoWindow.removeChildren_(that.infoWindow.content_);
 
                 }
-                infoWindow = that.setInfoWindow(marker);
-                infoWindow.open(this.map, this);
+                that.infoWindow = that.setInfoWindow(marker);
+                that.infoWindow.open(this.map, this);
 
 
 
@@ -238,9 +244,9 @@ var infoWindow = null;
         },
 
         setInfoWindow: function(marker) {
-            var infoWindow = new InfoBubble({
+            this.infoWindow = new InfoBubble({
                 offsetWidth: 10,
-                offsetHeight:20
+                offsetHeight: 20
             });
             var tabs = this.templateTabs;
             for (var labelTab in tabs) {
@@ -282,19 +288,19 @@ var infoWindow = null;
                 }
 
 
-
+                var that = this;
                 if (tab.type == 'streetView') {
-                    output = '<div class="balloon street-tab container"><div id="pano"></div><div id="map-pano"></div>';
-                    google.maps.event.addDomListener(infoWindow, 'content_changed', function() {
-                        google.maps.event.addDomListener(infoWindow, 'domready', function() {
-                            if (document.getElementById('pano') !== null) {
+                    output = '<div class="balloon street-tab container"><div class="pano"></div><div class="map-pano"></div>';
+                    google.maps.event.addDomListener(this.infoWindow, 'content_changed', function() {
+                        google.maps.event.addDomListener(that.infoWindow, 'domready', function() {
+                            if (that.infoWindow.content_.getElementsByClassName('pano')[0]) {
                                 if (tab.orientationField) {
                                     marker.orientationField = marker.properties[tab.orientationField];
                                 }
                                 if (tab.inclinationField) {
                                     marker.inclinationField = marker.properties[tab.inclinationField];
                                 }
-                                initializeStreetView(marker);
+                                that.initializeStreetView(marker);
                             }
                         });
                     });
@@ -302,13 +308,13 @@ var infoWindow = null;
                 }
 
 
-                infoWindow.addTab(labelTab, output);
+                this.infoWindow.addTab(labelTab, output);
 
 
 
             }
 
-            return infoWindow;
+            return this.infoWindow;
 
         },
 
@@ -316,7 +322,32 @@ var infoWindow = null;
             this.templateTabs = template;
         },
 
+        initializeStreetView: function(marker) {
+            var mapPano = this.infoWindow.content_.getElementsByClassName('map-pano')[0];
+            var pano = this.infoWindow.content_.getElementsByClassName('pano')[0];
+            var heading = marker.orientationField ? marker.orientationField : 90;
+            var pitch = marker.inclinationField ? marker.inclinationField : 5;
+            var panoramaOptions = {
+                position: marker.position,
+                pov: {
+                    heading: heading,
+                    pitch: pitch
+                }
+            };
 
+            var sv = new google.maps.StreetViewService();
+            sv.getPanoramaByLocation(marker.position, 50, processSVData);
+
+            function processSVData(data, status) {
+                if (status == google.maps.StreetViewStatus.OK) {
+                    var panorama = new google.maps.StreetViewPanorama(pano, panoramaOptions);
+                    var map = new google.maps.Map(mapPano);
+                    map.setStreetView(panorama);
+                } else {
+                    pano.innerHTML = 'Street View not available in this position';
+                }
+            }
+        }
 
     };
 
@@ -361,33 +392,3 @@ var infoWindow = null;
         return Module;
     };
 })();
-
-
-
-function initializeStreetView(marker) {
-    var mapPano = document.getElementById('map-pano');
-    var pano = document.getElementById('pano');
-    var heading = marker.orientationField ? marker.orientationField : 90;
-    var pitch = marker.inclinationField ? marker.inclinationField : 5;
-    var panoramaOptions = {
-        position: marker.position,
-        pov: {
-            heading: heading,
-            pitch: pitch
-        }
-    };
-
-    var sv = new google.maps.StreetViewService();
-    sv.getPanoramaByLocation(marker.position, 50, processSVData);
-
-    function processSVData(data, status) {
-        if (status == google.maps.StreetViewStatus.OK) {
-            var panorama = new google.maps.StreetViewPanorama(pano, panoramaOptions);
-            var map = new google.maps.Map(mapPano);
-            map.setStreetView(panorama);
-        } else {
-            pano.innerHTML = 'Street View not available in this position';
-        }
-    }
-
-}
