@@ -11,6 +11,14 @@ function MapViewer(id, api, modules) {
         Promise.all(promises).then(function(values) {
             that.createMap(id, api);
             that.loadModules(modules);
+
+            var intervalResize = setInterval(function() {
+                if (document.getElementById(id).clientHeight > 0) {
+                    google.maps.event.trigger(that.map, "resize");
+                    clearInterval(intervalResize);
+                }
+            }, 100);
+
         });
     };
 
@@ -19,6 +27,7 @@ function MapViewer(id, api, modules) {
 
 (function() {
     "use strict";
+
     MapViewer.prototype = {
         cluster: null,
         toggleGroups: {},
@@ -52,6 +61,12 @@ function MapViewer(id, api, modules) {
             this.setModulesApi();
             this.setModulesOwner();
             this.loadedModules = {};
+
+            google.maps.event.addListenerOnce(that.map, 'tilesloaded', function() {
+                google.maps.event.addListenerOnce(that.map, 'tilesloaded', function() {
+                    google.maps.event.trigger(that.map, 'resize');
+                });
+            });
         },
 
         setModulesMap: function() {

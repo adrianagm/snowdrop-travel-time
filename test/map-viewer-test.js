@@ -15,7 +15,7 @@ var IntegrationAPI = {
         var minLng = poligonPoints[0].lng();
         var maxLng = poligonPoints[0].lng();
 
-        for (var i = 0; i < poligonPoints.length; i++) {
+        for (var i = 1; i < poligonPoints.length; i++) {
             if (poligonPoints[i].lat() < minLat)
                 minLat = poligonPoints[i].lat();
 
@@ -33,7 +33,14 @@ var IntegrationAPI = {
             paths: poligonPoints
         });
 
-        for (var j = 0; j < 20; j++) {
+
+        var maxItems = 2000;
+        var scopeLat = maxLat - minLat;
+        // var scopeLat = Math.abs(minLat) + Math.abs(maxLat);
+        var totalItems = scopeLat * maxItems / 180;
+        totalItems = (totalItems < 3) ? 3 : totalItems;
+
+        for (var j = 0; j < totalItems; j++) {
             var lat = RandomCoordinate(minLat, maxLat);
             var lng = RandomCoordinate(minLng, maxLng);
 
@@ -105,13 +112,7 @@ function MapViewerTest() {
             Restaurants: {
                 type: 'restaurant',
                 iconClass: "fa fa-cutlery fa-2x"
-            },
-		"WMS House Prices": {
-				type: "wms",
-				url: "https://mapit.jll.com/arcgis/services/EMEA/House_Prices_WMS_test2/MapServer/WMSServer",
-				layers: '0',
-				opacity: 0.5
-}
+            }
         }
     };
 
