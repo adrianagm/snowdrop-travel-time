@@ -42,8 +42,18 @@
         if (this.options.modalClasses && typeof this.options.modalClasses === 'string') {
             modal.className += ' ' + this.options.modalClasses;
         }
+         else if(this.options.modalClasses && typeof this.options.modalClasses === 'object'){
+            modal.classList.add(this.options.modalClasses);
+        }
+
         if (this.options.modalInnerContent && typeof this.options.modalInnerContent === 'string') {
             modal.innerHTML += '<div class="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
+        }
+        else if(this.options.modalInnerContent && typeof this.options.modalInnerContent === 'object'){
+            var  innerContent = document.createElement('div');
+            innerContent.className = this.id + '-modal-inner';
+            innerContent.appendChild(this.options.modalInnerContent);
+            modal.appendChild(innerContent);
         }
 
         this.overlay.appendChild(modal);

@@ -1,4 +1,4 @@
-function MapViewer(id, api, modules) {
+function MapViewer(options, api, modules) {
     try {
         this.checkAPI(api);
     } catch (error) {
@@ -9,12 +9,14 @@ function MapViewer(id, api, modules) {
     cb = function() {
         var promises = MapViewer.loadGoogleLibs();
         Promise.all(promises).then(function(values) {
-            that.createMap(id, api);
+            options.center = options.center ? new google.maps.LatLng(options.center[0], options.center[1]) : new google.maps.LatLng(51.5286416, -0.1015987);
+            that.createMap(options, api);
             that.loadModules(modules);
 
             var intervalResize = setInterval(function() {
-                if (document.getElementById(id).clientHeight > 0) {
+                if (document.getElementById(options.id).clientHeight > 0) {
                     google.maps.event.trigger(that.map, "resize");
+                    that.map.setCenter(options.center);
                     clearInterval(intervalResize);
                 }
             }, 100);
@@ -38,10 +40,11 @@ function MapViewer(id, api, modules) {
         infoWindow: null,
 
 
-        createMap: function(id, api) {
+        createMap: function(options, api) {
+
             var mapOptions = {
-                zoom: 12,
-                center: new google.maps.LatLng(40.7033121, -73.979681),
+                zoom: options.zoom ? options.zoom : 11,
+                center: options.center,
                 zoomControlOptions: {
                     style: google.maps.ZoomControlStyle.SMALL,
                     position: google.maps.ControlPosition.RIGHT_TOP,
@@ -51,7 +54,7 @@ function MapViewer(id, api, modules) {
                 panControl: false
             };
 
-            this.element = document.getElementById(id);
+            this.element = document.getElementById(options.id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
             this.api = api;
@@ -257,8 +260,8 @@ function MapViewer(id, api, modules) {
 
         setInfoWindow: function(marker) {
             this.infoWindow = new InfoBubble({
-                offsetWidth: 10,
-                offsetHeight: 20
+                offsetWidth: 0,
+                offsetHeight: marker.height / 2
             });
             var tabs = this.templateTabs;
             for (var labelTab in tabs) {

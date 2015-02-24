@@ -177,6 +177,7 @@ function MapViewerTest() {
 
     var placesToolbar = {
         type: 'places',
+        //startSearchPlaces: false,
         places: {
             Schools: {
                 type: 'school' //default icon
@@ -212,10 +213,22 @@ function MapViewerTest() {
             type: "wms",
             url: "http://webservices.nationalatlas.gov/wms",
             layers: 'states'
+        }, {
+            label: "WMS House Prices",
+            type: "wms",
+            url: "https://mapit.jll.com/arcgis/services/EMEA/House_Prices_WMS_test2/MapServer/WMSServer",
+            layers: '0',
+            opacity: 0.5
         }]
     };
 
-    var mapViewer = new MapViewer('map', IntegrationAPI, [
+    var mapOptions = {
+        id: 'map',
+        center: [37.3753707, -5.9550583],
+        zoom: 12
+    };
+
+    var mapViewer = new MapViewer(mapOptions, IntegrationAPI, [
         layerListControl,
         placesToolbar,
         "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view', 'refine-search', 'points-of-interest'
