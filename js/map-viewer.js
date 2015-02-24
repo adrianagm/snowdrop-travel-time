@@ -153,6 +153,12 @@ function MapViewer(id, api, modules) {
             }
         },
 
+        notifyPropertyClicked: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPropertyclicked(marker);
+            }
+        },
+
         loadModules: function(modulesList) {
             for (var m = 0; m < modulesList.length; m++) {
                 this.loadModule(modulesList[m]);
