@@ -7,10 +7,10 @@
         this.id = this.options.id || 'overlay';
 
         this.overlayParent = null;
-        if (typeof this.options.parent === 'string') {
+        if (typeof this.options.appendToParent === 'string') {
             this.overlayParent = document.getElementById('map');
-        } else if (typeof this.options.parent === 'object') {
-            this.overlayParent = this.options.parent;
+        } else if (typeof this.options.appendToParent === 'object') {
+            this.overlayParent = this.options.appendToParent;
         }
 
         //create the overlay
@@ -72,6 +72,7 @@
 
     JLLOverlay.prototype.destroy = function() {
         this.overlayParent.removeChild(this.overlay);
+        //    this.overlay.remove();
     };
 
     if (typeof window.JLLOverlay == 'undefined') {

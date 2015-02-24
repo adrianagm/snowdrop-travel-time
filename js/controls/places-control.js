@@ -3,8 +3,8 @@
     var CONTROL_CLASS = 'places';
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>'+
-        '<div class="search-places">Search Places</div><ul class="search-list"></ul></div>',
+        template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>' +
+            '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
@@ -30,6 +30,7 @@
             MapViewer.clusterPlaces = new MarkerClusterer(this.map, null, mcOptions);
             this.placesList = this.getElementsByClass('places-list')[0];
             this.placesSearch = this.getElementsByClass('search-places')[0];
+            this.placesCustom = this.getElementsByClass('custom-btn')[0];
             for (var place in places) {
                 this.addLI(place);
             }
@@ -40,33 +41,19 @@
             this.service = new google.maps.places.PlacesService(this.map);
 
             var that = this;
-            var timeOut = null;
-            this.bindEvent('places', 'click', function(event) {
-                var li = event.currentTarget;
-                if (timeOut !== null) {
-                    clearTimeout(timeOut);
-                }
+            this.timeOut = null;
+            this.tooglePlaces();
 
-                if (li.classList.contains('active')) {
-                    timeOut = setTimeout(function() {
-                        that.placesDeselected(li);
-                    }, 500);
-                } else {
-                    timeOut = setTimeout(function() {
-                        that.placesSelected(li);
-                    }, 500);
-                }
-            });
-
-             this.bindEvent('search-places', 'click', function(event) {
+            this.bindEvent('search-places', 'click', function(event) {
                 var overlayOptions = {
-                    parent: that.owner.element,
+                    parentObj: that,
+                    appendToParent: that.owner.element,
                     modalClasses: 'search-places-overlay-modal',
                     modalInnerContent: that._searchPlacesModalTemplate(),
                     scripts: that._searchPlacesScript
                 };
 
-                var overlay = new JLLOverlay(overlayOptions);
+                that.overlay = new JLLOverlay(overlayOptions);
             });
 
 
@@ -84,6 +71,26 @@
             });
         },
 
+        tooglePlaces: function(){
+            var that = this;
+             this.bindEvent('places', 'click', function(event) {
+                var li = event.currentTarget;
+                if (that.timeOut !== null) {
+                    clearTimeout(that.timeOut);
+                }
+
+                if (li.classList.contains('active')) {
+                    that.timeOut = setTimeout(function() {
+                        that.placesDeselected(li);
+                    }, 500);
+                } else {
+                    that.timeOut = setTimeout(function() {
+                        that.placesSelected(li);
+                    }, 500);
+                }
+               
+            });
+        }, 
         placesSelected: function(li, callback) {
             li.classList.add('active');
             var place = this.places[li.innerHTML];
@@ -111,6 +118,8 @@
             });
         },
 
+
+
         createMarker: function(place, type, icon) {
             var marker = {
                 properties: place,
@@ -137,7 +146,7 @@
             if (MapViewer.heatmap) {
                 if (type === MapViewer.heatPlaces) {
                     MapViewer.heatmap.setMap(null);
-                    var heatMapButton = document.getElementsByClassName('heatmap-view-button')[0];
+                    var heatMapButton = this.owner.element.getElementsByClassName('heatmap-view-button')[0];
                     if (heatMapButton) {
                         if (heatMapButton.classList.contains('active')) {
                             heatMapButton.classList.remove('active');
@@ -160,14 +169,17 @@
         toggleList: function(header) {
             var style = this.placesList.style;
             var stylePlcSearch = this.placesSearch.style;
+            var stylePlcCustom = this.placesCustom.style;
             if (style.display !== 'none') {
                 header.classList.add('collapse');
                 style.display = 'none';
                 stylePlcSearch.display = 'none';
+                stylePlcCustom.display = 'none';
             } else {
                 header.classList.remove('collapse');
                 style.display = 'inline-block';
                 stylePlcSearch.display = 'inline-block';
+                stylePlcCustom.display = 'inline-block';
             }
         },
 
@@ -179,7 +191,7 @@
             this.placesList.appendChild(li);
         },
         updateHeatmap: function() {
-            var heatMapButton = document.getElementsByClassName('heatmap-view-button')[0];
+            var heatMapButton = this.getElementsByClass('heatmap-view-button')[0];
             if (heatMapButton) {
                 if (heatMapButton.classList.contains('active')) {
                     MapViewer.heatmap.setMap(null);
@@ -190,59 +202,132 @@
             }
         },
         _searchPlacesModalTemplate: function() {
-            
+            var selection_options = placesCategories;
+            var places = MapViewer.placesList;
+            for (var place in places) {
+                delete selection_options[places[place].type];
+            }
             var html = '';
-            html += '<div class="overlay-search-dataset-modal">';
+            html += '<div class="overlay-search-places-modal">';
             html += '   <div class="overlay-header">';
-            html += '       <label for="search-dataset-input">Search Dataset:</label>';
-            html += '       <input type="text" class="overlay-form-input overlay-form-item search-dataset-input" name="search-dataset-input">';
+            html += '       <label for="search-places-input">Search Dataset:</label>';
+            html += '       <input type="text" class="overlay-form-input overlay-form-item search-places-input" name="search-places-input">';
             html += '   </div>';
             html += '   <div class="overlay-content">';
-            html += '       <label for="search-dataset-list">Availables Dataset:</label>';
-            html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-dataset-list" name="search-dataset-list">';
-            for (var key in placesCategories) {
-                if (placesCategories.hasOwnProperty(key)) {
-                    html += '<option value="' + key + '">' + placesCategories[key] + '</option>';
+            html += '       <label for="search-places-list">Availables Dataset:</label>';
+            html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-places-list" name="search-places-list">';
+            for (var key in selection_options) {
+                if (selection_options.hasOwnProperty(key)) {
+                    html += '<option class="placesCategory" value="' + key + '">' + selection_options[key] + '</option>';
                 }
             }
             html += '       </select>';
             html += '   </div>';
             html += '   <div class="overlay-footer">';
-            html += '       <button type="button" class="overlay-btn" >Add</button>';
+            html += '       <button type="button" class="overlay-btn add-places-btn" >Add</button>';
             html += '   </div>';
             html += '</div>';
 
             return html;
         },
         _searchPlacesScript: function() {
-            /*
-             this function is execute insite JLLOverlay Class so 'this' is refered to the JLLOverlay object
+            /* this function is execute insite JLLOverlay Class so 'this' is refered to the JLLOverlay object
              */
-            var map = this.parent;
-            var searchInput = map.getElementsByClassName('search-dataset-input')[0];
-            var searchList = map.getElementsByClassName('search-dataset-list')[0];
+            var map = this.parentObj.owner.element;
+            var searchPlaces = map.getElementsByClassName('search-places-list')[0];
+            var addBtn = map.getElementsByClassName('add-places-btn')[0];
+            var placesList = this.parentObj.placesList;
+            var that = this.parentObj;
+            
+            addBtn.onclick = function() {
+                var searchPlaceslength = searchPlaces.length;
+                for (var i = 0; i < searchPlaceslength; i++) {
+                    if (searchPlaces[i]) {
+                        var option = searchPlaces[i];
+                        if (option.selected) {
+                           MapViewer.placesList[option.text] = {
+                                type: option.value,
+                            };
+                            console.log(option.text);
+                            if (!that.customPlacesBtn) {
+                                that.createCustomBtn();
+                            }else if(that.customPlacesBtn.style.display === 'none'){
+                                that.customPlacesBtn.style.display = 'inline-block';
+                            }
+                            that.addCustomLI(option.text);
+                            that.overlay.destroy();
 
-            if (searchInput && searchList) {
-                searchInput.addEventListener("keyup", function(e) {
-                    var inputValue = e.target.value;
-                    var options = searchList.getElementsByTagName('option');
-                    for (var i = 0; i < options.length; i++) {
-                        var optionValue = options[i].text;
-                        if (new RegExp('^' + inputValue).test(optionValue)) {
-                            options[i].style.display = 'block';
-                        } else {
-                            options[i].style.display = 'none';
                         }
                     }
-                }, false);
-            }
+                }
+            };
+    
+        },
 
-        }
+
+        createCustomBtn: function() {
+            var map = this.content;
+            var customDiv = map.getElementsByClassName('custom-btn')[0];
+            var customPlaces = document.createElement('div');
+            customPlaces.className = 'custom-places';
+            var customPlacesFooter = document.createElement('div');
+            customPlacesFooter.className = 'custom-places-footer';
+            customPlacesFooter.innerHTML = 'Custom';
+            var customPlacesList = document.createElement('div');
+            customPlacesList.className = 'custom-places-list';
+            customPlacesList.innerHTML = '<ul class="custom-places-list-ul"></ul>';
+            customPlaces.appendChild(customPlacesList);
+            customPlaces.appendChild(customPlacesFooter);
+            customDiv.appendChild(customPlaces);
+            customPlacesFooter.onclick = function() {
+                var style = map.getElementsByClassName('custom-places-list')[0].style;
+                if (style.display === 'none' || style.display === '') {
+                    style.display = 'block';
+                   
+                } else {
+                    style.display = 'none';
+
+                }
+            };
+            this.customPlacesBtn = customPlaces;
+
+        },
+
+         addCustomLI: function(place) {
+            this.placesCustomList = this.getElementsByClass('custom-places-list-ul')[0];
+            var item = document.createElement('li');
+            var li = document.createElement('span');
+            li.className = 'places';
+            li.innerHTML = place;
+            li.setAttribute("data-tag", place);
+            var remove = document.createElement('span');
+            remove.className = 'remove-place';
+            item.appendChild(li);
+            item.appendChild(remove);
+            this.placesCustomList.appendChild(item);
+            this.placesSelected(li);
+
+            this.tooglePlaces();
+
+            var that = this; 
+            remove.onclick = function(event){
+                event.stopPropagation();
+                var item = this.parentNode;
+                var li = item.firstChild;
+                if (li.classList.contains('active')) {
+                    that.placesDeselected(li);    
+                }
+                delete MapViewer.placesList[li.innerHTML];
+                that.placesCustomList.removeChild(item);
+                if(that.placesCustomList.firstChild === null){
+                    that.customPlacesBtn.style.display = 'none';
+                    that.getElementsByClass('custom-places-list')[0].style.display = 'none';
+                }
+            };
+           
+        },
 
     });
-
-    MapViewer.registerModule(MapViewer.Places, CONTROL_CLASS);
-})();
 
 var placesCategories = {
     accounting: 'accounting',
@@ -342,3 +427,7 @@ var placesCategories = {
     veterinary_care: 'veterinary_care',
     zoo: 'zoo'
 };
+
+    MapViewer.registerModule(MapViewer.Places, CONTROL_CLASS);
+})();
+

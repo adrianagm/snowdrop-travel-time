@@ -1,4 +1,3 @@
-
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans);
 
 @custom-red: rgb(188, 20, 26);
@@ -8,7 +7,7 @@
 @padding-control: 10px;
 @border-radius-control: 2px;
 @shadow-control: 0px 1px 8px #888;
-
+@left-controls-width: 250px;
 .map-widget .map-control {
     font-family: "Droid Sans", sans-serif;
     margin-left: 20px;
@@ -40,72 +39,6 @@
     padding-right: 4px;
 }
 
-.map-widget .layer-list-control {
-    background-color: white;
-    font-size: 16px;
-    cursor: pointer;
-   
-}
-
-.map-widget .layer-list-control .header {
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    border-top-left-radius: @border-radius-control;
-    border-top-right-radius: @border-radius-control;
-
-}
-
-.map-widget .layer-list-control .search-dataset {
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    border-top-left-radius: @border-radius-control;
-    border-top-right-radius: @border-radius-control;
-}
-
-.map-widget .layer-list-control .clear {
-    padding: @padding-control;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    color: @text-color-control + #333;
-
-}
-
-.map-widget .layer-list-control .clear:hover {
-    color: @text-color-hover-control + #333;
-}
-
-.map-widget .layer-list-control ul li {
-    padding: @padding-control;
-    list-style: none;
-
-}
-
-.map-widget .layer-list-control ul li:hover {
-    color: @text-color-hover-control;
-}
-
-.map-widget .layer-list-control ul li.active {
-    color: @custom-red;
-}
-
-.map-widget .places-control {
-    background-color: white;
-   
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.map-widget .places-control .header {
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    display: inline-block;
-    border-top-left-radius: @border-radius-control;
-    border-bottom-left-radius: @border-radius-control;
-
-}
 
 .map-widget .header.collapse {
     border-radius: @border-radius-control;
@@ -124,35 +57,6 @@
 
 }
 
-.map-widget .places-control ul {
-    display: inline;
-}
-
-.map-widget .places-control ul li {
-    padding: @padding-control;
-    list-style: none;
-    display: inline;
-    background-color: white;
-
-}
-
-.map-widget .places-control ul .places:hover {
-    color: @text-color-hover-control;
-}
-
-.map-widget .places-control ul .places.active {
-    color: @custom-red;
-}
-
-.map-widget .places-control .search-places {
-    display: inline-block;
-    height: 20px;
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    border-top-right-radius: @border-radius-control;
-    border-bottom-right-radius: @border-radius-control;
-}
 
 .map-widget .check-pan-control, .map-widget .check-draw-control {
     position: relative;
@@ -162,7 +66,7 @@
 }
 
 .map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer {
-    width: 250px;
+    width: @left-controls-width;
 
 }
 
@@ -180,7 +84,7 @@
 }
 
 .map-widget .check-pan-control-inner span, .map-widget .check-draw-control-inner span {
-    padding: 5px;
+    //padding: 5px;
     text-align: left;
 }
 
@@ -268,6 +172,16 @@
 
 }
 
+.radio-places-item{
+    text-align: left !important; 
+    padding-left: 10%;
+}
+.radio-places-item input{
+    display: inline;
+    width: 20% !important;
+   
+}
+
 //change position of google controls
 .map-control.places-control{
     right: 50px !important;
@@ -281,15 +195,6 @@
 .map-control.layer-list-control{
     top: 20px !important;
 }
-
-.radio-places-item{
-    text-align: left !important; 
-    padding-left: 10%;
-}
-.radio-places-item input{
-    display: inline;
-    width: 20% !important;
-   
-}
-
+@import "places-control";
+@import "layer-list-control";
 @import "overlay";

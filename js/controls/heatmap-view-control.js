@@ -100,14 +100,14 @@
         chooseTypePlaces: function() {
             MapViewer.heatPlaces = null;
             var that = this;
+            var map = this.owner.element;
             var content = document.createElement('div');
 
-            var overlayHeader = document.createElement('div');
-            overlayHeader.className = 'overlay-header';
-            overlayHeader.innerHTML = 'There is more than one Google Places category selected in the toolbar. Choose one Google Places category to represent as heat map';
+           
 
             var overlayContent = document.createElement('div');
             overlayContent.className = 'overlay-content';
+            overlayContent.innerHTML = 'There is more than one Google Places category selected in the toolbar. Choose one Google Places category to represent as heat map';
 
             for (var p in this.placesSelected) {
                 for (var type in MapViewer.placesList) {
@@ -124,16 +124,16 @@
             acceptButton.className = 'heatmap-accept-button overlay-btn';
             acceptButton.innerHTML = 'Accept';
             acceptButton.onclick = function() {
-                var radios = document.getElementsByName('radio-places');
+                var radios = map.getElementsByClassName('radio-places-item');
                 for (var i = 0, length = radios.length; i < length; i++) {
-                    if (radios[i].checked) {
-                        MapViewer.heatPlaces = radios[i].value;
+                    if (radios[i].firstChild.checked) {
+                        MapViewer.heatPlaces = radios[i].firstChild.value;
                         that.createHeatMap();
                         break;
                     }
                 }
                 if (MapViewer.heatPlaces === null) {
-                    var buttonText = document.getElementsByClassName('heatmap-view-button')[0];
+                    var buttonText = map.getElementsByClassName('heatmap-view-button')[0];
                     buttonText.classList.remove('active');
                 }
                 overlay.destroy();
@@ -141,12 +141,13 @@
             };
             overlayFooter.appendChild(acceptButton);
 
-            content.appendChild(overlayHeader);
+ 
             content.appendChild(overlayContent);
             content.appendChild(overlayFooter);
 
             var overlayOptions = {
-                parent: this.owner.element,
+                parentObj: that,
+                appendToParent: that.owner.element,
                 modalClasses: 'heatmap-overlay-modal',
                 modalInnerContent: content,
 
@@ -180,7 +181,8 @@
             content.appendChild(overlayFooter);
 
             var overlayOptions = {
-                parent: this.owner.element,
+                parentObj: that,
+                appendToParent: that.owner.element,
                 modalClasses: 'heatmap-overlay-modal',
                 modalInnerContent: content,
 

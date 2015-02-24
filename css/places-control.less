@@ -1,0 +1,95 @@
+.map-widget {
+    .places-control {
+    	background-color: white;
+        font-size: 16px;
+        cursor: pointer;
+        .header {
+		    padding: @padding-control;
+		    background-color: @custom-red;
+		    color: white;
+		    display: inline-block;
+		    border-top-left-radius: @border-radius-control;
+		    border-bottom-left-radius: @border-radius-control;
+
+		}
+		.places-div{
+			height: 40px;
+		}
+		.search-places {
+		    display: inline-block;
+		    height: 20px;
+		    padding: @padding-control;
+            color: #888888;
+            border-left-style: solid;
+            border-left-width: thin;
+            border-left-color: @custom-red;
+		    border-top-right-radius: @border-radius-control;
+		    border-bottom-right-radius: @border-radius-control;
+		}
+		ul {
+		    display: inline;
+			    li {
+				    padding: @padding-control;
+				    list-style: none;
+				    display: inline;
+				    background-color: white;
+				}
+				.places:hover {
+				    color: @text-color-hover-control;
+				}
+				.places.active {
+				    color: @custom-red;
+				}
+		}
+		.custom-btn{
+			display:inline-block;
+			.custom-places-footer{
+				padding: @padding-control;
+				text-align: center;
+				width: 130px;
+			}
+			.custom-places-footer:hover{
+				color: @text-color-hover-control;
+
+			}
+			.custom-places-list{
+				display:none;
+				position:absolute;
+				bottom: 40px;
+    			box-shadow: 1px -2px 8px #888;
+    			max-height: 300px;
+    			overflow-y: auto;
+				width: 150px;
+				background-color: white;
+				ul{
+
+					li{
+						display:inline-block;
+						max-width: 120px;
+						text-overflow: ellipsis;
+						white-space: nowrap;
+						overflow: hidden;
+						
+						span.remove-place {
+		                    background: url('../images/exit_draw_map.png');
+		                    height: 10px;
+		                    width: 10px;
+		                    text-align: right;
+		                    position: absolute;
+		                    transform: translate(0%, 50%);
+		                    right: 10px;
+		                }
+					}
+					li:hover{
+						 color: @text-color-hover-control;
+					}
+					
+					.places.active {
+					    color: @custom-red;
+					}
+				}
+			}
+		}
+
+    }
+}
