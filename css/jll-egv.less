@@ -44,21 +44,6 @@
     padding-right: 4px;
 }
 
-.map-widget .places-control {
-    background-color: white;
-
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.map-widget .places-control .header {
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    display: inline-block;
-    border-top-left-radius: @border-radius-control;
-    border-bottom-left-radius: @border-radius-control;
-}
 
 .map-widget .header.collapse {
     border-radius: @border-radius-control;
@@ -77,25 +62,6 @@
 
 }
 
-.map-widget .places-control ul {
-    display: inline;
-}
-
-.map-widget .places-control ul li {
-    padding: @padding-control;
-    list-style: none;
-    display: inline;
-    background-color: white;
-
-}
-
-.map-widget .places-control ul .places:hover {
-    color: @text-color-hover-control;
-}
-
-.map-widget .places-control ul .places.active {
-    color: @custom-red;
-}
 
 .map-widget .check-pan-control,
 .map-widget .check-draw-control,
@@ -220,6 +186,16 @@
     background-color: @custom-red;
 }
 
+.radio-places-item{
+    text-align: left !important; 
+    padding-left: 10%;
+}
+.radio-places-item input{
+    display: inline;
+    width: 20% !important;
+   
+}
+
 //change position of google controls
 .map-control.places-control{
     right: 50px !important;
@@ -245,6 +221,7 @@
 }
 
 
+@import "places-control";
 @import "layer-list-control";
 @import "overlay";
 @import 'refine-control';

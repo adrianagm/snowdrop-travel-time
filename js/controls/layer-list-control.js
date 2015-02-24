@@ -39,6 +39,15 @@
                 this.toggleList();
             }
             var that = this;
+            this.bindEvent('layer', 'click', function(event) {
+                var li = event.currentTarget;
+
+                if (li.classList.contains('active')) {
+                    that.layerDeselected(li);
+                } else {
+                    that.layerSelected(li);
+                }
+            });
 
             this.bindEvent('header', 'click', function(event) {
                 that.toggleList(event.target);
@@ -161,8 +170,7 @@
             } else {
                 header.classList.remove('collapse');
                 style.display = 'block';
-            }
-
+            }          
         },
 
         clearList: function() {
