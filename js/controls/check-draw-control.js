@@ -129,7 +129,7 @@
             this.drawingManager.setMap(null);
 
             if (this.innerPolygon !== null) {
-                this._basicSearch();
+                this._searchInBounds();
                 this._cleanMap();
             } else {
 
@@ -250,12 +250,8 @@
             return area / 2;
         },
 
-        _basicSearch: function() {
-            var list = [];
-            var bounds = this.map.getBounds();
-            list.push(bounds.getNorthEast());
-            list.push(bounds.getSouthWest());
-            this.api.searchByPolygon(list);
+        _searchInBounds: function() {
+            this.searchInBounds();
         },
 
         _cleanMap: function() {
