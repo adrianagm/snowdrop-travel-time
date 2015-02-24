@@ -91,7 +91,8 @@
             this.markers.push(marker);
 
             this.createInfowindow(marker);
-            this.getMarkerMatrix(marker);
+            this.getMarkerMatrix(marker, google.maps.TravelMode.DRIVING);
+            this.getMarkerMatrix(marker, google.maps.TravelMode.WALKING);
         },
 
         createInfowindow: function(marker) {
@@ -99,7 +100,6 @@
             infoWindowContent.innerHTML = '<div class="poi-popup">' +
                 '<div class="car-time"></div>' +
                 '<div class="walking-time"></div>' +
-                '<div class="distance"></div>' +
                 '</div>';
 
             marker.content = infoWindowContent;
@@ -112,9 +112,8 @@
             });
         },
 
-        getMarkerMatrix: function(marker) {
+        getMarkerMatrix: function(marker, travelMode) {
             var that = this;
-            var travelMode = google.maps.TravelMode.DRIVING;
             this.distanceService.getDistanceMatrix({
                 origins: [marker.position],
                 destinations: [this.map.getCenter()],
@@ -126,16 +125,22 @@
 
                 if (status === 'OK') {
                     var result = res.rows[0].elements[0];
-                    that.setMarkerProperties(marker, result);
+                    that.setMarkerProperties(marker, result, travelMode);
                 } else {
                     console.log(status);
                 }
             });
         },
 
-        setMarkerProperties: function(marker, result) {
-            var content = marker.content.getElementsByClassName('poi-popup')[0];
-            content.innerHTML = result;
+        setMarkerProperties: function(marker, result, travelMode) {
+            var content = '';
+            if (travelMode === google.maps.TravelMode.DRIVING) {
+                content = marker.content.getElementsByClassName('car-time')[0];
+                content.innerHTML = "car: " + result.distance.text + "  " + result.duration.text;
+            } else if (travelMode === google.maps.TravelMode.WALKING) {
+                content = marker.content.getElementsByClassName('walking-time')[0];
+                content.innerHTML = "walking: " + result.distance.text + "  " + result.duration.text;
+            }
 
             marker.infowindow.open(this.map, marker);
         },
