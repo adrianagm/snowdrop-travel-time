@@ -103,7 +103,7 @@
             var map = this.owner.element;
             var content = document.createElement('div');
 
-           
+
 
             var overlayContent = document.createElement('div');
             overlayContent.className = 'overlay-content';
@@ -141,7 +141,7 @@
             };
             overlayFooter.appendChild(acceptButton);
 
- 
+
             content.appendChild(overlayContent);
             content.appendChild(overlayFooter);
 

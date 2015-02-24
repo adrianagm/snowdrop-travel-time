@@ -16,11 +16,14 @@
 
         service: null,
         infowindow: null,
-        startCollapse: false,
         clusterPlaces: null,
+
+        startCollapse: false,
+        startSearchPlaces: true,
 
 
         initialize: function() {
+
             MapViewer.placesList = this.places;
             var places = this.places;
             var mcOptions = {
@@ -31,6 +34,9 @@
             this.placesList = this.getElementsByClass('places-list')[0];
             this.placesSearch = this.getElementsByClass('search-places')[0];
             this.placesCustom = this.getElementsByClass('custom-btn')[0];
+            if (!this.startSearchPlaces) {
+                this.placesSearch.style.display = 'none';
+            }
             for (var place in places) {
                 this.addLI(place);
             }
@@ -66,14 +72,30 @@
                     var place = that.places[activePlaces[i].innerHTML];
                     var type = place.type;
                     that.removePlacesToMap(type);
-                    that.placesSelected(activePlaces[i], that.updateHeatmap);
+                    that.placesSelected(activePlaces[i], function() {
+                        //callback for update heatmap if it's active
+                        var heatMapButton = that.owner.element.getElementsByClassName('heatmap-view-button')[0];
+                        if (heatMapButton) {
+                            if (heatMapButton.classList.contains('active')) {
+                                MapViewer.heatmap.setMap(null);
+                                MapViewer.Heatmap.prototype.createHeatMap();
+                            }
+                        }
+
+                    });
                 }
             });
+
+            google.maps.event.addListener(this.map, 'click', function() {
+                that.content.getElementsByClassName('custom-places-list')[0].style.display = 'none';
+            });
+
+
         },
 
-        tooglePlaces: function(){
+        tooglePlaces: function() {
             var that = this;
-             this.bindEvent('places', 'click', function(event) {
+            this.bindEvent('places', 'click', function(event) {
                 var li = event.currentTarget;
                 if (that.timeOut !== null) {
                     clearTimeout(that.timeOut);
@@ -88,9 +110,9 @@
                         that.placesSelected(li);
                     }, 500);
                 }
-               
+
             });
-        }, 
+        },
         placesSelected: function(li, callback) {
             li.classList.add('active');
             var place = this.places[li.innerHTML];
@@ -173,13 +195,17 @@
             if (style.display !== 'none') {
                 header.classList.add('collapse');
                 style.display = 'none';
-                stylePlcSearch.display = 'none';
-                stylePlcCustom.display = 'none';
+                if (this.startSearchPlaces) {
+                    stylePlcSearch.display = 'none';
+                    stylePlcCustom.display = 'none';
+                }
             } else {
                 header.classList.remove('collapse');
                 style.display = 'inline-block';
-                stylePlcSearch.display = 'inline-block';
-                stylePlcCustom.display = 'inline-block';
+                if (this.startSearchPlaces) {
+                    stylePlcSearch.display = 'inline-block';
+                    stylePlcCustom.display = 'inline-block';
+                }
             }
         },
 
@@ -190,17 +216,7 @@
             li.setAttribute("data-tag", place);
             this.placesList.appendChild(li);
         },
-        updateHeatmap: function() {
-            var heatMapButton = this.getElementsByClass('heatmap-view-button')[0];
-            if (heatMapButton) {
-                if (heatMapButton.classList.contains('active')) {
-                    MapViewer.heatmap.setMap(null);
-                    MapViewer.Heatmap.prototype.createHeatMap();
 
-
-                }
-            }
-        },
         _searchPlacesModalTemplate: function() {
             var selection_options = placesCategories;
             var places = MapViewer.placesList;
@@ -234,34 +250,68 @@
             /* this function is execute insite JLLOverlay Class so 'this' is refered to the JLLOverlay object
              */
             var map = this.parentObj.owner.element;
-            var searchPlaces = map.getElementsByClassName('search-places-list')[0];
-            var addBtn = map.getElementsByClassName('add-places-btn')[0];
-            var placesList = this.parentObj.placesList;
             var that = this.parentObj;
-            
+            var searchPlaces = map.getElementsByClassName('search-places-list')[0];
+            var searchInput = map.getElementsByClassName('search-places-input')[0];
+            var placesList = this.parentObj.placesList;
+            var placesListOptions = placesList.getElementsByClassName('placesCategory');
+            var addBtn = map.getElementsByClassName('add-places-btn')[0];
+            var disabledOptions = [];
+
+            for (var i = 0; i < placesListOptions.length; i++) {
+                disabledOptions.push(placesListOptions[i].innerText);
+            }
+
+            var searchListOptions = [];
+
+
+            for (var j = 0; j < searchPlaces.options.length; j++) {
+                if (disabledOptions.lastIndexOf(searchPlaces.options[j].text) > -1) {
+                    searchPlaces.removeChild(searchPlaces.options[j]);
+
+                } else {
+                    searchListOptions.push(searchPlaces.options[j].text);
+                }
+            }
+            if (searchInput && searchPlaces) {
+                searchInput.addEventListener("keyup", function(e) {
+                    var inputValue = e.target.value.toLowerCase();
+                    searchPlaces.innerHTML = '';
+                    for (var i = 0; i < searchListOptions.length; i++) {
+                        var optionValue = searchListOptions[i];
+                        if (new RegExp(inputValue).test(optionValue.toLowerCase())) {
+                            var op = document.createElement('option');
+                            op.className = 'layer';
+                            op.innerText = optionValue;
+                            searchPlaces.appendChild(op);
+                        }
+                    }
+                }, false);
+            }
+
             addBtn.onclick = function() {
                 var searchPlaceslength = searchPlaces.length;
                 for (var i = 0; i < searchPlaceslength; i++) {
                     if (searchPlaces[i]) {
                         var option = searchPlaces[i];
                         if (option.selected) {
-                           MapViewer.placesList[option.text] = {
+                            MapViewer.placesList[option.text] = {
                                 type: option.value,
                             };
-                            console.log(option.text);
+
                             if (!that.customPlacesBtn) {
                                 that.createCustomBtn();
-                            }else if(that.customPlacesBtn.style.display === 'none'){
+                            } else if (that.customPlacesBtn.style.display === 'none') {
                                 that.customPlacesBtn.style.display = 'inline-block';
                             }
                             that.addCustomLI(option.text);
-                            that.overlay.destroy();
 
                         }
                     }
                 }
+                that.overlay.destroy();
             };
-    
+
         },
 
 
@@ -272,7 +322,7 @@
             customPlaces.className = 'custom-places';
             var customPlacesFooter = document.createElement('div');
             customPlacesFooter.className = 'custom-places-footer';
-            customPlacesFooter.innerHTML = 'Custom';
+            customPlacesFooter.innerHTML = 'Custom <span class="number-item"></span>';
             var customPlacesList = document.createElement('div');
             customPlacesList.className = 'custom-places-list';
             customPlacesList.innerHTML = '<ul class="custom-places-list-ul"></ul>';
@@ -283,17 +333,19 @@
                 var style = map.getElementsByClassName('custom-places-list')[0].style;
                 if (style.display === 'none' || style.display === '') {
                     style.display = 'block';
-                   
+
                 } else {
                     style.display = 'none';
 
                 }
+
+
             };
             this.customPlacesBtn = customPlaces;
 
         },
 
-         addCustomLI: function(place) {
+        addCustomLI: function(place) {
             this.placesCustomList = this.getElementsByClass('custom-places-list-ul')[0];
             var item = document.createElement('li');
             var li = document.createElement('span');
@@ -305,129 +357,136 @@
             item.appendChild(li);
             item.appendChild(remove);
             this.placesCustomList.appendChild(item);
+            this.numberCustomCategories();
             this.placesSelected(li);
-
             this.tooglePlaces();
 
-            var that = this; 
-            remove.onclick = function(event){
+            var that = this;
+            remove.onclick = function(event) {
                 event.stopPropagation();
                 var item = this.parentNode;
                 var li = item.firstChild;
                 if (li.classList.contains('active')) {
-                    that.placesDeselected(li);    
+                    that.placesDeselected(li);
                 }
                 delete MapViewer.placesList[li.innerHTML];
                 that.placesCustomList.removeChild(item);
-                if(that.placesCustomList.firstChild === null){
+                that.numberCustomCategories();
+                if (that.placesCustomList.firstChild === null) {
                     that.customPlacesBtn.style.display = 'none';
                     that.getElementsByClass('custom-places-list')[0].style.display = 'none';
                 }
             };
-           
+
         },
+
+        numberCustomCategories: function() {
+            var list = this.getElementsByClass('custom-places-list-ul')[0];
+            var items = list.children;
+            var numberItem = this.getElementsByClass('number-item')[0];
+            numberItem.innerHTML = ' (' + items.length + ')';
+        }
 
     });
 
-var placesCategories = {
-    accounting: 'accounting',
-    airport: 'airport',
-    amusement_park: 'amusement_park',
-    aquarium: 'aquarium',
-    art_gallery: 'art_gallery',
-    atm: 'atm',
-    bakery: 'bakery',
-    bank: 'bank',
-    bar: 'bar',
-    beauty_salon: 'beauty_salon',
-    bicycle_store: 'bicycle_store',
-    book_store: 'book_store',
-    bowling_alley: 'bowling_alley',
-    bus_station: 'bus_station',
-    cafe: 'cafe',
-    campground: 'campground',
-    car_dealer: 'car_dealer',
-    car_rental: 'car_rental',
-    car_repair: 'car_repair',
-    car_wash: 'car_wash',
-    casino: 'casino',
-    cemetery: 'cemetery',
-    church: 'church',
-    city_hall: 'city_hall',
-    clothing_store: 'clothing_store',
-    convenience_store: 'convenience_store',
-    courthouse: 'courthouse',
-    dentist: 'dentist',
-    department_store: 'department_store',
-    doctor: 'doctor',
-    electrician: 'electrician',
-    electronics_store: 'electronics_store',
-    embassy: 'embassy',
-    establishment: 'establishment',
-    finance: 'finance',
-    fire_station: 'fire_station',
-    florist: 'florist',
-    food: 'food',
-    funeral_home: 'funeral_home',
-    furniture_store: 'furniture_store',
-    gas_station: 'gas_station',
-    general_contractor: 'general_contractor',
-    grocery_or_supermarket: 'grocery_or_supermarket',
-    gym: 'gym',
-    hair_care: 'hair_care',
-    hardware_store: 'hardware_store',
-    health: 'health',
-    hindu_temple: 'hindu_temple',
-    home_goods_store: 'home_goods_store',
-    hospital: 'hospital',
-    insurance_agency: 'insurance_agency',
-    jewelry_store: 'jewelry_store',
-    laundry: 'laundry',
-    lawyer: 'lawyer',
-    library: 'library',
-    liquor_store: 'liquor_store',
-    local_government_office: 'local_government_office',
-    locksmith: 'locksmith',
-    lodging: 'lodging',
-    meal_delivery: 'meal_delivery',
-    meal_takeaway: 'meal_takeaway',
-    mosque: 'mosque',
-    movie_rental: 'movie_rental',
-    movie_theater: 'movie_theater',
-    moving_company: 'moving_company',
-    museum: 'museum',
-    night_club: 'night_club',
-    painter: 'painter',
-    park: 'park',
-    parking: 'parking',
-    pet_store: 'pet_store',
-    pharmacy: 'pharmacy',
-    physiotherapist: 'physiotherapist',
-    place_of_worship: 'place_of_worship',
-    plumber: 'plumber',
-    police: 'police',
-    post_office: 'post_office',
-    real_estate_agency: 'real_estate_agency',
-    restaurant: 'restaurant',
-    roofing_contractor: 'roofing_contractor',
-    rv_park: 'rv_park',
-    school: 'school',
-    shoe_store: 'shoe_store',
-    shopping_mall: 'shopping_mall',
-    spa: 'spa',
-    stadium: 'stadium',
-    storage: 'storage',
-    store: 'store',
-    subway_station: 'subway_station',
-    synagogue: 'synagogue',
-    taxi_stand: 'taxi_stand',
-    train_station: 'train_station',
-    travel_agency: 'travel_agency',
-    university: 'university',
-    veterinary_care: 'veterinary_care',
-    zoo: 'zoo'
-};
+    var placesCategories = {
+        accounting: 'Accounting',
+        airport: 'airport',
+        amusement_park: 'amusement_park',
+        aquarium: 'aquarium',
+        art_gallery: 'art_gallery',
+        atm: 'atm',
+        bakery: 'bakery',
+        bank: 'bank',
+        bar: 'bar',
+        beauty_salon: 'beauty_salon',
+        bicycle_store: 'bicycle_store',
+        book_store: 'book_store',
+        bowling_alley: 'bowling_alley',
+        bus_station: 'bus_station',
+        cafe: 'cafe',
+        campground: 'campground',
+        car_dealer: 'car_dealer',
+        car_rental: 'car_rental',
+        car_repair: 'car_repair',
+        car_wash: 'car_wash',
+        casino: 'casino',
+        cemetery: 'cemetery',
+        church: 'church',
+        city_hall: 'city_hall',
+        clothing_store: 'clothing_store',
+        convenience_store: 'convenience_store',
+        courthouse: 'courthouse',
+        dentist: 'dentist',
+        department_store: 'department_store',
+        doctor: 'doctor',
+        electrician: 'electrician',
+        electronics_store: 'electronics_store',
+        embassy: 'embassy',
+        establishment: 'establishment',
+        finance: 'finance',
+        fire_station: 'fire_station',
+        florist: 'florist',
+        food: 'food',
+        funeral_home: 'funeral_home',
+        furniture_store: 'furniture_store',
+        gas_station: 'gas_station',
+        general_contractor: 'general_contractor',
+        grocery_or_supermarket: 'grocery_or_supermarket',
+        gym: 'gym',
+        hair_care: 'hair_care',
+        hardware_store: 'hardware_store',
+        health: 'health',
+        hindu_temple: 'hindu_temple',
+        home_goods_store: 'home_goods_store',
+        hospital: 'hospital',
+        insurance_agency: 'insurance_agency',
+        jewelry_store: 'jewelry_store',
+        laundry: 'laundry',
+        lawyer: 'lawyer',
+        library: 'library',
+        liquor_store: 'liquor_store',
+        local_government_office: 'local_government_office',
+        locksmith: 'locksmith',
+        lodging: 'lodging',
+        meal_delivery: 'meal_delivery',
+        meal_takeaway: 'meal_takeaway',
+        mosque: 'mosque',
+        movie_rental: 'movie_rental',
+        movie_theater: 'movie_theater',
+        moving_company: 'moving_company',
+        museum: 'museum',
+        night_club: 'night_club',
+        painter: 'painter',
+        park: 'park',
+        parking: 'parking',
+        pet_store: 'pet_store',
+        pharmacy: 'pharmacy',
+        physiotherapist: 'physiotherapist',
+        place_of_worship: 'place_of_worship',
+        plumber: 'plumber',
+        police: 'police',
+        post_office: 'post_office',
+        real_estate_agency: 'real_estate_agency',
+        restaurant: 'restaurant',
+        roofing_contractor: 'roofing_contractor',
+        rv_park: 'rv_park',
+        school: 'school',
+        shoe_store: 'shoe_store',
+        shopping_mall: 'shopping_mall',
+        spa: 'spa',
+        stadium: 'stadium',
+        storage: 'storage',
+        store: 'store',
+        subway_station: 'subway_station',
+        synagogue: 'synagogue',
+        taxi_stand: 'taxi_stand',
+        train_station: 'train_station',
+        travel_agency: 'travel_agency',
+        university: 'university',
+        veterinary_care: 'veterinary_care',
+        zoo: 'zoo'
+    };
 
     MapViewer.registerModule(MapViewer.Places, CONTROL_CLASS);
 })();
-
