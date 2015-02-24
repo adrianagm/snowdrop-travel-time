@@ -9,7 +9,7 @@ function MapViewer(options, api, modules) {
     cb = function() {
         var promises = MapViewer.loadGoogleLibs();
         Promise.all(promises).then(function(values) {
-            options.center= options.center?new google.maps.LatLng(options.center[0], options.center[1]):new google.maps.LatLng(51.5286416,-0.1015987);
+            options.center = options.center ? new google.maps.LatLng(options.center[0], options.center[1]) : new google.maps.LatLng(51.5286416, -0.1015987);
             that.createMap(options, api);
             that.loadModules(modules);
 
@@ -43,7 +43,7 @@ function MapViewer(options, api, modules) {
         createMap: function(options, api) {
 
             var mapOptions = {
-                zoom: options.zoom?options.zoom:11,
+                zoom: options.zoom ? options.zoom : 11,
                 center: options.center,
                 zoomControlOptions: {
                     style: google.maps.ZoomControlStyle.SMALL,
@@ -204,7 +204,7 @@ function MapViewer(options, api, modules) {
             for (var i = 0; i < searchResults.length; i++) {
                 var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
                 var markerObject = {
-                    properties: searchResults[i],
+                    propertyId: searchResults[i].propertyId,
                     latLng: latLng,
                     iconClass: 'property-marker',
                     map: this.map,
@@ -226,7 +226,8 @@ function MapViewer(options, api, modules) {
                 flat: true,
                 content: content,
                 map: marker.map,
-                properties: marker.properties,
+                propertyId: marker.propertyId
+
             });
             richMarker.isInCluster = true;
             return richMarker;
@@ -245,29 +246,32 @@ function MapViewer(options, api, modules) {
                     that.infoWindow.removeChildren_(that.infoWindow.content_);
 
                 }
-                that.infoWindow = that.setInfoWindow(marker);
-                that.infoWindow.open(this.map, this);
+                that.internalPropertyDataPromise = that.api.retrievePropertyData(marker.propertyId);
+                that.internalPropertyDataPromise.then(function(propertyData) {
+                    that.infoWindow = that.setInfoWindow(marker, propertyData);
+                    that.infoWindow.open(that.map, marker);
+                });
 
             });
 
         },
 
-        setInfoWindow: function(marker) {
+        setInfoWindow: function(marker, propertyData) {
             this.infoWindow = new InfoBubble({
                 offsetWidth: 0,
-                offsetHeight: marker.height/2
+                offsetHeight: marker.height / 2
             });
+
             var tabs = this.templateTabs;
             for (var labelTab in tabs) {
                 var tab = tabs[labelTab];
                 var output = tab.template ? tab.template : '';
-
-                var data = marker.properties;
+                var data = propertyData;
                 if (tab.dataFields) {
                     data = {};
                     for (var d in tab.dataFields) {
                         var field = tab.dataFields[d];
-                        data[field] = marker.properties[field];
+                        data[field] = propertyData[field];
                     }
 
                 }
@@ -304,10 +308,10 @@ function MapViewer(options, api, modules) {
                         google.maps.event.addDomListener(that.infoWindow, 'domready', function() {
                             if (that.infoWindow.content_.getElementsByClassName('pano')[0]) {
                                 if (tab.orientationField) {
-                                    marker.orientationField = marker.properties[tab.orientationField];
+                                    marker.orientationField = propertyData[tab.orientationField];
                                 }
                                 if (tab.inclinationField) {
-                                    marker.inclinationField = marker.properties[tab.inclinationField];
+                                    marker.inclinationField = propertyData[tab.inclinationField];
                                 }
                                 that.initializeStreetView(marker);
                             }
@@ -323,7 +327,10 @@ function MapViewer(options, api, modules) {
 
             }
 
+
             return this.infoWindow;
+
+
 
         },
 

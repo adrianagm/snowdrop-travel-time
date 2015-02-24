@@ -87,7 +87,9 @@
             });
 
             google.maps.event.addListener(this.map, 'click', function() {
-                that.content.getElementsByClassName('custom-places-list')[0].style.display = 'none';
+                var customPlaces = that.content.getElementsByClassName('custom-places-list')[0];
+                if(customPlaces)
+                    customPlaces.style.display = 'none';
             });
 
 

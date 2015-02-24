@@ -42,24 +42,13 @@ var IntegrationAPI = {
         for (var j = 0; j < totalItems; j++) {
             var lat = RandomCoordinate(minLat, maxLat);
             var lng = RandomCoordinate(minLng, maxLng);
-            var heading = RandomCoordinate(0, 360);
+
             var elem = {
                 propertyId: 1,
-                fuzzy: false,
-                type: "test",
+
                 lat: lat,
                 lng: lng,
-                images: [{
-                    title: 'Photo 1',
-                    url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
-                }, {
-                    title: 'Photo 2',
-                    url: 'http://178.62.16.68/wp-content/uploads/2011/01/Apartamento-NewYorkando1.jpg'
-                }, {
-                    title: 'Photo 3',
-                    url: 'http://www.modms.info/wp-content/uploads/2014/11/diseno-apartamentos.jpg'
-                }],
-                heading: heading,
+
             };
 
             var point = new google.maps.LatLng(lat, lng);
@@ -85,6 +74,32 @@ var IntegrationAPI = {
 
     setPropertiesFilter: function(propertiesIds) {
 
+    },
+
+    retrievePropertyData: function(id) {
+        var heading = Math.random() * 360;
+        var propertyData = {
+            propertyId: id,
+            fuzzy: false,
+            type: "test",
+            images: [{
+                title: 'Photo 1',
+                url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
+            }, {
+                title: 'Photo 2',
+                url: 'http://178.62.16.68/wp-content/uploads/2011/01/Apartamento-NewYorkando1.jpg'
+            }, {
+                title: 'Photo 3',
+                url: 'http://www.modms.info/wp-content/uploads/2014/11/diseno-apartamentos.jpg'
+            }],
+            heading: heading,
+        };
+        return new Promise(function(resolve) {
+            window.setTimeout(
+                function() {
+                    resolve(propertyData);
+                }, 1000);
+        });
     },
 
     retrieveDatasets: function() {
@@ -222,9 +237,9 @@ function MapViewerTest() {
         }]
     };
     var mapOptions = {
-        id:'map',
-        center:[37.3753707,-5.9550583],
-        zoom:12
+        id: 'map',
+        center: [37.3753707, -5.9550583],
+        zoom: 12
     };
 
     var mapViewer = new MapViewer(mapOptions, IntegrationAPI, [
@@ -234,7 +249,7 @@ function MapViewerTest() {
 
     ]);
 
-     mapViewer.setBubbleTemplate({
+    mapViewer.setBubbleTemplate({
         "Details": {
             dataFields: ['propertyId', 'fuzzy', 'type'],
             template: '<div class="balloon data-tab container"><table>{{#data}}<tr class="data-item"><td><b>{{key}}</b></td><td>{{value}}</td></tr>{{/data}}</table></div>'
