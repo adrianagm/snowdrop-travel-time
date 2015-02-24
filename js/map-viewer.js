@@ -64,12 +64,6 @@ function MapViewer(id, api, modules) {
             this.setModulesApi();
             this.setModulesOwner();
             this.loadedModules = {};
-
-            google.maps.event.addListenerOnce(that.map, 'tilesloaded', function() {
-                google.maps.event.addListenerOnce(that.map, 'tilesloaded', function() {
-                    google.maps.event.trigger(that.map, 'resize');
-                });
-            });
         },
 
         setModulesMap: function() {
