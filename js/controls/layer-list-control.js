@@ -5,13 +5,13 @@
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div>' +
-        '<div class="layer-list-collapsible-wrap">' +
-        '<div class="search-dataset">Search Dataset</div>' +
-        '<div class="layer-list-options-wrap">' +
-        '<ul class="layer-list"></ul>' +
-        '</div>' +
-        '<div class="clear">Clear</div>' +
-        '</div>',
+            '<div class="layer-list-collapsible-wrap">' +
+            '<div class="search-dataset">Search Dataset</div>' +
+            '<div class="layer-list-options-wrap">' +
+            '<ul class="layer-list"></ul>' +
+            '</div>' +
+            '<div class="clear">Clear</div>' +
+            '</div>',
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
@@ -38,17 +38,8 @@
             if (this.startCollapse) {
                 this.toggleList();
             }
+
             var that = this;
-            this.bindEvent('layer', 'click', function(event) {
-                var li = event.currentTarget;
-
-                if (li.classList.contains('active')) {
-                    that.layerDeselected(li);
-                } else {
-                    that.layerSelected(li);
-                }
-            });
-
             this.bindEvent('header', 'click', function(event) {
                 that.toggleList(event.target);
             });
@@ -61,7 +52,7 @@
             this.bindEvent('search-dataset', 'click', function(event) {
 
                 that.internalDatasetsPromise.then(function(datasets) {
-                    
+
                     that.internalDataset = datasets;
                     var options = [];
 
@@ -109,16 +100,16 @@
                 height: 256,
 
             };
-           
+
             if (layer.requestParams) {
                 for (var p in layer.requestParams) {
-                        requestParams[p] = layer.requestParams[p];
+                    requestParams[p] = layer.requestParams[p];
                 }
 
             }
 
-            if(!layer.opacity){
-                 layer.opacity = 1;
+            if (!layer.opacity) {
+                layer.opacity = 1;
             }
 
             var wms = MercatorProjectionLayer.loadWMS(layer, requestParams);
@@ -162,15 +153,16 @@
         },
 
         toggleList: function(header) {
-
-            var style = document.getElementsByClassName('layer-list-collapsible-wrap')[0].style;
-            if (style.display !== 'none') {
-                header.classList.add('control-collapse');
-                style.display = 'none';
-            } else {
-                header.classList.remove('control-collapse');
-                style.display = 'block';
-            }          
+            if (this.getElementsByClass('layer-list-collapsible-wrap')[0]) {
+                var style = this.getElementsByClass('layer-list-collapsible-wrap')[0].style;
+                if (style.display !== 'none') {
+                    header.classList.add('control-collapse');
+                    style.display = 'none';
+                } else {
+                    header.classList.remove('control-collapse');
+                    style.display = 'block';
+                }
+            }
         },
 
         clearList: function() {
@@ -326,10 +318,12 @@
 
         _ajustHeight: function() {
             var layerListOptions = this.layerList.getElementsByClassName('layer');
-            if (layerListOptions.length > 8) {
-                document.getElementsByClassName('layer-list-options-wrap')[0].classList.add('enable-scroll');
+            var layerListOptionsWrap = this.getElementsByClass('layer-list-options-wrap')[0];
+
+            if (layerListOptions.length > 8 && layerListOptionsWrap) {
+                layerListOptionsWrap.classList.add('enable-scroll');
             } else {
-                document.getElementsByClassName('layer-list-options-wrap')[0].classList.remove('enable-scroll');
+                layerListOptionsWrap.classList.remove('enable-scroll');
             }
         },
 

@@ -55,14 +55,14 @@
 
         &.inactive {
             &:hover {
-                background-color: @custom-green;
+                background-color: @secondary-color;
                 color: white;
                 opacity: 0.6;
             }
         }
 
         &.active {
-            background-color: @custom-green;
+            background-color: @secondary-color;
             color: white;
         }
     }
@@ -71,7 +71,7 @@
 .refine-marker-label {
     padding: 2px 5px;
     margin-top: 25px;
-    background-color: @custom-green;
+    background-color: @secondary-color;
 
     color: white;
     font-size: 12px;
@@ -85,4 +85,15 @@
 
 .refine-cluster-marker {
     display: none;
+}
+
+@refine-marker-size: 20px;
+.refine-search-marker {
+    background-color: @secondary-color;
+    height: @refine-marker-size;
+    width: @refine-marker-size;
+    position: absolute;
+    top: -@refine-marker-size/2;
+    left: -@refine-marker-size/2;
+    border-radius: 50%
 }

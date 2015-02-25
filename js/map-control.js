@@ -41,7 +41,7 @@
             }
 
             wrapperDiv.className = 'map-control';
-            wrapperDiv.classList.add(this.controlClass);
+            wrapperDiv.classList.add(this.controlClass + '-wrapper');
             wrapperDiv.appendChild(controlDiv);
 
             helperDiv.appendChild(wrapperDiv);
@@ -80,6 +80,7 @@
         },
 
         onSearchResults: function(searchResults) {},
+        onPropertyclicked: function(marker) {},
 
         searchInBounds: function() {
             var bounds = this.map.getBounds();

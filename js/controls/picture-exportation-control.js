@@ -40,7 +40,8 @@
             this.elem.style.width = "initial";
             this.elem.style.height = this.oldHeight;
             for (var j = 0; j < this.controls.length; j++) {
-                if (!this.controls[j].firstChild.classList.contains('picture-exportation-control')) {
+                if (!this.controls[j].firstChild ||
+                    !this.controls[j].firstChild.classList.contains('picture-exportation-control')) {
                     this.controls[j].style.display = 'block';
                 }
             }
@@ -53,7 +54,7 @@
 
         activate: function() {
             var that = this;
-            this.controls = document.getElementsByClassName('map-control');
+            this.controls = this.getElementsByClass('map-control');
             this.link.classList.add('complete-screen');
             this.mapControl.classList.remove('map-control');
             this.buttonText.classList.remove('normal');
@@ -61,7 +62,8 @@
             this.map.set('disableDefaultUI', true);
             this.map.set('mapTypeControl', false);
             for (var i = 0; i < this.controls.length; i++) {
-                if (!this.controls[i].firstChild.classList.contains('picture-exportation-control')) {
+                if (!this.controls[i].firstChild ||
+                    !this.controls[i].firstChild.classList.contains('picture-exportation-control')) {
                     this.controls[i].style.display = "none";
                 }
             }
@@ -73,7 +75,7 @@
             this.zoom = this.map.getZoom();
 
             this._activateFullScreen();
-            
+
             setTimeout(function() {
                 that.map.fitBounds(that.bounds);
                 that.map.setZoom(that.zoom);
