@@ -73,7 +73,7 @@ function InfoBubble(opt_options) {
   }
 
   if (options['disableAnimation'] == undefined) {
-    options['disableAnimation'] = false;
+    options['disableAnimation'] = true;
   }
 
  /* if (options['minWidth'] == undefined) {
