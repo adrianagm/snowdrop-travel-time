@@ -7,12 +7,13 @@
 
 @control-font-size: 13px;
 @padding-control: 8px;
+@control-height: 32px;
 @border-radius-control: 2px;
 @shadow-control: 0px 1px 8px #888;
 
 @main-font-family: "Droid Sans", sans-serif;
 
-@left-controls-width: 250px;
+@left-controls-width: 200px;
 
 .map-widget .map-control {
     font-family: "Droid Sans", sans-serif;
@@ -35,6 +36,7 @@
     content: url('../images/minimize.png');
     float: left;
     padding-right: @padding-control;
+    margin-bottom: -2px;
 }
 
 .map-widget .header.control-collapse::before {
@@ -50,7 +52,7 @@
 .map-widget .refine-search-control {
     position: relative;
     bottom: 7px;
-    margin: 5px;
+    margin-bottom: 5px;
 }
 
 .map-widget .check-pan-control-outer,
@@ -71,7 +73,7 @@
 .map-widget .check-pan-control-inner,
 .map-widget .check-draw-control-inner,
 .map-widget .refine-search-control-inner {
-    font-size: 14px;
+    font-size: @control-font-size;
     padding: @padding-control;
 }
 
@@ -156,12 +158,13 @@
 
 .heatmap-view-button {
     background-image: url('../images/heatmap.png');
-    background-size: 40px 40px;
-    height: 39px;
+    background-size: 40px 34px;
+    height: 35px;
     width: 40px;
     background-repeat: no-repeat;
     background-color: white;
     cursor: pointer;
+    border-radius: @border-radius-control;
 }
 
 .heatmap-view-button.active {
@@ -171,13 +174,13 @@
 //change position of google controls
 .map-control.places-control {
     right: 50px !important;
-    bottom: 41px !important;
+    bottom: 29px !important;
 }
 
 .map-control.heatmap-view-control {
-    height: 40px;
+    height: 35px;
     width: 40px;
-    bottom: 41px !important;
+    bottom: 29px !important;
 }
 
 .map-control.layer-list-control {
