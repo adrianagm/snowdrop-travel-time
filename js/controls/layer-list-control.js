@@ -109,16 +109,16 @@
                 height: 256,
 
             };
-           
+
             if (layer.requestParams) {
                 for (var p in layer.requestParams) {
-                        requestParams[p] = layer.requestParams[p];
+                    requestParams[p] = layer.requestParams[p];
                 }
 
             }
 
-            if(!layer.opacity){
-                 layer.opacity = 1;
+            if (!layer.opacity) {
+                layer.opacity = 1;
             }
 
             var wms = MercatorProjectionLayer.loadWMS(layer, requestParams);
@@ -162,15 +162,16 @@
         },
 
         toggleList: function(header) {
-
-            var style = document.getElementsByClassName('layer-list-collapsible-wrap')[0].style;
-            if (style.display !== 'none') {
-                header.classList.add('control-collapse');
-                style.display = 'none';
-            } else {
-                header.classList.remove('control-collapse');
-                style.display = 'block';
-            }          
+            if (this.getElementsByClass('layer-list-collapsible-wrap')[0]) {
+                var style = this.getElementsByClass('layer-list-collapsible-wrap')[0].style;
+                if (style.display !== 'none') {
+                    header.classList.add('control-collapse');
+                    style.display = 'none';
+                } else {
+                    header.classList.remove('control-collapse');
+                    style.display = 'block';
+                }
+            }
         },
 
         clearList: function() {
@@ -326,10 +327,12 @@
 
         _ajustHeight: function() {
             var layerListOptions = this.layerList.getElementsByClassName('layer');
-            if (layerListOptions.length > 8) {
-                document.getElementsByClassName('layer-list-options-wrap')[0].classList.add('enable-scroll');
+            var layerListOptionsWrap = this.getElementsByClass('layer-list-options-wrap')[0];
+
+            if (layerListOptions.length > 8 && layerListOptionsWrap) {
+                layerListOptionsWrap.classList.add('enable-scroll');
             } else {
-                document.getElementsByClassName('layer-list-options-wrap')[0].classList.remove('enable-scroll');
+                layerListOptionsWrap.classList.remove('enable-scroll');
             }
         },
 

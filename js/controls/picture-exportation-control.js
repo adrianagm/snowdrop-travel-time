@@ -54,7 +54,7 @@
 
         activate: function() {
             var that = this;
-            this.controls = document.getElementsByClassName('map-control');
+            this.controls = this.getElementsByClass('map-control');
             this.link.classList.add('complete-screen');
             this.mapControl.classList.remove('map-control');
             this.buttonText.classList.remove('normal');
