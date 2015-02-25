@@ -153,7 +153,6 @@
             that.drawingManager.setMap(that.map);
             that.drawingManager.setOptions({
                 drawingControl: false
-
             });
             that.listener = this._addGmapListener();
 
@@ -186,6 +185,17 @@
                 google.maps.event.addListener(polygon, 'dragstart', function() {
                     that.dragFlag = true;
                 });
+                //Events
+
+                google.maps.event.addListener(polygon, 'rightclick', function() {
+                    var polygonOption = {};
+                    if (polygon.getDraggable()) {
+                        _toggleDrag(false);
+                    } else {
+                        _toggleDrag(true);
+                    }
+
+                });
 
                 google.maps.event.addListener(polygon, 'dragend', function() {
                     that.dragFlag = false;
@@ -210,6 +220,18 @@
                 });
 
                 that.drawingManager.setDrawingMode(null);
+
+
+                function _toggleDrag(dragable) {
+                    var color = dragable ? '#14bcb6' : '#BC141A';
+                    var polygonOptions = {
+                        strokeColor: color,
+                        fillColor: color,
+                        draggable: dragable
+                    };
+                    polygon.setOptions(polygonOptions);
+                }
+
             });
             return _listener;
 
@@ -233,7 +255,6 @@
                     fillOpacity: 0.1,
                     clickable: true,
                     editable: true,
-                    draggable: true,
                     zIndex: 1
                 }
             });
