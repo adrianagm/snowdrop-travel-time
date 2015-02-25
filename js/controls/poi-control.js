@@ -70,7 +70,7 @@
 
             google.maps.event.addListener(this.searchBox, 'place_changed', function() {
                 that.addMarker(that.searchBox.getPlace());
-                that.setMapBounds();
+                //that.setMapBounds();
 
                 //call blur to avoid searchbox refill input value
                 that.input.blur();
@@ -84,6 +84,8 @@
         },
 
         addMarker: function(place) {
+            if (!place.geometry) return;
+
             var content = '<div class="poi-marker"></div>';
             var marker = new RichMarker({
                 position: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
@@ -94,22 +96,24 @@
 
             this.markers.push(marker);
 
-            this.createInfowindow(marker);
+            this.createInfowindow(marker, place.name);
             this.getMarkerMatrix(marker, google.maps.TravelMode.DRIVING);
             this.getMarkerMatrix(marker, google.maps.TravelMode.WALKING);
         },
 
-        createInfowindow: function(marker) {
+        createInfowindow: function(marker, name) {
             infoWindowContent = document.createElement('div');
             infoWindowContent.innerHTML = '<div class="poi-popup">' +
-                '<div class="car"><div class="car-icon"><i class="fa fa-car"></i></div><div class="car-distance"></div><div class="car-time"></div></div>' +
-                '<div class="walking"><div class="walking-icon"><i class="fa fa-male"></i></div><div class="walking-distance"></div><div class="walking-time"></div></div>' +
+                '<div class="poi-name">' + name + '</div>' +
+                '<div class="car"><span class="car-icon"><i class="fa fa-car"></i></span><span class="car-distance poi-text"></span><span class="car-time poi-text"></span></div>' +
+                '<div class="walking"><span class="walking-icon"><i class="fa fa-male"></i></span><span class="walking-distance poi-text"></span><span class="walking-time poi-text"></span></div>' +
                 '</div>';
 
             marker.infoWindowContent = infoWindowContent;
 
             marker.infowindow = new google.maps.InfoWindow({
-                pixelOffset: new google.maps.Size(0, -15)
+                pixelOffset: new google.maps.Size(0, -15),
+                disableAutoPan: true
             });
             marker.infowindow.setContent(infoWindowContent);
 
