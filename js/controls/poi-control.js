@@ -188,6 +188,7 @@
         setMarkerProperties: function(marker, result, travelMode) {
             var content, mode;
 
+            var timeText = '-';
             if (result.status !== 'OK') {
                 result = {
                     distance: {
@@ -197,6 +198,23 @@
                         text: '-'
                     }
                 };
+            } else {
+                timeText = '';
+                var seconds = result.duration.value;
+                var minutes = seconds / 60;
+                var hours = minutes / 60;
+                var days = hours / 24;
+
+
+                if (days > 1) {
+                    timeText += days.toFixed() + ' d ';
+                }
+                if (hours > 1) {
+                    timeText += (hours.toFixed() % 24) + ' h ';
+                }
+                if (days < 1) {
+                    timeText += (minutes % 60).toFixed() + ' min';
+                }
             }
 
             if (travelMode === google.maps.TravelMode.DRIVING) {
@@ -208,10 +226,11 @@
             content = marker.infoWindowContent.getElementsByClassName(mode + '-distance')[0];
             content.innerHTML = result.distance.text;
             content = marker.infoWindowContent.getElementsByClassName(mode + '-time')[0];
-            content.innerHTML = result.duration.text;
+            content.innerHTML = timeText;
         },
 
         onPropertyclicked: function(marker) {
+            if (this.markers.length === 0) return;
             this.selectedProperty = marker;
             this.refreshMarkers();
         },
