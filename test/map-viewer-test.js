@@ -1,5 +1,6 @@
 var mapViewer;
 var currentImage = 0;
+var totalMarkers = {};
 var IntegrationAPI = {
 
     addSearchListener: function(callback) {
@@ -33,43 +34,20 @@ var IntegrationAPI = {
         });
 
 
-        var maxItems = 2000;
-        var scopeLat = maxLat - minLat;
-        // var scopeLat = Math.abs(minLat) + Math.abs(maxLat);
-        var totalItems = scopeLat * maxItems / 180;
-        totalItems = (totalItems < 3) ? 3 : totalItems;
+        var totalItems = totalMarkers;
 
-        for (var j = 0; j < totalItems; j++) {
-            var lat = RandomCoordinate(minLat, maxLat);
-            var lng = RandomCoordinate(minLng, maxLng);
-            var heading = RandomCoordinate(0, 360);
-            var elem = {
-                propertyId: 1,
-                fuzzy: false,
-                type: "test",
-                lat: lat,
-                lng: lng,
-                images: [{
-                    title: 'Photo 1',
-                    url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
-                }, {
-                    title: 'Photo 2',
-                    url: 'http://178.62.16.68/wp-content/uploads/2011/01/Apartamento-NewYorkando1.jpg'
-                }, {
-                    title: 'Photo 3',
-                    url: 'http://www.modms.info/wp-content/uploads/2014/11/diseno-apartamentos.jpg'
-                }],
-                heading: heading,
-            };
+        for (var marker in totalItems) {
 
-            var point = new google.maps.LatLng(lat, lng);
+
+            var elem = totalItems[marker];
+
+
+            var point = new google.maps.LatLng(elem.lat, elem.lng);
 
             if (poligonPoints.length > 2) {
                 if (google.maps.geometry.poly.containsLocation(point, poligon)) {
                     list.push(elem);
                 }
-            } else {
-                list.push(elem);
             }
         }
 
@@ -85,6 +63,32 @@ var IntegrationAPI = {
 
     setPropertiesFilter: function(propertiesIds) {
 
+    },
+
+    retrievePropertyData: function(id) {
+        var heading = Math.random() * 360;
+        var propertyData = {
+            propertyId: id,
+            fuzzy: false,
+            type: "test",
+            images: [{
+                title: 'Photo 1',
+                url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
+            }, {
+                title: 'Photo 2',
+                url: 'http://178.62.16.68/wp-content/uploads/2011/01/Apartamento-NewYorkando1.jpg'
+            }, {
+                title: 'Photo 3',
+                url: 'http://www.modms.info/wp-content/uploads/2014/11/diseno-apartamentos.jpg'
+            }],
+            heading: heading,
+        };
+        return new Promise(function(resolve) {
+            window.setTimeout(
+                function() {
+                    resolve(propertyData);
+                }, 1000);
+        });
     },
 
     retrieveDatasets: function() {
@@ -251,6 +255,66 @@ function MapViewerTest() {
 
         }
     });
+
+    mapViewer.getAllMarkers = function(map) {
+        if (JSON.stringify(totalMarkers) == '{}') {
+            var markersById = {};
+            var span = map.getBounds().toSpan();
+            //if map is loaded the map extension is different of 0
+            if (span.lat() !== 0 && span.lng() !== 0) {
+                var bounds = map.getBounds().toUrlValue();
+                bounds = bounds.split(',');
+                //expand the map extension
+                var extensionIncrement = 5;
+                var minLat = parseFloat(bounds[0]) - extensionIncrement;
+                var maxLat = parseFloat(bounds[2]) + extensionIncrement;
+                var minLng = parseFloat(bounds[1]) - extensionIncrement;
+                var maxLng = parseFloat(bounds[3]) + extensionIncrement;
+
+                var maxItems = 10000;
+                var scopeLat = maxLat - minLat;
+                // var scopeLat = Math.abs(minLat) + Math.abs(maxLat);
+                var totalItems = scopeLat * maxItems / 180;
+                totalItems = (totalItems < 3) ? 3 : totalItems;
+
+                var elem1 = {
+                    propertyId: 'sevilla_center',
+                    lat: 37.385603,
+                    lng: -5.992273,
+
+                };
+                markersById[elem1.propertyId] = elem1;
+
+                var elem2 = {
+                    propertyId: 'sevilla_emergya',
+                    lat: 37.382787,
+                    lng: -5.972748,
+
+                };
+                markersById[elem2.propertyId] = elem2;
+
+                for (var j = 0; j < totalItems; j++) {
+                    var lat = RandomCoordinate(minLat, maxLat);
+                    var lng = RandomCoordinate(minLng, maxLng);
+
+                    var elem = {
+                        propertyId: j,
+                        lat: lat,
+                        lng: lng,
+
+                    };
+                    markersById[j] = elem;
+                }
+                totalMarkers = markersById;
+            }
+        }
+
+
+        function RandomCoordinate(min, max) {
+            return Math.random() * (max - min) + min;
+        }
+    };
+
 }
 
 window.onload = MapViewerTest;
