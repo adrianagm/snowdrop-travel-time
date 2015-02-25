@@ -121,6 +121,16 @@
             google.maps.event.addListener(marker, 'click', function() {
                 marker.infowindow.open(that.map, marker);
             });
+
+            google.maps.event.addListener(marker.infowindow, 'closeclick', function() {
+                marker.setMap(null);
+
+                //remove marker from array
+                var index = that.markers.indexOf(marker);
+                if (index > -1) {
+                    that.markers.splice(index, 1);
+                }
+            });
         },
 
         getMarkerMatrix: function(marker, travelMode) {
@@ -193,9 +203,6 @@
                 result = {
                     distance: {
                         text: '-'
-                    },
-                    duration: {
-                        text: '-'
                     }
                 };
             } else {
@@ -204,7 +211,6 @@
                 var minutes = seconds / 60;
                 var hours = minutes / 60;
                 var days = hours / 24;
-
 
                 if (days > 1) {
                     timeText += days.toFixed() + ' d ';
@@ -230,9 +236,10 @@
         },
 
         onPropertyclicked: function(marker) {
-            if (this.markers.length === 0) return;
             this.selectedProperty = marker;
-            this.refreshMarkers();
+            if (this.markers.length > 0) {
+                this.refreshMarkers();
+            }
         },
 
         clearMarkers: function() {
