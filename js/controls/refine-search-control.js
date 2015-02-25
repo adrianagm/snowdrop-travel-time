@@ -13,7 +13,7 @@
         text: 'Default',
         defaultChecked: false,
         checked: "",
-        toggleGroup: [''],
+        toggleGroup: ['search-group'],
 
         marker: null,
         infoWindow: null,
@@ -56,13 +56,18 @@
 
                     that.notifyActivation();
                 } else {
-                    that.marker.setMap(null);
-                    that.eventsActivated = false;
                     that.deactivate();
-                    that.clearLabels();
-                    that.owner.redrawMarkers();
                 }
             });
+        },
+
+        deactivate: function() {
+            MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
+            if (!this.marker) return;
+            this.marker.setMap(null);
+            this.eventsActivated = false;
+            this.clearLabels();
+            this.owner.redrawMarkers();
         },
 
         createCluster: function() {
