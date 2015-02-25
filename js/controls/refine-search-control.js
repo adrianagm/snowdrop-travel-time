@@ -78,17 +78,13 @@
         },
 
         createMarker: function() {
-            this.marker = new google.maps.Marker({
+            var content = '<div class="refine-search-marker"></div>';
+            this.marker = new RichMarker({
                 position: this.map.getCenter(),
+                flat: true,
                 draggable: true,
-                icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 10,
-                    fillColor: 'green',
-                    fillOpacity: 0.8,
-                    strokeColor: 'green',
-                    strokeWeight: 2
-                }
+                content: content,
+                map: this.map
             });
 
             this.createInfowindow();
@@ -120,7 +116,9 @@
                 '</div>' +
                 '</div>';
 
-            this.infowindow = new google.maps.InfoWindow();
+            this.infowindow = new google.maps.InfoWindow({
+                pixelOffset: new google.maps.Size(0, -12),
+            });
             this.infowindow.setContent(this.infoWindowContent);
 
             var that = this;
