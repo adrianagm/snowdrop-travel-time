@@ -200,6 +200,7 @@
                 google.maps.event.addListener(polygon, 'dragend', function() {
                     that.dragFlag = false;
                     that.search(this, "drag");
+                    _toggleDrag(false);
                 });
 
                 google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
