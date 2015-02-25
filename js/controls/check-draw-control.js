@@ -153,7 +153,6 @@
             that.drawingManager.setMap(that.map);
             that.drawingManager.setOptions({
                 drawingControl: false
-
             });
             that.listener = this._addGmapListener();
 
@@ -233,7 +232,6 @@
                     fillOpacity: 0.1,
                     clickable: true,
                     editable: true,
-                    draggable: true,
                     zIndex: 1
                 }
             });
