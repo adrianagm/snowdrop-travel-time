@@ -155,11 +155,6 @@
 
             this.markers[type].push(marker);
 
-            /*var that = this;
-             google.maps.event.addListener(marker, 'click', function() {
-             that.infowindow.setContent(place.name);
-             that.infowindow.open(that.map, this);
-             });*/
         },
 
         placesDeselected: function(li) {
