@@ -190,30 +190,16 @@
                 google.maps.event.addListener(polygon, 'rightclick', function() {
                     var polygonOption = {};
                     if (polygon.getDraggable()) {
-                        polygonOptions = {
-                            strokeColor: '#BC141A',
-                            fillColor: '#BC141A',
-                            draggable: false
-                        };
+                        _toggleDrag(false);
                     } else {
-                        polygonOptions = {
-                            strokeColor: '#14bcb6',
-                            fillColor: '#14bcb6',
-                            draggable: true
-                        };
+                        _toggleDrag(true);
                     }
-                    polygon.setOptions(polygonOptions);
+
                 });
 
                 google.maps.event.addListener(polygon, 'dragend', function() {
                     that.dragFlag = false;
                     that.search(this, "drag");
-                    var polygonOptions = {
-                        strokeColor: '#BC141A',
-                        fillColor: '#BC141A',
-                        draggable: false
-                    };
-                    polygon.setOptions(polygonOptions);
                 });
 
                 google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
@@ -234,6 +220,18 @@
                 });
 
                 that.drawingManager.setDrawingMode(null);
+
+
+                function _toggleDrag(dragable) {
+                    var color = dragable ? '#14bcb6' : '#BC141A';
+                    var polygonOptions = {
+                        strokeColor: color,
+                        fillColor: color,
+                        draggable: dragable
+                    };
+                    polygon.setOptions(polygonOptions);
+                }
+
             });
             return _listener;
 
