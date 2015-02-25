@@ -24,7 +24,12 @@
     margin-left: 20px;
     margin-right: 20px;
     color: @text-color-control;
-
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .map-widget .map-control > div {
@@ -49,7 +54,6 @@
     padding-right: @padding-control;
 
 }
-
 
 .map-widget .check-pan-control,
 .map-widget .check-draw-control,
@@ -191,16 +195,15 @@
     top: 20px !important;
 }
 
-.radio-places-item{
+.radio-places-item {
     text-align: left !important;
     padding-left: 10%;
 }
-.radio-places-item input{
+
+.radio-places-item input {
     display: inline;
     width: 20% !important;
-
 }
-
 
 @import "places-control";
 @import "layer-list-control";
