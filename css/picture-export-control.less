@@ -1,0 +1,22 @@
+.map-widget {
+    .picture-exportation-control > div {
+        background: white;
+    }
+    .picture-exportation-control-inner {
+        border-radius: @border-radius-control;
+        margin: 5px;
+        &.normal {
+            min-height: 25px;
+            min-width: 25px;
+            background-image: url('../images/camera.png');
+            cursor: pointer;
+        }
+        &.fullscreen {
+            min-height: 25px;
+            min-width: 25px;
+            background-image: url('../images/close_24.png');
+            cursor: pointer;
+        }
+    }
+}
+
