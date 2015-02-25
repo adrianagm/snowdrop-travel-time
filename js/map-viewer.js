@@ -162,6 +162,12 @@ function MapViewer(options, api, modules) {
             }
         },
 
+        notifyPropertyClicked: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPropertyclicked(marker);
+            }
+        },
+
         loadModules: function(modulesList) {
             for (var m = 0; m < modulesList.length; m++) {
                 this.loadModule(modulesList[m]);
@@ -291,7 +297,6 @@ function MapViewer(options, api, modules) {
                 if (that.infoWindow) {
                     that.infoWindow.close();
                     that.infoWindow.removeChildren_(that.infoWindow.content_);
-
                 }
                 that.internalPropertyDataPromise = that.api.retrievePropertyData(marker.propertyId);
                 that.internalPropertyDataPromise.then(function(propertyData) {
@@ -300,6 +305,7 @@ function MapViewer(options, api, modules) {
 
                 });
 
+                that.notifyPropertyClicked(marker);
             });
 
         },

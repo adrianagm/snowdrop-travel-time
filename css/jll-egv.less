@@ -2,16 +2,22 @@
 
 @custom-red: rgb(188, 20, 26);
 @custom-green: green;
+
+@primary-color: rgb(188, 20, 26);
+@secondary-color: green;
+
 @text-color-control: #555;
 @text-color-hover-control: #888;
 
-@padding-control: 10px;
+@control-font-size: 13px;
+@padding-control: 8px;
+@control-height: 32px;
 @border-radius-control: 2px;
 @shadow-control: 0px 1px 8px #888;
 
 @main-font-family: "Droid Sans", sans-serif;
 
-@left-controls-width: 250px;
+@left-controls-width: 200px;
 
 .map-widget .map-control {
     font-family: "Droid Sans", sans-serif;
@@ -39,6 +45,7 @@
     content: url('../images/minimize.png');
     float: left;
     padding-right: @padding-control;
+    margin-bottom: -3px;
 }
 
 .map-widget .header.control-collapse::before {
@@ -53,7 +60,7 @@
 .map-widget .refine-search-control {
     position: relative;
     bottom: 7px;
-    margin: 5px;
+    margin-bottom: 5px;
 }
 
 .map-widget .check-pan-control-outer,
@@ -74,7 +81,7 @@
 .map-widget .check-pan-control-inner,
 .map-widget .check-draw-control-inner,
 .map-widget .refine-search-control-inner {
-    font-size: 14px;
+    font-size: @control-font-size;
     padding: @padding-control;
 }
 
@@ -159,12 +166,13 @@
 
 .heatmap-view-button {
     background-image: url('../images/heatmap.png');
-    background-size: 40px 40px;
-    height: 39px;
+    background-size: 40px 34px;
+    height: 34px;
     width: 40px;
     background-repeat: no-repeat;
     background-color: white;
     cursor: pointer;
+    border-radius: @border-radius-control;
 }
 
 .heatmap-view-button.active {
@@ -172,18 +180,18 @@
 }
 
 //change position of google controls
-.map-control.places-control {
+.map-control.places-control-wrapper {
     right: 50px !important;
-    bottom: 41px !important;
+    bottom: 38px !important;
 }
 
-.map-control.heatmap-view-control {
-    height: 40px;
+.map-control.heatmap-view-control-wrapper {
+    height: 34px;
     width: 40px;
-    bottom: 41px !important;
+    bottom: 38px !important;
 }
 
-.map-control.layer-list-control {
+.map-control.layer-list-control-wrapper {
     top: 20px !important;
 }
 
@@ -195,7 +203,6 @@
 .radio-places-item input {
     display: inline;
     width: 20% !important;
-
 }
 
 @import "places-control";
@@ -203,4 +210,5 @@
 @import "overlay";
 @import "picture-export-control";
 @import 'refine-control';
+@import 'poi-control';
 @import "ballons";

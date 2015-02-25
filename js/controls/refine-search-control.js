@@ -13,7 +13,7 @@
         text: 'Default',
         defaultChecked: false,
         checked: "",
-        toggleGroup: [''],
+        toggleGroup: ['search-group'],
 
         marker: null,
         infoWindow: null,
@@ -56,13 +56,18 @@
 
                     that.notifyActivation();
                 } else {
-                    that.marker.setMap(null);
-                    that.eventsActivated = false;
                     that.deactivate();
-                    that.clearLabels();
-                    that.owner.redrawMarkers();
                 }
             });
+        },
+
+        deactivate: function() {
+            MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
+            if (!this.marker) return;
+            this.marker.setMap(null);
+            this.eventsActivated = false;
+            this.clearLabels();
+            this.owner.redrawMarkers();
         },
 
         createCluster: function() {
@@ -73,17 +78,13 @@
         },
 
         createMarker: function() {
-            this.marker = new google.maps.Marker({
+            var content = '<div class="refine-search-marker"></div>';
+            this.marker = new RichMarker({
                 position: this.map.getCenter(),
+                flat: true,
                 draggable: true,
-                icon: {
-                    path: google.maps.SymbolPath.CIRCLE,
-                    scale: 10,
-                    fillColor: 'green',
-                    fillOpacity: 0.8,
-                    strokeColor: 'green',
-                    strokeWeight: 2
-                }
+                content: content,
+                map: this.map
             });
 
             this.createInfowindow();
@@ -115,7 +116,9 @@
                 '</div>' +
                 '</div>';
 
-            this.infowindow = new google.maps.InfoWindow();
+            this.infowindow = new google.maps.InfoWindow({
+                pixelOffset: new google.maps.Size(0, -12),
+            });
             this.infowindow.setContent(this.infoWindowContent);
 
             var that = this;

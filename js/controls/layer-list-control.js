@@ -5,13 +5,13 @@
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div>' +
-        '<div class="layer-list-collapsible-wrap">' +
-        '<div class="search-dataset">Search Dataset</div>' +
-        '<div class="layer-list-options-wrap">' +
-        '<ul class="layer-list"></ul>' +
-        '</div>' +
-        '<div class="clear">Clear</div>' +
-        '</div>',
+            '<div class="layer-list-collapsible-wrap">' +
+            '<div class="search-dataset">Search Dataset</div>' +
+            '<div class="layer-list-options-wrap">' +
+            '<ul class="layer-list"></ul>' +
+            '</div>' +
+            '<div class="clear">Clear</div>' +
+            '</div>',
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
@@ -38,17 +38,8 @@
             if (this.startCollapse) {
                 this.toggleList();
             }
+
             var that = this;
-            this.bindEvent('layer', 'click', function(event) {
-                var li = event.currentTarget;
-
-                if (li.classList.contains('active')) {
-                    that.layerDeselected(li);
-                } else {
-                    that.layerSelected(li);
-                }
-            });
-
             this.bindEvent('header', 'click', function(event) {
                 that.toggleList(event.target);
             });
@@ -61,7 +52,7 @@
             this.bindEvent('search-dataset', 'click', function(event) {
 
                 that.internalDatasetsPromise.then(function(datasets) {
-                    
+
                     that.internalDataset = datasets;
                     var options = [];
 
