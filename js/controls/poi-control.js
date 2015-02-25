@@ -71,6 +71,10 @@
             google.maps.event.addListener(this.searchBox, 'place_changed', function() {
                 that.addMarker(that.searchBox.getPlace());
                 that.setMapBounds();
+
+                //call blur to avoid searchbox refill input value
+                that.input.blur();
+                that.input.value = '';
             });
         },
 
@@ -221,7 +225,9 @@
             for (var i = 0; i < this.markers.length; i++) {
                 bounds.extend(this.markers[i].position);
             }
-            bounds.extend(this.map.getCenter());
+            if (this.selectedProperty) {
+                bounds.extend(this.selectedProperty.position);
+            }
             this.map.fitBounds(bounds);
         },
     });
