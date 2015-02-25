@@ -9,7 +9,7 @@ function MapViewer(options, api, modules) {
     cb = function() {
         var promises = MapViewer.loadGoogleLibs();
         Promise.all(promises).then(function(values) {
-            options.center= options.center?new google.maps.LatLng(options.center[0], options.center[1]):new google.maps.LatLng(51.5286416,-0.1015987);
+            options.center = options.center ? new google.maps.LatLng(options.center[0], options.center[1]) : new google.maps.LatLng(51.5286416, -0.1015987);
             that.createMap(options, api);
             that.loadModules(modules);
 
@@ -38,12 +38,15 @@ function MapViewer(options, api, modules) {
         toggleGroups: {},
         templateTabs: null,
         infoWindow: null,
+        markersById: {},
+        updatedMarkersById: {},
 
 
         createMap: function(options, api) {
-
+            this.api = api;
+            var that = this;
             var mapOptions = {
-                zoom: options.zoom?options.zoom:11,
+                zoom: options.zoom ? options.zoom : 11,
                 center: options.center,
                 zoomControlOptions: {
                     style: google.maps.ZoomControlStyle.SMALL,
@@ -54,17 +57,20 @@ function MapViewer(options, api, modules) {
                 panControl: false
             };
 
+
             this.element = document.getElementById(options.id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
-            this.api = api;
+            this.map.content = this.element;
+            google.maps.event.addListener(this.map, 'bounds_changed', function() {
+                that.getAllMarkers(that.map);
+            });
 
-            var that = this;
+
             this.setCluster();
 
             this.api.addSearchListener(function(results) {
-                that.removeMarkers();
-                that.setMarkers(results);
+                that.updateMarkers(results);
                 that.notifySearchResults(results);
             });
 
@@ -193,18 +199,57 @@ function MapViewer(options, api, modules) {
             return this.markers;
         },
 
-        removeMarkers: function() {
+        updateMarkers: function(markers) {
+            this.markers = [];
+            this.updatedMarkersById = {};
+            var newMarkers = [];
+            for (var i = 0; i < markers.length; i++) {
+                //new markers
+                if (!this.markersById[markers[i].propertyId]) {
+                    newMarkers.push(markers[i]);
+                //markers existing
+                } else {
+                    this.updatedMarkersById[markers[i].propertyId] = this.markersById[markers[i].propertyId];
+                    this.markers.push(this.markersById[markers[i].propertyId]);
+                }
+            }
+            this.setMarkers(newMarkers);
+            var removeMarkers = [];
+            for (var m in this.markersById) {
+                //previous markers outside new search
+                if (!this.updatedMarkersById[m]) {
+                    removeMarkers.push(this.markersById[m]);
+                }
+            }
+            this.removeMarkers(removeMarkers);
+        },
+
+        removeAllMarkers: function() {
+            for (var i in this.markers) {
+                if (this.markers[i].infoWindow && this.markers[i].infoWindow.isOpen) {
+                    this.markers[i].infoWindow.close();
+                }
+            }
             this.markers = [];
             this.cluster.clearMarkers();
         },
+        removeMarkers: function(markers) {
+            for (var i = 0; i < markers.length; i++) {
+                if (markers[i].infoWindow && markers[i].infoWindow.isOpen) {
+                    markers[i].infoWindow.close();
+                }
+            }
+
+            this.cluster.removeMarkers(markers);
+            
+        },
 
         setMarkers: function(searchResults) {
-            this.markers = [];
 
             for (var i = 0; i < searchResults.length; i++) {
                 var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
                 var markerObject = {
-                    properties: searchResults[i],
+                    propertyId: searchResults[i].propertyId,
                     latLng: latLng,
                     iconClass: 'property-marker',
                     map: this.map,
@@ -213,6 +258,8 @@ function MapViewer(options, api, modules) {
                 var marker = this.drawMarker(markerObject);
                 this.showInfoWindow(marker);
                 this.markers.push(marker);
+                this.markersById[marker.propertyId] = marker;
+                this.updatedMarkersById[marker.propertyId] = marker;
 
             }
 
@@ -226,7 +273,8 @@ function MapViewer(options, api, modules) {
                 flat: true,
                 content: content,
                 map: marker.map,
-                properties: marker.properties,
+                propertyId: marker.propertyId
+
             });
             richMarker.isInCluster = true;
             return richMarker;
@@ -245,29 +293,33 @@ function MapViewer(options, api, modules) {
                     that.infoWindow.removeChildren_(that.infoWindow.content_);
 
                 }
-                that.infoWindow = that.setInfoWindow(marker);
-                that.infoWindow.open(this.map, this);
+                that.internalPropertyDataPromise = that.api.retrievePropertyData(marker.propertyId);
+                that.internalPropertyDataPromise.then(function(propertyData) {
+                    that.infoWindow = that.setInfoWindow(marker, propertyData);
+                    marker.infoWindow.open(that.map, marker);
+
+                });
 
             });
 
         },
 
-        setInfoWindow: function(marker) {
-            this.infoWindow = new InfoBubble({
+        setInfoWindow: function(marker, propertyData) {
+            marker.infoWindow = new InfoBubble({
                 offsetWidth: 0,
-                offsetHeight: marker.height/2
+                offsetHeight: marker.height / 2
             });
+
             var tabs = this.templateTabs;
             for (var labelTab in tabs) {
                 var tab = tabs[labelTab];
                 var output = tab.template ? tab.template : '';
-
-                var data = marker.properties;
+                var data = propertyData;
                 if (tab.dataFields) {
                     data = {};
                     for (var d in tab.dataFields) {
                         var field = tab.dataFields[d];
-                        data[field] = marker.properties[field];
+                        data[field] = propertyData[field];
                     }
 
                 }
@@ -300,14 +352,14 @@ function MapViewer(options, api, modules) {
                 var that = this;
                 if (tab.type == 'streetView') {
                     output = '<div class="balloon street-tab container"><div class="pano"></div><div class="map-pano"></div>';
-                    google.maps.event.addDomListener(this.infoWindow, 'content_changed', function() {
-                        google.maps.event.addDomListener(that.infoWindow, 'domready', function() {
-                            if (that.infoWindow.content_.getElementsByClassName('pano')[0]) {
+                    google.maps.event.addDomListener(marker.infoWindow, 'content_changed', function() {
+                        google.maps.event.addDomListener(marker.infoWindow, 'domready', function() {
+                            if (marker.infoWindow.content_.getElementsByClassName('pano')[0]) {
                                 if (tab.orientationField) {
-                                    marker.orientationField = marker.properties[tab.orientationField];
+                                    marker.orientationField = propertyData[tab.orientationField];
                                 }
                                 if (tab.inclinationField) {
-                                    marker.inclinationField = marker.properties[tab.inclinationField];
+                                    marker.inclinationField = propertyData[tab.inclinationField];
                                 }
                                 that.initializeStreetView(marker);
                             }
@@ -317,13 +369,16 @@ function MapViewer(options, api, modules) {
                 }
 
 
-                this.infoWindow.addTab(labelTab, output);
+                marker.infoWindow.addTab(labelTab, output);
 
 
 
             }
 
-            return this.infoWindow;
+
+            return marker.infoWindow;
+
+
 
         },
 
@@ -332,8 +387,8 @@ function MapViewer(options, api, modules) {
         },
 
         initializeStreetView: function(marker) {
-            var mapPano = this.infoWindow.content_.getElementsByClassName('map-pano')[0];
-            var pano = this.infoWindow.content_.getElementsByClassName('pano')[0];
+            var mapPano = marker.infoWindow.content_.getElementsByClassName('map-pano')[0];
+            var pano = marker.infoWindow.content_.getElementsByClassName('pano')[0];
             var heading = marker.orientationField ? marker.orientationField : 90;
             var pitch = marker.inclinationField ? marker.inclinationField : 5;
             var panoramaOptions = {
