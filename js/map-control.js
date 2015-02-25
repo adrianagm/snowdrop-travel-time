@@ -35,12 +35,13 @@
             var controlDiv = document.createElement('div');
 
             controlDiv.innerHTML = this.template;
+            controlDiv.className = this.controlClass;
             if (this.cssClass) {
                 controlDiv.classList.add(this.cssClass);
             }
 
             wrapperDiv.className = 'map-control';
-            wrapperDiv.classList.add(this.controlClass);
+            wrapperDiv.classList.add(this.controlClass + '-wrapper');
             wrapperDiv.appendChild(controlDiv);
 
             helperDiv.appendChild(wrapperDiv);
