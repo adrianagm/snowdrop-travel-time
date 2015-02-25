@@ -4,7 +4,7 @@
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>' +
-            '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
+        '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
@@ -87,7 +87,10 @@
             });
 
             google.maps.event.addListener(this.map, 'click', function() {
-                that.content.getElementsByClassName('custom-places-list')[0].style.display = 'none';
+                var customPlacesList = that.content.getElementsByClassName('custom-places-list');
+                if (customPlacesList.length > 0) {
+                    customPlacesList[0].style.display = 'none';
+                }
             });
 
 
@@ -141,7 +144,6 @@
         },
 
 
-
         createMarker: function(place, type, icon) {
             var marker = {
                 properties: place,
@@ -153,11 +155,6 @@
 
             this.markers[type].push(marker);
 
-            /*var that = this;
-           google.maps.event.addListener(marker, 'click', function() {
-                that.infowindow.setContent(place.name);
-                that.infowindow.open(that.map, this);
-            });*/
         },
 
         placesDeselected: function(li) {
