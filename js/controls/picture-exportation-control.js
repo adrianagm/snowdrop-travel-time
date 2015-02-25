@@ -16,7 +16,8 @@
             this.buttonText = this.getElementsByClass('picture-exportation-control-inner')[0];
             this.link = this.getElementsByClass('picture-exportation-control-outer')[0];
             this.elem = this.map.getDiv();
-
+            this.control = this.getElementsByClass('picture-exportation-control')[0];
+            this.mapControl = this.control.parentNode;
             this.bindEvent('picture-exportation-control-outer', 'click', function() {
                 if (this.classList.contains("complete-screen")) {
                     that.deactivate();
@@ -28,14 +29,11 @@
 
 
         deactivate: function() {
-
             var that = this;
-
             this.link.classList.remove('complete-screen');
-
-            //this.buttonText.innerHTML = "<b>Picture Exportation</b>";
             this.buttonText.classList.remove('fullscreen');
             this.buttonText.classList.add('normal');
+            this.mapControl.classList.add('map-control');
             this.map.set('disableDefaultUI', false);
             this.map.set('mapTypeControl', true);
 
@@ -57,8 +55,7 @@
             var that = this;
             this.controls = document.getElementsByClassName('map-control');
             this.link.classList.add('complete-screen');
-            //Complete screen
-            //this.buttonText.innerHTML = "<b>X</b>";
+            this.mapControl.classList.remove('map-control');
             this.buttonText.classList.remove('normal');
             this.buttonText.classList.add('fullscreen');
             this.map.set('disableDefaultUI', true);
@@ -81,6 +78,16 @@
                 that.map.fitBounds(that.bounds);
                 that.map.setZoom(that.zoom);
             }, 100);
+
+            function closestByClass(el, neededClass) {
+                while (!el.classList.contains(neededClass)) {
+                    el = el.parentNode;
+                    if (!el) {
+                        return null;
+                    }
+                }
+                return el;
+            }
         },
 
         _activateFullScreen: function() {
