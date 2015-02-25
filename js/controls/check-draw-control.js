@@ -185,10 +185,35 @@
                 google.maps.event.addListener(polygon, 'dragstart', function() {
                     that.dragFlag = true;
                 });
+                //Events
+
+                google.maps.event.addListener(polygon, 'rightclick', function() {
+                    var polygonOption = {};
+                    if (polygon.getDraggable()) {
+                        polygonOptions = {
+                            strokeColor: '#BC141A',
+                            fillColor: '#BC141A',
+                            draggable: false
+                        };
+                    } else {
+                        polygonOptions = {
+                            strokeColor: '#14bcb6',
+                            fillColor: '#14bcb6',
+                            draggable: true
+                        };
+                    }
+                    polygon.setOptions(polygonOptions);
+                });
 
                 google.maps.event.addListener(polygon, 'dragend', function() {
                     that.dragFlag = false;
                     that.search(this, "drag");
+                    var polygonOptions = {
+                        strokeColor: '#BC141A',
+                        fillColor: '#BC141A',
+                        draggable: false
+                    };
+                    polygon.setOptions(polygonOptions);
                 });
 
                 google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
