@@ -35,7 +35,6 @@
             var controlDiv = document.createElement('div');
 
             controlDiv.innerHTML = this.template;
-            controlDiv.className = this.controlClass;
             if (this.cssClass) {
                 controlDiv.classList.add(this.cssClass);
             }
