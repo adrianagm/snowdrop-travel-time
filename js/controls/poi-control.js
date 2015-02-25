@@ -13,7 +13,7 @@
         text: 'Default',
         defaultChecked: false,
         checked: "",
-        toggleGroup: [],
+        toggleGroup: ['search-group'],
 
         input: null,
         searchBox: null,
@@ -43,10 +43,16 @@
                     that.showSearchBar();
                 } else {
                     that.deactivate();
-                    that.clearMarkers();
-                    that.input.classList.add('hide');
                 }
             });
+        },
+
+        deactivate: function() {
+            MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
+            this.clearMarkers();
+            if (this.input) {
+                this.input.classList.add('hide');
+            }
         },
 
         showSearchBar: function() {
