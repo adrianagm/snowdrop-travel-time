@@ -4,8 +4,8 @@
     MapViewer.POIControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
-            '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Points of interest</span></div></div></div>' +
-            '<input id="poi-input" class="controls map-control poi-input hide" type="text" placeholder="Add new point of interest">',
+        '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Points of interest</span></div></div></div>' +
+        '<input id="poi-input" class="controls map-control poi-input hide" type="text" placeholder="Add new point of interest">',
         controlClass: 'check-pan-control',
 
         position: 'LEFT_BOTTOM',
@@ -26,20 +26,12 @@
         active: false,
 
         initialize: function() {
-            this.link = this.getElementsByClass('check-class')[0];
+            MapViewer.MapControl.prototype.initialize.apply(this, arguments);
 
             this.distanceService = new google.maps.DistanceMatrixService();
             this.placesService = new google.maps.places.PlacesService(this.map);
 
-            if (this.defaultChecked) {
-                this.link.classList.add('checked-pan');
-
-            } else {
-                this.link.classList.add('unchecked-pan');
-            }
-
             var that = this;
-
             this.bindEvent('check-pan-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
@@ -117,10 +109,10 @@
         createInfowindow: function(marker, name, isPlaceMarker) {
             infoWindowContent = document.createElement('div');
             infoWindowContent.innerHTML = '<div class="poi-popup">' +
-                '<div class="poi-name">' + name + '</div>' +
-                '<div class="car"><span class="car-icon"><i class="fa fa-car"></i></span><span class="car-distance poi-text"></span><span class="car-time poi-text"></span></div>' +
-                '<div class="walking"><span class="walking-icon"><i class="fa fa-male"></i></span><span class="walking-distance poi-text"></span><span class="walking-time poi-text"></span></div>' +
-                '</div>';
+            '<div class="poi-name">' + name + '</div>' +
+            '<div class="car"><span class="car-icon"><i class="fa fa-car"></i></span><span class="car-distance poi-text"></span><span class="car-time poi-text"></span></div>' +
+            '<div class="walking"><span class="walking-icon"><i class="fa fa-male"></i></span><span class="walking-distance poi-text"></span><span class="walking-time poi-text"></span></div>' +
+            '</div>';
 
             marker.infoWindowContent = infoWindowContent;
 

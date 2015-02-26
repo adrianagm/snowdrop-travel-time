@@ -5,7 +5,7 @@
     MapViewer.CheckDrawControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-draw-control-outer"><div class="check-draw-control-border">' +
-        '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> <span>Draw to search</span></div></div></div>',
+        '<div class="check-draw-control-inner"><a class="check-class" href="#"> </a> <span>Draw to search</span></div></div></div>',
 
         controlClass: 'check-draw-control',
         position: 'LEFT_BOTTOM',
@@ -24,7 +24,7 @@
         reverseRectangleRightCoords: null,
         toggleGroup: ['search-group'],
         initialize: function() {
-
+            MapViewer.MapControl.prototype.initialize.apply(this, arguments);
             /*
              We have to initialize rectangle coordinates here because 'google' var doesn't exist before.
              */
@@ -52,23 +52,10 @@
                 new google.maps.LatLng(-150, 180),
                 new google.maps.LatLng(-150, 0)
             ];
-
-            this.link = this.getElementsByClass('check-draw-class')[0];
-
             this.drawingManager = this._getDrawingManager();
 
-
-            if (this.defaultChecked) {
-                this.link.classList.add('checked-pan');
-                this.notifyActivation();
-            } else {
-                this.link.classList.add('unchecked-pan');
-            }
-
             var that = this;
-
             this.bindEvent('check-draw-control-outer', 'click', function(event) {
-
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
                 } else {

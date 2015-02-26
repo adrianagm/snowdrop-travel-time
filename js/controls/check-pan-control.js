@@ -4,7 +4,7 @@
     MapViewer.SearchOnPanControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
-            '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Search when moving map</span></div></div></div>',
+        '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Search when moving map</span></div></div></div>',
         controlClass: 'check-pan-control',
 
         position: 'LEFT_BOTTOM',
@@ -14,17 +14,8 @@
         checked: "",
         toggleGroup: ['search-group'],
         initialize: function() {
-            this.link = this.getElementsByClass('check-class')[0];
-
-            if (this.defaultChecked) {
-                this.link.classList.add('checked-pan');
-
-            } else {
-                this.link.classList.add('unchecked-pan');
-            }
-
+            MapViewer.MapControl.prototype.initialize.apply(this, arguments);
             var that = this;
-
             this.bindEvent('check-pan-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
