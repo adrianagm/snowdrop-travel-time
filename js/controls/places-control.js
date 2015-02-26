@@ -4,7 +4,7 @@
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>' +
-        '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
+            '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
@@ -150,10 +150,16 @@
             var marker = {
                 properties: place,
                 latLng: place.geometry.location,
-                iconClass: icon,
+                iconClass: "place-marker " + icon,
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
+            marker.placeId = place.place_id;
+
+            var that = this;
+            marker.addListener("click", function(event) {
+                that.owner.notifyPlaceClicked(marker);
+            });
 
             this.markers[type].push(marker);
 
@@ -163,7 +169,7 @@
             li.classList.remove('active');
             var place = this.places[li.innerHTML];
             var type = place.type;
-            this.removePlacesToMap(type);
+            this.removePlacesToMap(type, true);
             if (MapViewer.heatmap) {
                 if (type === MapViewer.heatPlaces) {
                     MapViewer.heatmap.setMap(null);
@@ -177,13 +183,16 @@
             }
         },
 
-        removePlacesToMap: function(type) {
+        removePlacesToMap: function(type, deselected) {
             var markers = this.markers[type];
             if (markers) {
                 MapViewer.clusterPlaces.removeMarkers(markers);
                 for (var m = 0; m < markers.length; m++) {
                     if (markers[m]) {
                         markers[m].setMap(null);
+                        if (deselected) {
+                            this.owner.notifyPlaceRemoved(markers[m]);
+                        }
                     }
                 }
                 this.markers[type] = [];
