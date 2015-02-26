@@ -28,7 +28,6 @@ function MapViewer(options, api, modules) {
 }
 
 
-
 (function() {
     "use strict";
 
@@ -395,12 +394,10 @@ function MapViewer(options, api, modules) {
                 marker.infoWindow.addTab(labelTab, output);
 
 
-
             }
 
 
             return marker.infoWindow;
-
 
 
         },
@@ -434,6 +431,10 @@ function MapViewer(options, api, modules) {
                     pano.innerHTML = 'Street View not available in this position';
                 }
             }
+        },
+
+        getElementsByClass: function(classSelector) {
+            return this.element.getElementsByClassName(classSelector);
         }
 
     };
