@@ -60,7 +60,26 @@ function MapViewer(options, api, modules) {
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
             this.map.content = this.element;
-        
+           
+
+            google.maps.event.addListener(this.map, 'zoom_changed', function() {
+                //close the infowindow if marker is clustered
+                setTimeout(function() {
+                    var clusters = that.cluster.clusters_;
+                    for (var cluster in clusters) {
+                        var markers = clusters[cluster].markers_;
+                        if (markers.length > 1) {
+                            for (var m in markers) {
+                                if (markers[m].infoWindow && markers[m].infoWindow.isOpen) {
+                                    markers[m].infoWindow.close();
+                                }
+                            }
+                        }
+                    }
+                }, 1000);
+            });
+
+
             this.setCluster();
 
             this.api.addSearchListener(function(results) {
@@ -72,21 +91,6 @@ function MapViewer(options, api, modules) {
             this.setModulesApi();
             this.setModulesOwner();
             this.loadedModules = {};
-        },
-
-        _retrieveMarkers: function() {
-
-            var bounds = this.map.getBounds().toUrlValue();
-            bounds = bounds.split(',');
-            //expand the map extension
-            var extensionIncrement = 5;
-            var minLat = parseFloat(bounds[0]) - extensionIncrement;
-            var maxLat = parseFloat(bounds[2]) + extensionIncrement;
-            var minLng = parseFloat(bounds[1]) - extensionIncrement;
-            var maxLng = parseFloat(bounds[3]) + extensionIncrement;
-
-
-            this.api.searchByPolygon();
         },
 
         setModulesMap: function() {
@@ -401,14 +405,10 @@ function MapViewer(options, api, modules) {
 
 
                 marker.infoWindow.addTab(labelTab, output);
-
-
             }
 
 
             return marker.infoWindow;
-
-
         },
 
         setBubbleTemplate: function(template) {
@@ -425,7 +425,8 @@ function MapViewer(options, api, modules) {
                 pov: {
                     heading: heading,
                     pitch: pitch
-                }
+                },
+                panControl: false,
             };
 
             var sv = new google.maps.StreetViewService();

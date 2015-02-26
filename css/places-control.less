@@ -46,7 +46,7 @@
 			.custom-places-footer{
 				padding: @padding-control;
 				text-align: center;
-				width: 80px;
+				width: 87px;
 			}
 			.custom-places-footer:hover{
 				color: @text-color-hover-control;
@@ -55,7 +55,7 @@
 			.custom-places-list{
 				display:none;
 				position:absolute;
-				bottom: 40px;
+				bottom: 35px;
     			box-shadow: 1px -2px 8px #888;
     			max-height: 300px;
     			overflow-y: auto;
@@ -92,4 +92,35 @@
 		}
 
     }
+
+    .places-marker {
+	    background-image: url('../images/placesMarker.png');
+	    background-size: 20px 20px;
+	    height: 20px;
+	    width: 20px;
+	    background-repeat: no-repeat;
+	    background-color: transparent;
+	}
+
+	.places-cluster-marker {
+	    color: #fff;
+	    background-image: url('../images/cluster-places.png');
+	    background-size: 35px 35px;
+	    background-repeat: no-repeat;
+	    height: 35px;
+	    width: 35px;
+	    line-height: 35px;
+	    cursor: pointer;
+	    font-size: 9px;
+
+	}
+
+	.places-marker.places-marker-grocery_or_supermarket {
+	    background-image: url('../images/shopping-card.png');
+	    background-size: 20px 20px;
+	    height: 20px;
+	    width: 20px;
+	    background-repeat: no-repeat;
+	    background-color: transparent;
+	}
 }
