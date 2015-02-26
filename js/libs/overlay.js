@@ -3,7 +3,6 @@
     function MapViewerOverlay(_options) {
 
         this.options = _options || {};
-
         this.id = this.options.id || 'overlay';
 
         this.overlayParent = null;
@@ -28,40 +27,40 @@
     };
 
     MapViewerOverlay.prototype._setOverlayCover = function() {
-        var cover = document.createElement('div');
-        cover.className = this.id + '-cover';
-        this.overlay.appendChild(cover);
+        this.cover = document.createElement('div');
+        this.cover.className = this.id + '-cover';
+        this.overlay.appendChild(this.cover);
     };
 
     MapViewerOverlay.prototype._setOverlayModal = function() {
-        var modal = document.createElement('div');
-        modal.innerHTML = '<span class="' + this.id + '-close-btn"></span>';
-        modal.className = this.id + '-modal';
+        this.modal = document.createElement('div');
+        this.modal.innerHTML = '<span class="' + this.id + '-close-btn"></span>';
+        this.modal.className = this.id + '-modal';
 
 
         if (this.options.modalClasses && typeof this.options.modalClasses === 'string') {
-            modal.className += ' ' + this.options.modalClasses;
+            this.modal.className += ' ' + this.options.modalClasses;
         }
         else if (this.options.modalClasses && typeof this.options.modalClasses === 'object') {
-            modal.classList.add(this.options.modalClasses);
+            this.modal.classList.add(this.options.modalClasses);
         }
 
         if (this.options.modalInnerContent && typeof this.options.modalInnerContent === 'string') {
-            modal.innerHTML += '<div class="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
+            this.modal.innerHTML += '<div class="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
         }
         else if (this.options.modalInnerContent && typeof this.options.modalInnerContent === 'object') {
             var innerContent = document.createElement('div');
             innerContent.className = this.id + '-modal-inner';
             innerContent.appendChild(this.options.modalInnerContent);
-            modal.appendChild(innerContent);
+            this.modal.appendChild(innerContent);
         }
 
-        this.overlay.appendChild(modal);
+        this.overlay.appendChild(this.modal);
     };
 
     MapViewerOverlay.prototype._binding = function() {
         var that = this;
-        this.overlayParent.getElementsByClassName(this.id + '-close-btn')[0].onclick = function() {
+        this.modal.getElementsByClassName(this.id + '-close-btn')[0].onclick = function() {
             that.destroy();
         };
 
@@ -72,7 +71,6 @@
 
     MapViewerOverlay.prototype.destroy = function() {
         this.overlayParent.removeChild(this.overlay);
-        //    this.overlay.remove();
     };
 
     if (typeof window.MapViewerOverlay == 'undefined') {
