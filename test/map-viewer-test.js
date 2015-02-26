@@ -84,8 +84,8 @@ var IntegrationAPI = {
         var heading = Math.random() * 360;
         var propertyData = {
             propertyId: id,
-            fuzzy: false,
-            type: "test",
+            "Address": chance.address()+", London",
+            "Phone": chance.phone({ country: "uk" }),
             images: [{
                 title: 'Photo 1',
                 url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
@@ -255,7 +255,7 @@ function MapViewerTest() {
 
     mapViewer.setBubbleTemplate({
         "Details": {
-            dataFields: ['propertyId', 'fuzzy', 'type'],
+            dataFields: ['propertyId', 'Address', 'Phone'],
             template: '<div class="balloon data-tab container"><table>{{#data}}<tr class="data-item"><td><b>{{key}}</b></td><td>{{value}}</td></tr>{{/data}}</table></div>'
         },
         "Images": {
