@@ -1,4 +1,4 @@
-function MapViewer(id, api, modules) {
+function MapViewer(options, api, modules) {
     try {
         this.checkAPI(api);
     } catch (error) {
@@ -9,23 +9,44 @@ function MapViewer(id, api, modules) {
     cb = function() {
         var promises = MapViewer.loadGoogleLibs();
         Promise.all(promises).then(function(values) {
-            that.createMap(id, api);
+            options.center = options.center ? new google.maps.LatLng(options.center[0], options.center[1]) : new google.maps.LatLng(51.5286416, -0.1015987);
+            that.createMap(options, api);
             that.loadModules(modules);
+
+            var intervalResize = setInterval(function() {
+                if (document.getElementById(options.id).clientHeight > 0) {
+                    google.maps.event.trigger(that.map, "resize");
+                    that.map.setCenter(options.center);
+                    clearInterval(intervalResize);
+                }
+            }, 100);
+
         });
     };
 
-    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=places,drawing,visualization');
+    MapViewer.loadLib('https://maps.googleapis.com/maps/api/js?v=3.exp&callback=cb&libraries=geometry,places,drawing,visualization');
 }
+
 
 (function() {
     "use strict";
+
     MapViewer.prototype = {
+        markers: [],
         cluster: null,
         toggleGroups: {},
-        createMap: function(id, api) {
+        templateTabs: null,
+        infoWindow: null,
+        markersById: {},
+        updatedMarkersById: {},
+
+
+        createMap: function(options, api) {
+            this.api = api;
+            var that = this;
             var mapOptions = {
-                zoom: 12,
-                center: new google.maps.LatLng(40.7033121, -73.979681),
+                zoom: options.zoom ? options.zoom : 11,
+                center: options.center,
                 zoomControlOptions: {
                     style: google.maps.ZoomControlStyle.SMALL,
                     position: google.maps.ControlPosition.RIGHT_TOP,
@@ -35,23 +56,37 @@ function MapViewer(id, api, modules) {
                 panControl: false
             };
 
-            this.element = document.getElementById(id);
+            this.element = document.getElementById(options.id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
-            this.api = api;
-
-            var that = this;
+            this.map.content = this.element;
+        
             this.setCluster();
 
             this.api.addSearchListener(function(results) {
-                that.removeMarkers();
-                that.setMarkers(results);
+                that.updateMarkers(results);
+                that.notifySearchResults(results);
             });
 
             this.setModulesMap();
             this.setModulesApi();
             this.setModulesOwner();
             this.loadedModules = {};
+        },
+
+        _retrieveMarkers: function() {
+
+            var bounds = this.map.getBounds().toUrlValue();
+            bounds = bounds.split(',');
+            //expand the map extension
+            var extensionIncrement = 5;
+            var minLat = parseFloat(bounds[0]) - extensionIncrement;
+            var maxLat = parseFloat(bounds[2]) + extensionIncrement;
+            var minLng = parseFloat(bounds[1]) - extensionIncrement;
+            var maxLng = parseFloat(bounds[3]) + extensionIncrement;
+
+
+            this.api.searchByPolygon();
         },
 
         setModulesMap: function() {
@@ -130,6 +165,30 @@ function MapViewer(id, api, modules) {
             activeModule.activate();
         },
 
+        notifySearchResults: function(searchResults) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onSearchResults(searchResults);
+            }
+        },
+
+        notifyPropertyClicked: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPropertyClicked(marker);
+            }
+        },
+
+        notifyPlaceClicked: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPlaceClicked(marker);
+            }
+        },
+
+        notifyPlaceRemoved: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPlaceRemoved(marker);
+            }
+        },
+
         loadModules: function(modulesList) {
             for (var m = 0; m < modulesList.length; m++) {
                 this.loadModule(modulesList[m]);
@@ -163,38 +222,228 @@ function MapViewer(id, api, modules) {
             this.cluster = new MarkerClusterer(this.map, null, mcOptions);
         },
 
-        removeMarkers: function() {
+        getMarkers: function() {
+            return this.markers;
+        },
+
+        updateMarkers: function(markers) {
+            this.markers = [];
+            this.updatedMarkersById = {};
+            var newMarkers = [];
+            for (var i = 0; i < markers.length; i++) {
+                //new markers
+                if (!this.markersById[markers[i].propertyId]) {
+                    newMarkers.push(markers[i]);
+                    //markers existing
+                } else {
+                    this.updatedMarkersById[markers[i].propertyId] = this.markersById[markers[i].propertyId];
+                    this.markers.push(this.markersById[markers[i].propertyId]);
+                }
+            }
+            this.setMarkers(newMarkers);
+            var removeMarkers = [];
+            for (var m in this.markersById) {
+                //previous markers outside new search
+                if (!this.updatedMarkersById[m]) {
+                    removeMarkers.push(this.markersById[m]);
+                }
+            }
+            this.removeMarkers(removeMarkers);
+        },
+
+        removeAllMarkers: function() {
+            for (var i in this.markers) {
+                if (this.markers[i].infoWindow && this.markers[i].infoWindow.isOpen) {
+                    this.markers[i].infoWindow.close();
+                }
+            }
+            this.markers = [];
             this.cluster.clearMarkers();
+        },
+        removeMarkers: function(markers) {
+            for (var i = 0; i < markers.length; i++) {
+                if (markers[i].infoWindow && markers[i].infoWindow.isOpen) {
+                    markers[i].infoWindow.close();
+                }
+            }
+
+            this.cluster.removeMarkers(markers);
+
         },
 
         setMarkers: function(searchResults) {
-            var markers = [];
 
             for (var i = 0; i < searchResults.length; i++) {
-                var marker = {
-                    latLng: new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng),
-                    iconClass: "property-marker",
-                    properties: searchResults[i],
-                    map: this.map
-                };
-                markers.push(this.drawMarker(marker));
+                var latLng = new google.maps.LatLng(searchResults[i].lat, searchResults[i].lng);
+                var markerObject = {
+                    propertyId: searchResults[i].propertyId,
+                    latLng: latLng,
+                    iconClass: 'property-marker',
+                    map: this.map,
 
+                };
+                var marker = this.drawMarker(markerObject);
+                this.showInfoWindow(marker);
+                this.markers.push(marker);
+                this.markersById[marker.propertyId] = marker;
+                this.updatedMarkersById[marker.propertyId] = marker;
             }
 
-            this.cluster.addMarkers(markers);
-
+            this.cluster.addMarkers(this.markers);
         },
 
         drawMarker: function(marker) {
-            var content = "<div class='" + marker.iconClass + "'></div>";
+            var content = document.createElement('div');
+            content.className = marker.iconClass;
             var richMarker = new RichMarker({
                 position: marker.latLng,
                 flat: true,
                 content: content,
-                map: marker.map
+                map: marker.map,
+                propertyId: marker.propertyId
+
+            });
+            richMarker.isInCluster = true;
+            return richMarker;
+        },
+
+        redrawMarkers: function() {
+            this.cluster.clearMarkers();
+            this.cluster.addMarkers(this.markers);
+        },
+
+        showInfoWindow: function(marker) {
+            var that = this;
+            marker.addListener("click", function(event) {
+                if (that.infoWindow) {
+                    that.infoWindow.close();
+                    that.infoWindow.removeChildren_(that.infoWindow.content_);
+                }
+                that.internalPropertyDataPromise = that.api.retrievePropertyData(marker.propertyId);
+                that.internalPropertyDataPromise.then(function(propertyData) {
+                    that.infoWindow = that.setInfoWindow(marker, propertyData);
+                    marker.infoWindow.open(that.map, marker);
+
+                });
+                var activeProperty = that.getElementsByClass('property-active')[0];
+                if (activeProperty) {
+                    activeProperty.classList.remove('property-active');
+                }
+                marker.getContent().classList.add('property-active');
+                that.notifyPropertyClicked(marker);
             });
 
-            return richMarker;
+        },
+
+        setInfoWindow: function(marker, propertyData) {
+            marker.infoWindow = new InfoBubble({
+                offsetWidth: 0,
+                offsetHeight: marker.height / 2
+            });
+
+            var tabs = this.templateTabs;
+            for (var labelTab in tabs) {
+                var tab = tabs[labelTab];
+                var output = tab.template ? tab.template : '';
+                var data = propertyData;
+                if (tab.dataFields) {
+                    data = {};
+                    for (var d in tab.dataFields) {
+                        var field = tab.dataFields[d];
+                        data[field] = propertyData[field];
+                    }
+
+                }
+                var details = {
+                    'data': []
+                };
+                if (tab.template) {
+                    for (var propKey in data) {
+                        var item = data[propKey];
+                        if (item instanceof Object) {
+                            for (var i in item) {
+                                details.data.push({
+                                    'key': i,
+                                    'value': item[i]
+                                });
+                            }
+                        } else {
+                            details.data.push({
+                                'key': propKey,
+                                'value': item
+                            });
+                        }
+                    }
+                    output = Mustache.render(tab.template, details);
+                } else {
+                    output = 'No content template';
+                }
+
+
+                var that = this;
+                if (tab.type == 'streetView') {
+                    output = '<div class="balloon street-tab container"><div class="pano"></div><div class="map-pano"></div>';
+                    google.maps.event.addDomListener(marker.infoWindow, 'content_changed', function() {
+                        google.maps.event.addDomListener(marker.infoWindow, 'domready', function() {
+                            if (marker.infoWindow.content_.getElementsByClassName('pano')[0]) {
+                                if (tab.orientationField) {
+                                    marker.orientationField = propertyData[tab.orientationField];
+                                }
+                                if (tab.inclinationField) {
+                                    marker.inclinationField = propertyData[tab.inclinationField];
+                                }
+                                that.initializeStreetView(marker);
+                            }
+                        });
+                    });
+
+                }
+
+
+                marker.infoWindow.addTab(labelTab, output);
+
+
+            }
+
+
+            return marker.infoWindow;
+
+
+        },
+
+        setBubbleTemplate: function(template) {
+            this.templateTabs = template;
+        },
+
+        initializeStreetView: function(marker) {
+            var mapPano = marker.infoWindow.content_.getElementsByClassName('map-pano')[0];
+            var pano = marker.infoWindow.content_.getElementsByClassName('pano')[0];
+            var heading = marker.orientationField ? marker.orientationField : 90;
+            var pitch = marker.inclinationField ? marker.inclinationField : 5;
+            var panoramaOptions = {
+                position: marker.position,
+                pov: {
+                    heading: heading,
+                    pitch: pitch
+                }
+            };
+
+            var sv = new google.maps.StreetViewService();
+            sv.getPanoramaByLocation(marker.position, 50, processSVData);
+
+            function processSVData(data, status) {
+                if (status == google.maps.StreetViewStatus.OK) {
+                    var panorama = new google.maps.StreetViewPanorama(pano, panoramaOptions);
+                    var map = new google.maps.Map(mapPano);
+                    map.setStreetView(panorama);
+                } else {
+                    pano.innerHTML = 'Street View not available in this position';
+                }
+            }
+        },
+
+        getElementsByClass: function(classSelector) {
+            return this.element.getElementsByClassName(classSelector);
         }
 
     };
@@ -210,6 +459,8 @@ function MapViewer(id, api, modules) {
         promises.push(this.loadLib('js/libs/markerclusterer.js'));
         promises.push(this.loadLib('js/libs/richmarker.js'));
         promises.push(this.loadLib('js/libs/mercatorProjectorLayer.js'));
+        promises.push(this.loadLib('js/libs/infobubble.js'));
+        promises.push(this.loadLib('js/libs/mustache.js'));
         return promises;
     };
 

@@ -1,110 +1,40 @@
-
 @import url(http://fonts.googleapis.com/css?family=Droid+Sans);
 
 @custom-red: rgb(188, 20, 26);
+@custom-green: green;
+
+@primary-color: rgb(188, 20, 26);
+@secondary-color: green;
+
 @text-color-control: #555;
 @text-color-hover-control: #888;
 
-@padding-control: 10px;
+@control-font-size: 13px;
+@padding-control: 8px;
+@control-height: 32px;
 @border-radius-control: 2px;
 @shadow-control: 0px 1px 8px #888;
+
+@main-font-family: "Droid Sans", sans-serif;
+
+@left-controls-width: 200px;
 
 .map-widget .map-control {
     font-family: "Droid Sans", sans-serif;
     margin-left: 20px;
     margin-right: 20px;
     color: @text-color-control;
-
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .map-widget .map-control > div {
     border-radius: @border-radius-control;
     box-shadow: @shadow-control;
-}
-
-.map-widget .picture-exportation-control-outer {
-    padding: 5px;
-}
-
-.map-widget .picture-exportation-control-border {
-    border-style: solid;
-    border-width: 2px;
-    cursor: pointer;
-    text-align: center;
-    background-color: white;
-}
-
-.map-widget .picture-exportation-control-inner {
-    font-size: 12px;
-    padding-left: 4px;
-    padding-right: 4px;
-}
-
-.map-widget .layer-list-control {
-    background-color: white;
-    font-size: 16px;
-    cursor: pointer;
-   
-}
-
-.map-widget .layer-list-control .header {
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    border-top-left-radius: @border-radius-control;
-    border-top-right-radius: @border-radius-control;
-
-}
-
-.map-widget .layer-list-control .search-dataset {
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    border-top-left-radius: @border-radius-control;
-    border-top-right-radius: @border-radius-control;
-}
-
-.map-widget .layer-list-control .clear {
-    padding: @padding-control;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-    color: @text-color-control + #333;
-
-}
-
-.map-widget .layer-list-control .clear:hover {
-    color: @text-color-hover-control + #333;
-}
-
-.map-widget .layer-list-control ul li {
-    padding: @padding-control;
-    list-style: none;
-
-}
-
-.map-widget .layer-list-control ul li:hover {
-    color: @text-color-hover-control;
-}
-
-.map-widget .layer-list-control ul li.active {
-    color: @custom-red;
-}
-
-.map-widget .places-control {
-    background-color: white;
-   
-    font-size: 16px;
-    cursor: pointer;
-}
-
-.map-widget .places-control .header {
-    padding: @padding-control;
-    background-color: @custom-red;
-    color: white;
-    display: inline-block;
-    border-top-left-radius: @border-radius-control;
-    border-bottom-left-radius: @border-radius-control;
-
 }
 
 .map-widget .header.collapse {
@@ -115,62 +45,49 @@
     content: url('../images/minimize.png');
     float: left;
     padding-right: @padding-control;
+    margin-bottom: -3px;
 }
 
-.map-widget .header.collapse::before {
+.map-widget .header.control-collapse::before {
     content: url('../images/maximize.png');
     float: left;
     padding-right: @padding-control;
 
 }
 
-.map-widget .places-control ul {
-    display: inline;
-}
-
-.map-widget .places-control ul li {
-    padding: @padding-control;
-    list-style: none;
-    display: inline;
-    background-color: white;
-
-}
-
-.map-widget .places-control ul .places:hover {
-    color: @text-color-hover-control;
-}
-
-.map-widget .places-control ul .places.active {
-    color: @custom-red;
-}
-
-.map-widget .check-pan-control, .map-widget .check-draw-control {
+.map-widget .check-pan-control,
+.map-widget .check-draw-control,
+.map-widget .refine-search-control {
     position: relative;
     bottom: 7px;
-    margin: 5px;
-
+    margin-bottom: 5px;
 }
 
-.map-widget .check-pan-control-outer, .map-widget .check-draw-control-outer {
-    width: 250px;
-
+.map-widget .check-pan-control-outer,
+.map-widget .check-draw-control-outer,
+.map-widget .refine-search-control-outer {
+    width: @left-controls-width;
 }
 
-.map-widget .check-pan-control-border, .map-widget .check-draw-control-border {
+.map-widget .check-pan-control-border,
+.map-widget .check-draw-control-border,
+.map-widget .refine-search-control-border {
     cursor: pointer;
     text-align: left;
     background-color: white;
     border-radius: @border-radius-control;
 }
 
-.map-widget .check-pan-control-inner, .map-widget .check-draw-control-inner {
-    font-size: 14px;
+.map-widget .check-pan-control-inner,
+.map-widget .check-draw-control-inner,
+.map-widget .refine-search-control-inner {
+    font-size: @control-font-size;
     padding: @padding-control;
-
 }
 
-.map-widget .check-pan-control-inner span, .map-widget .check-draw-control-inner span {
-    padding: 5px;
+.map-widget .check-pan-control-inner span,
+.map-widget .check-draw-control-inner span,
+.map-widget .refine-search-control-inner span {
     text-align: left;
 }
 
@@ -182,6 +99,11 @@
     background-size: cover;
     height: 48px;
     width: 34px;
+    cursor: pointer;
+
+    &.property-active {
+        background-image: url('../images/precise_pin_active.png');
+    }
 }
 
 .property-cluster-marker {
@@ -247,29 +169,51 @@
     background-color: transparent;
 }
 
-.heatmap-view-button{
-  background-image: url('../images/heatmap.png');
-  background-size: 40px 40px;
-  height: 39px;
-  width: 40px;
-  background-repeat: no-repeat;
-  background-color: white;
-  cursor:pointer;
+.heatmap-view-button {
+    background-image: url('../images/heatmap.png');
+    background-size: 40px 34px;
+    height: 34px;
+    width: 40px;
+    background-repeat: no-repeat;
+    background-color: white;
+    cursor: pointer;
+    border-radius: @border-radius-control;
+}
 
+.heatmap-view-button.active {
+    background-color: @custom-red;
 }
 
 //change position of google controls
-.map-control.places-control{
+.map-control.places-control-wrapper {
     right: 50px !important;
-    bottom: 41px !important;
+    bottom: 38px !important;
 }
-.map-control.heatmap-view-control{
-    height: 40px;
+
+.map-control.heatmap-view-control-wrapper {
+    height: 34px;
     width: 40px;
-    bottom:41px !important;
+    bottom: 38px !important;
 }
-.map-control.layer-list-control{
+
+.map-control.layer-list-control-wrapper {
     top: 20px !important;
 }
 
+.radio-places-item {
+    text-align: left !important;
+    padding-left: 10%;
+}
+
+.radio-places-item input {
+    display: inline;
+    width: 20% !important;
+}
+
+@import "places-control";
+@import "layer-list-control";
 @import "overlay";
+@import "picture-export-control";
+@import 'refine-control';
+@import 'poi-control';
+@import "ballons";
