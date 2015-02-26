@@ -1,64 +1,79 @@
 var mapViewer;
 var currentImage = 0;
-var totalMarkers = {};
+
 var IntegrationAPI = {
+
+    _data: null,
+    _tree: null,
 
     addSearchListener: function(callback) {
         this.callback = callback;
     },
 
-    searchByPolygon: function(poligonPoints) {
-        var list = [];
+    searchByPolygon: function(polygonPoints) {
 
-        var minLat = poligonPoints[0].lat();
-        var maxLat = poligonPoints[0].lat();
-        var minLng = poligonPoints[0].lng();
-        var maxLng = poligonPoints[0].lng();
-
-        for (var i = 1; i < poligonPoints.length; i++) {
-            if (poligonPoints[i].lat() < minLat)
-                minLat = poligonPoints[i].lat();
-
-            if (poligonPoints[i].lat() > maxLat)
-                maxLat = poligonPoints[i].lat();
-
-            if (poligonPoints[i].lng() < minLng)
-                minLng = poligonPoints[i].lng();
-
-            if (poligonPoints[i].lng() > maxLng)
-                maxLng = poligonPoints[i].lng();
+        if (!this._tree) {
+            this._retrieveMarkers(polygonPoints);
+            return;
         }
 
-        var poligon = new google.maps.Polygon({
-            paths: poligonPoints
+        var polygon = new google.maps.Polygon({
+            paths: polygonPoints
         });
+        
+        var bounds = new google.maps.LatLngBounds();
+        var paths = polygon.getPaths();
+        var path;        
+        for (var i = 0; i < paths.getLength(); i++) {
+            path = paths.getAt(i);
+            for (var ii = 0; ii < path.getLength(); ii++) {
+                bounds.extend(path.getAt(ii));
+            }
+        }
+        
+        var searchResult = this._tree.search([
+            bounds.getSouthWest().lng(),
+            bounds.getSouthWest().lat(),
+            bounds.getNorthEast().lng(),
+            bounds.getNorthEast().lat()
+        ]);
 
+        var result = [];
+        for (var j = 0; j < searchResult.length; j++) {
 
-        var totalItems = totalMarkers;
-
-        for (var marker in totalItems) {
-
-
-            var elem = totalItems[marker];
-
-
+            var elem = searchResult[j];
             var point = new google.maps.LatLng(elem.lat, elem.lng);
-
-            if (poligonPoints.length > 2) {
-                if (google.maps.geometry.poly.containsLocation(point, poligon)) {
-                    list.push(elem);
+            if (polygonPoints.length > 2) {
+                if (google.maps.geometry.poly.containsLocation(point, polygon)) {
+                    result.push(elem);
                 }
             }
         }
 
         var that = this;
         setTimeout(function() {
-            that.callback(list);
+            that.callback(result);
         }, 500);
+    },
 
-        function RandomCoordinate(min, max) {
-            return Math.random() * (max - min) + min;
-        }
+    _retrieveMarkers: function(polygonPoints) {
+        var that = this;
+        $.get("example-properties.json").success(function(data) {
+            that._tree = rbush(9, ['.lng', '.lat', '.lng', '.lat']);
+            
+            for (var i = 0; i < data.length; i++) {
+                var elem = data[i];
+                var lat = elem.geometry.coordinates[1];
+                var lng = elem.geometry.coordinates[0];
+                that._tree.insert({
+                    propertyId: elem.properties.gx_id,
+                    lat: lat,
+                    lng: lng
+                });
+            }
+
+            that.searchByPolygon(polygonPoints);
+        });
     },
 
     setPropertiesFilter: function(propertiesIds) {
@@ -69,8 +84,8 @@ var IntegrationAPI = {
         var heading = Math.random() * 360;
         var propertyData = {
             propertyId: id,
-            fuzzy: false,
-            type: "test",
+            "Address": chance.address()+", London",
+            "Phone": chance.phone({ country: "uk" }),
             images: [{
                 title: 'Photo 1',
                 url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
@@ -228,7 +243,7 @@ function MapViewerTest() {
 
     var mapOptions = {
         id: 'map',
-        center: [37.3753707, -5.9550583],
+        center: [51.5072, 0.1275],
         zoom: 12
     };
 
@@ -240,7 +255,7 @@ function MapViewerTest() {
 
     mapViewer.setBubbleTemplate({
         "Details": {
-            dataFields: ['propertyId', 'fuzzy', 'type'],
+            dataFields: ['propertyId', 'Address', 'Phone'],
             template: '<div class="balloon data-tab container"><table>{{#data}}<tr class="data-item"><td><b>{{key}}</b></td><td>{{value}}</td></tr>{{/data}}</table></div>'
         },
         "Images": {
@@ -255,65 +270,6 @@ function MapViewerTest() {
 
         }
     });
-
-    mapViewer.getAllMarkers = function(map) {
-        if (JSON.stringify(totalMarkers) == '{}') {
-            var markersById = {};
-            var span = map.getBounds().toSpan();
-            //if map is loaded the map extension is different of 0
-            if (span.lat() !== 0 && span.lng() !== 0) {
-                var bounds = map.getBounds().toUrlValue();
-                bounds = bounds.split(',');
-                //expand the map extension
-                var extensionIncrement = 5;
-                var minLat = parseFloat(bounds[0]) - extensionIncrement;
-                var maxLat = parseFloat(bounds[2]) + extensionIncrement;
-                var minLng = parseFloat(bounds[1]) - extensionIncrement;
-                var maxLng = parseFloat(bounds[3]) + extensionIncrement;
-
-                var maxItems = 10000;
-                var scopeLat = maxLat - minLat;
-                // var scopeLat = Math.abs(minLat) + Math.abs(maxLat);
-                var totalItems = scopeLat * maxItems / 180;
-                totalItems = (totalItems < 3) ? 3 : totalItems;
-
-                var elem1 = {
-                    propertyId: 'sevilla_center',
-                    lat: 37.385603,
-                    lng: -5.992273,
-
-                };
-                markersById[elem1.propertyId] = elem1;
-
-                var elem2 = {
-                    propertyId: 'sevilla_emergya',
-                    lat: 37.382787,
-                    lng: -5.972748,
-
-                };
-                markersById[elem2.propertyId] = elem2;
-
-                for (var j = 0; j < totalItems; j++) {
-                    var lat = RandomCoordinate(minLat, maxLat);
-                    var lng = RandomCoordinate(minLng, maxLng);
-
-                    var elem = {
-                        propertyId: j,
-                        lat: lat,
-                        lng: lng,
-
-                    };
-                    markersById[j] = elem;
-                }
-                totalMarkers = markersById;
-            }
-        }
-
-
-        function RandomCoordinate(min, max) {
-            return Math.random() * (max - min) + min;
-        }
-    };
 
 }
 
