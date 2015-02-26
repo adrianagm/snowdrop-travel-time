@@ -66,7 +66,7 @@ var IntegrationAPI = {
                 var lat = elem.geometry.coordinates[1];
                 var lng = elem.geometry.coordinates[0];
                 that._tree.insert({
-                    id: elem.properties.gx_id,
+                    propertyId: elem.properties.gx_id,
                     lat: lat,
                     lng: lng
                 });
@@ -243,7 +243,7 @@ function MapViewerTest() {
 
     var mapOptions = {
         id: 'map',
-        center: [37.3753707, -5.9550583],
+        center: [51.5072, 0.1275],
         zoom: 12
     };
 

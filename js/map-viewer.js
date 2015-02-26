@@ -287,7 +287,6 @@ function MapViewer(options, api, modules) {
                 this.markers.push(marker);
                 this.markersById[marker.propertyId] = marker;
                 this.updatedMarkersById[marker.propertyId] = marker;
-
             }
 
             this.cluster.addMarkers(this.markers);
