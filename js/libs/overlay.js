@@ -7,10 +7,10 @@
         this.id = this.options.id || 'overlay';
 
         this.overlayParent = null;
-        if (typeof this.options.appendToParent === 'string') {
+        if (typeof this.options.parent === 'string') {
             this.overlayParent = document.getElementById('map');
-        } else if (typeof this.options.appendToParent === 'object') {
-            this.overlayParent = this.options.appendToParent;
+        } else if (typeof this.options.parent === 'object') {
+            this.overlayParent = this.options.parent;
         }
 
         //create the overlay
@@ -42,18 +42,8 @@
         if (this.options.modalClasses && typeof this.options.modalClasses === 'string') {
             modal.className += ' ' + this.options.modalClasses;
         }
-         else if(this.options.modalClasses && typeof this.options.modalClasses === 'object'){
-            modal.classList.add(this.options.modalClasses);
-        }
-
         if (this.options.modalInnerContent && typeof this.options.modalInnerContent === 'string') {
             modal.innerHTML += '<div class="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
-        }
-        else if(this.options.modalInnerContent && typeof this.options.modalInnerContent === 'object'){
-            var  innerContent = document.createElement('div');
-            innerContent.className = this.id + '-modal-inner';
-            innerContent.appendChild(this.options.modalInnerContent);
-            modal.appendChild(innerContent);
         }
 
         this.overlay.appendChild(modal);
@@ -72,7 +62,6 @@
 
     JLLOverlay.prototype.destroy = function() {
         this.overlayParent.removeChild(this.overlay);
-        //    this.overlay.remove();
     };
 
     if (typeof window.JLLOverlay == 'undefined') {
