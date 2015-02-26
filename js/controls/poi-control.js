@@ -21,6 +21,7 @@
         infoWindows: [],
 
         distanceService: null,
+        placesService: null,
         selectedProperty: null,
         active: false,
 
@@ -28,6 +29,7 @@
             this.link = this.getElementsByClass('check-class')[0];
 
             this.distanceService = new google.maps.DistanceMatrixService();
+            this.placesService = new google.maps.places.PlacesService(this.map);
 
             if (this.defaultChecked) {
                 this.link.classList.add('checked-pan');
@@ -92,10 +94,10 @@
             this.searchBox.setBounds(bounds);
         },
 
-        addMarker: function(place) {
+        addMarker: function(place, isPlaceMarker) {
             if (!place.geometry) return;
 
-            var content = '<div class="poi-marker"></div>';
+            var content = isPlaceMarker ? '' : '<div class="poi-marker"></div>';
             var marker = new RichMarker({
                 position: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
                 flat: true,
@@ -105,12 +107,12 @@
 
             this.markers.push(marker);
 
-            this.createInfowindow(marker, place.name);
+            this.createInfowindow(marker, place.name, isPlaceMarker);
             this.getMarkerMatrix(marker, google.maps.TravelMode.DRIVING);
             this.getMarkerMatrix(marker, google.maps.TravelMode.WALKING);
         },
 
-        createInfowindow: function(marker, name) {
+        createInfowindow: function(marker, name, isPlaceMarker) {
             infoWindowContent = document.createElement('div');
             infoWindowContent.innerHTML = '<div class="poi-popup">' +
                 '<div class="poi-name">' + name + '</div>' +
@@ -120,8 +122,9 @@
 
             marker.infoWindowContent = infoWindowContent;
 
+            var offset = isPlaceMarker ? -20 : -15;
             marker.infowindow = new google.maps.InfoWindow({
-                pixelOffset: new google.maps.Size(0, -15),
+                pixelOffset: new google.maps.Size(0, offset),
                 disableAutoPan: true
             });
             marker.infowindow.setContent(infoWindowContent);
@@ -253,13 +256,18 @@
 
         onPlaceClicked: function(marker) {
             if (this.active) {
-                var place = {
-                    geometry: {
-                        location: marker.position
-                    },
-                    name: marker.placeName
-                };
-                this.addMarker(place);
+                var that = this;
+                this.placesService.getDetails({
+                    'placeId': marker.placeId,
+                }, function(result, status) {
+                    var place = {
+                        geometry: {
+                            location: marker.position
+                        },
+                        name: result.name
+                    };
+                    that.addMarker(place, true);
+                });
             }
         },
 

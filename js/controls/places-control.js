@@ -152,6 +152,7 @@
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
+            marker.placeId = place.place_id;
 
             var that = this;
             marker.addListener("click", function(event) {
