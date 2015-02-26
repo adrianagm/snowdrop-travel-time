@@ -5,7 +5,7 @@
     MapViewer.CheckDrawControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-draw-control-outer"><div class="check-draw-control-border">' +
-        '<div class="check-draw-control-inner"><a class="check-draw-class" href="#"> </a> <span>Draw to search</span></div></div></div>',
+        '<div class="check-draw-control-inner"><a class="check-class" href="#"> </a> <span>Draw to search</span></div></div></div>',
 
         controlClass: 'check-draw-control',
         position: 'LEFT_BOTTOM',
@@ -53,7 +53,7 @@
                 new google.maps.LatLng(-150, 0)
             ];
 
-            this.link = this.getElementsByClass('check-draw-class')[0];
+            this.link = this.getElementsByClass('check-class')[0];
 
             this.drawingManager = this._getDrawingManager();
 
@@ -66,9 +66,11 @@
             }
 
             var that = this;
+            this.bindEvent('check-class', 'click', function(event) {
+                event.preventDefault();
+            });
 
             this.bindEvent('check-draw-control-outer', 'click', function(event) {
-
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
                 } else {

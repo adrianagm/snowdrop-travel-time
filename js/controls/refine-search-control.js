@@ -5,7 +5,7 @@
     MapViewer.RefineSearchControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="refine-search-control-outer"><div class="refine-search-control-border">' +
-            '<div class="refine-search-control-inner"><a class="check-class" href="#"> </a><span> Travel time/distance</span></div></div></div>',
+        '<div class="refine-search-control-inner"><a class="check-class" href="#"> </a><span> Travel time/distance</span></div></div></div>',
         controlClass: 'refine-search-control',
 
         position: 'LEFT_BOTTOM',
@@ -35,6 +35,10 @@
             } else {
                 this.link.classList.add('unchecked-pan');
             }
+            this.bindEvent('check-class', 'click', function(event) {
+                event.preventDefault();
+            });
+            
             this.setCheckEvent();
         },
 
@@ -105,16 +109,16 @@
         createInfowindow: function() {
             this.infoWindowContent = document.createElement('div');
             this.infoWindowContent.innerHTML = '<div class="refine-popup">' +
-                '<div class="refine-mode">' +
-                '<div class="refine-button active refine-time">Time</div><div class="refine-button inactive refine-distance">Distance</div>' +
-                '</div>' +
-                '<div class="refine-travelmode">' +
-                '<span class="refine-button active fa fa-car travel-car"></span><span class="refine-button inactive fa fa-male travel-walking"></span>' +
-                '</div>' +
-                '<div class="refine-value">' +
-                '<input type="number" value="60" min="0" step="1" class="refine-input"/><span class="refine-label">min.</span>' +
-                '</div>' +
-                '</div>';
+            '<div class="refine-mode">' +
+            '<div class="refine-button active refine-time">Time</div><div class="refine-button inactive refine-distance">Distance</div>' +
+            '</div>' +
+            '<div class="refine-travelmode">' +
+            '<span class="refine-button active fa fa-car travel-car"></span><span class="refine-button inactive fa fa-male travel-walking"></span>' +
+            '</div>' +
+            '<div class="refine-value">' +
+            '<input type="number" value="60" min="0" step="1" class="refine-input"/><span class="refine-label">min.</span>' +
+            '</div>' +
+            '</div>';
 
             this.infowindow = new google.maps.InfoWindow({
                 pixelOffset: new google.maps.Size(0, -12),
