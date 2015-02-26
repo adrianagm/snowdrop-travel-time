@@ -164,7 +164,13 @@ function MapViewer(options, api, modules) {
 
         notifyPropertyClicked: function(marker) {
             for (var module in this.loadedModules) {
-                this.loadedModules[module].onPropertyclicked(marker);
+                this.loadedModules[module].onPropertyClicked(marker);
+            }
+        },
+
+        notifyPlaceClicked: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPlaceClicked(marker);
             }
         },
 
@@ -213,7 +219,7 @@ function MapViewer(options, api, modules) {
                 //new markers
                 if (!this.markersById[markers[i].propertyId]) {
                     newMarkers.push(markers[i]);
-                //markers existing
+                    //markers existing
                 } else {
                     this.updatedMarkersById[markers[i].propertyId] = this.markersById[markers[i].propertyId];
                     this.markers.push(this.markersById[markers[i].propertyId]);
@@ -247,7 +253,7 @@ function MapViewer(options, api, modules) {
             }
 
             this.cluster.removeMarkers(markers);
-            
+
         },
 
         setMarkers: function(searchResults) {

@@ -22,6 +22,7 @@
 
         distanceService: null,
         selectedProperty: null,
+        active: false,
 
         initialize: function() {
             this.link = this.getElementsByClass('check-class')[0];
@@ -41,6 +42,7 @@
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
                     that.showSearchBar();
+                    that.active = true;
                 } else {
                     that.deactivate();
                 }
@@ -50,6 +52,7 @@
         deactivate: function() {
             MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
             this.clearMarkers();
+            this.active = false;
             if (this.input) {
                 this.input.classList.add('hide');
             }
@@ -241,10 +244,22 @@
             content.innerHTML = timeText;
         },
 
-        onPropertyclicked: function(marker) {
+        onPropertyClicked: function(marker) {
             this.selectedProperty = marker;
             if (this.markers.length > 0) {
                 this.refreshMarkers();
+            }
+        },
+
+        onPlaceClicked: function(marker) {
+            if (this.active) {
+                var place = {
+                    geometry: {
+                        location: marker.position
+                    },
+                    name: marker.placeName
+                };
+                this.addMarker(place);
             }
         },
 

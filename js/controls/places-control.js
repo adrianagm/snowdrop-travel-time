@@ -4,7 +4,7 @@
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>' +
-        '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
+            '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
@@ -152,6 +152,11 @@
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
+
+            var that = this;
+            marker.addListener("click", function(event) {
+                that.owner.notifyPlaceClicked(marker);
+            });
 
             this.markers[type].push(marker);
 
