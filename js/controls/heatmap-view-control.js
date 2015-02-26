@@ -104,7 +104,6 @@
             var content = document.createElement('div');
 
 
-
             var overlayContent = document.createElement('div');
             overlayContent.className = 'overlay-content';
             overlayContent.innerHTML = 'There is more than one Google Places category selected in the toolbar. Choose one Google Places category to represent as heat map';
@@ -153,7 +152,7 @@
 
             };
 
-            var overlay = new JLLOverlay(overlayOptions);
+            var overlay = new MapViewerOverlay(overlayOptions);
 
 
         },
@@ -188,9 +187,8 @@
 
             };
 
-            var overlay = new JLLOverlay(overlayOptions);
+            var overlay = new MapViewerOverlay(overlayOptions);
         }
-
 
 
     });

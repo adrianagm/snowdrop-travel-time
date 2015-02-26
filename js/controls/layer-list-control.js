@@ -5,13 +5,13 @@
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div>' +
-            '<div class="layer-list-collapsible-wrap">' +
-            '<div class="search-dataset">Search Dataset</div>' +
-            '<div class="layer-list-options-wrap">' +
-            '<ul class="layer-list"></ul>' +
-            '</div>' +
-            '<div class="clear">Clear</div>' +
-            '</div>',
+        '<div class="layer-list-collapsible-wrap">' +
+        '<div class="search-dataset">Search Dataset</div>' +
+        '<div class="layer-list-options-wrap">' +
+        '<ul class="layer-list"></ul>' +
+        '</div>' +
+        '<div class="clear">Clear</div>' +
+        '</div>',
         controlClass: 'layer-list-control',
 
         position: 'LEFT_TOP',
@@ -73,7 +73,7 @@
                         scripts: that._searchDatasetScript
                     };
 
-                    var overlay = new JLLOverlay(overlayOptions);
+                    var overlay = new MapViewerOverlay(overlayOptions);
                 });
 
             });
