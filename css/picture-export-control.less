@@ -1,6 +1,9 @@
 .map-widget {
-    .map-control.picture-exportation-control > div {
+    .picture-exportation-control-outer {
         background: white;
+        &.complete-screen {
+            background: none;
+        }
     }
     .picture-exportation-control-inner {
         border-radius: @border-radius-control;
@@ -17,9 +20,6 @@
             background: url('../images/close_24.png');
             cursor: pointer;
         }
-    }
-    .picture-exportation-control-border {
-        background-color:white;
     }
 }
 
