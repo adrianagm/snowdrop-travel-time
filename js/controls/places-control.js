@@ -148,7 +148,7 @@
             var marker = {
                 properties: place,
                 latLng: place.geometry.location,
-                iconClass: icon,
+                iconClass: "place-marker " + icon,
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
