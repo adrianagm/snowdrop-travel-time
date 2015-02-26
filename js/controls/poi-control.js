@@ -95,7 +95,7 @@
         },
 
         addMarker: function(place, isPlaceMarker) {
-            if (!place.geometry) return;
+            if (!place.geometry || !this.selectedProperty) return;
 
             var content = isPlaceMarker ? '' : '<div class="poi-marker"></div>';
             var marker = new RichMarker({
