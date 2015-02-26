@@ -70,19 +70,21 @@
                 var activePlaces = that.getElementsByClass('active');
                 for (var i = 0; i < activePlaces.length; i++) {
                     var place = that.places[activePlaces[i].innerHTML];
-                    var type = place.type;
-                    that.removePlacesToMap(type);
-                    that.placesSelected(activePlaces[i], function() {
-                        //callback for update heatmap if it's active
-                        var heatMapButton = that.owner.element.getElementsByClassName('heatmap-view-button')[0];
-                        if (heatMapButton) {
-                            if (heatMapButton.classList.contains('active')) {
-                                MapViewer.heatmap.setMap(null);
-                                MapViewer.Heatmap.prototype.createHeatMap();
-                            }
+                    if (place) {
+                        var type = place.type;
+                        that.removePlacesToMap(type);
+                        that.placesSelected(activePlaces[i], updateHeatmap);
+                    }
+                }
+                //callback for update heatmap if it's active
+                function updateHeatmap() {
+                    var heatMapButton = that.owner.element.getElementsByClassName('heatmap-view-button')[0];
+                    if (heatMapButton) {
+                        if (heatMapButton.classList.contains('active')) {
+                            MapViewer.heatmap.setMap(null);
+                            MapViewer.Heatmap.prototype.createHeatMap();
                         }
-
-                    });
+                    }
                 }
             });
 
@@ -173,16 +175,19 @@
                     }
                 }
             }
-
         },
 
         removePlacesToMap: function(type) {
             var markers = this.markers[type];
-            MapViewer.clusterPlaces.removeMarkers(markers);
-            for (var m = 0; m < markers.length; m++) {
-                markers[m].setMap(null);
+            if (markers) {
+                MapViewer.clusterPlaces.removeMarkers(markers);
+                for (var m = 0; m < markers.length; m++) {
+                    if (markers[m]) {
+                        markers[m].setMap(null);
+                    }
+                }
+                this.markers[type] = [];
             }
-            this.markers[type] = [];
         },
 
         toggleList: function(header) {
