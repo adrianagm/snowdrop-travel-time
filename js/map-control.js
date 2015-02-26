@@ -41,7 +41,7 @@
             }
 
             wrapperDiv.className = 'map-control';
-            wrapperDiv.classList.add(this.controlClass + '-wrapper');
+            wrapperDiv.classList.add(this.controlClass);
             wrapperDiv.appendChild(controlDiv);
 
             helperDiv.appendChild(wrapperDiv);
@@ -77,28 +77,6 @@
             this.link.classList.remove('unchecked-pan');
             this.link.classList.add('checked-pan');
             this.currentlyActivate = true;
-        },
-
-        onSearchResults: function(searchResults) {},
-        onPropertyClicked: function(marker) {},
-        onPlaceClicked: function(marker) {},
-        onPlaceRemoved: function(marker) {},
-
-        searchInBounds: function() {
-            var bounds = this.map.getBounds();
-            var cornerBounds = [];
-            var ne = bounds.getNorthEast();
-            var sw = bounds.getSouthWest();
-            var nw = new google.maps.LatLng(ne.lat(), sw.lng());
-            var se = new google.maps.LatLng(sw.lat(), ne.lng());
-
-            cornerBounds.push(ne);
-            cornerBounds.push(se);
-            cornerBounds.push(sw);
-            cornerBounds.push(nw);
-
-            this.api.searchByPolygon(cornerBounds);
-
         }
     };
 

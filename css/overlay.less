@@ -25,15 +25,13 @@
             font-family: "Droid Sans", sans-serif;
             color: @text-color-control;
             .overlay-close-btn {
-                background: url('../images/close_cross.png');
-                margin: 3px;
+                content: url('../images/close_cross.png');
+                padding: 3px;
                 position: absolute;
                 top: 5px;
                 right: 5px;
                 display: block;
                 cursor: pointer;
-                min-width: 10px;
-                min-height: 10px;
             }
             .overlay-modal-inner {
                 .overlay-header {
@@ -90,6 +88,7 @@
                 }
 
                 input, .overlay-form-input {
+                    height: 12px;
                     width: 95%;
                     margin: 0em;
                     font: normal normal normal 13.3333330154419px/normal Arial;
@@ -106,6 +105,10 @@
 
                 select[multiple] {
                     height: auto;
+                }
+
+                option:checked {
+                    background: linear-gradient(@custom-red, @custom-red);
                 }
 
                 label {
