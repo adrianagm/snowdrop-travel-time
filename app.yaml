@@ -22,7 +22,7 @@ handlers:
 - url: /(.+\.(css|js|json))$
   static_files: test/\1
   login: required
-  upload: .+\.(css|js)$
+  upload: .+\.(css|js|json)$
 
 - url: /
   script: test/index.html
