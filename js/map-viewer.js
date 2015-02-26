@@ -316,9 +316,9 @@ function MapViewer(options, api, modules) {
                     marker.infoWindow.open(that.map, marker);
 
                 });
-
-                if (that.element.getElementsByClassName('property-active')[0]) {
-                    that.element.getElementsByClassName('property-active')[0].classList.remove('property-active');
+                var activeProperty = that.getElementsByClass('property-active')[0];
+                if (activeProperty) {
+                    activeProperty.classList.remove('property-active');
                 }
                 marker.getContent().classList.add('property-active');
                 that.notifyPropertyClicked(marker);
