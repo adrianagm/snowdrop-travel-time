@@ -56,16 +56,11 @@ function MapViewer(options, api, modules) {
                 panControl: false
             };
 
-
             this.element = document.getElementById(options.id);
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
             this.map.content = this.element;
-            google.maps.event.addListener(this.map, 'bounds_changed', function() {
-                that.getAllMarkers(that.map);
-            });
-
-
+        
             this.setCluster();
 
             this.api.addSearchListener(function(results) {
@@ -77,6 +72,21 @@ function MapViewer(options, api, modules) {
             this.setModulesApi();
             this.setModulesOwner();
             this.loadedModules = {};
+        },
+
+        _retrieveMarkers: function() {
+
+            var bounds = this.map.getBounds().toUrlValue();
+            bounds = bounds.split(',');
+            //expand the map extension
+            var extensionIncrement = 5;
+            var minLat = parseFloat(bounds[0]) - extensionIncrement;
+            var maxLat = parseFloat(bounds[2]) + extensionIncrement;
+            var minLng = parseFloat(bounds[1]) - extensionIncrement;
+            var maxLng = parseFloat(bounds[3]) + extensionIncrement;
+
+
+            this.api.searchByPolygon();
         },
 
         setModulesMap: function() {
@@ -246,7 +256,7 @@ function MapViewer(options, api, modules) {
             }
 
             this.cluster.removeMarkers(markers);
-            
+
         },
 
         setMarkers: function(searchResults) {
