@@ -28,7 +28,6 @@ function MapViewer(options, api, modules) {
 }
 
 
-
 (function() {
     "use strict";
 
@@ -213,7 +212,7 @@ function MapViewer(options, api, modules) {
                 //new markers
                 if (!this.markersById[markers[i].propertyId]) {
                     newMarkers.push(markers[i]);
-                //markers existing
+                    //markers existing
                 } else {
                     this.updatedMarkersById[markers[i].propertyId] = this.markersById[markers[i].propertyId];
                     this.markers.push(this.markersById[markers[i].propertyId]);
@@ -378,12 +377,10 @@ function MapViewer(options, api, modules) {
                 marker.infoWindow.addTab(labelTab, output);
 
 
-
             }
 
 
             return marker.infoWindow;
-
 
 
         },
@@ -417,6 +414,10 @@ function MapViewer(options, api, modules) {
                     pano.innerHTML = 'Street View not available in this position';
                 }
             }
+        },
+
+        getElementsByClass: function(classSelector) {
+            return this.element.getElementsByClassName(classSelector);
         }
 
     };
