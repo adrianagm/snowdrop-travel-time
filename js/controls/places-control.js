@@ -59,7 +59,7 @@
                     scripts: that._searchPlacesScript
                 };
 
-                that.overlay = new JLLOverlay(overlayOptions);
+                that.overlay = new MapViewerOverlay(overlayOptions);
             });
 
 
