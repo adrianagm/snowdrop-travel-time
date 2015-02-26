@@ -66,6 +66,23 @@ function MapViewer(options, api, modules) {
                 that.getAllMarkers(that.map);
             });
 
+            google.maps.event.addListener(this.map, 'zoom_changed', function() {
+                //close the infowindow if marker is clustered
+                setTimeout(function() {
+                    var clusters = that.cluster.clusters_;
+                    for (var cluster in clusters) {
+                        var markers = clusters[cluster].markers_;
+                        if (markers.length > 1) {
+                            for (var m in markers) {
+                                if (markers[m].infoWindow && markers[m].infoWindow.isOpen) {
+                                    markers[m].infoWindow.close();
+                                }
+                            }
+                        }
+                    }
+                }, 1000);
+            });
+
 
             this.setCluster();
 
@@ -213,7 +230,7 @@ function MapViewer(options, api, modules) {
                 //new markers
                 if (!this.markersById[markers[i].propertyId]) {
                     newMarkers.push(markers[i]);
-                //markers existing
+                    //markers existing
                 } else {
                     this.updatedMarkersById[markers[i].propertyId] = this.markersById[markers[i].propertyId];
                     this.markers.push(this.markersById[markers[i].propertyId]);
@@ -247,7 +264,7 @@ function MapViewer(options, api, modules) {
             }
 
             this.cluster.removeMarkers(markers);
-            
+
         },
 
         setMarkers: function(searchResults) {
@@ -402,7 +419,8 @@ function MapViewer(options, api, modules) {
                 pov: {
                     heading: heading,
                     pitch: pitch
-                }
+                },
+                panControl: false,
             };
 
             var sv = new google.maps.StreetViewService();

@@ -133,36 +133,7 @@
     background-repeat: no-repeat;
 }
 
-.places-marker {
-    background-image: url('../images/placesMarker.png');
-    background-size: 20px 20px;
-    height: 20px;
-    width: 20px;
-    background-repeat: no-repeat;
-    background-color: transparent;
-}
 
-.places-cluster-marker {
-    color: #fff;
-    background-image: url('../images/cluster-places.png');
-    background-size: 35px 35px;
-    background-repeat: no-repeat;
-    height: 35px;
-    width: 35px;
-    line-height: 35px;
-    cursor: pointer;
-    font-size: 9px;
-
-}
-
-.places-marker.places-marker-grocery_or_supermarket {
-    background-image: url('../images/shopping-card.png');
-    background-size: 20px 20px;
-    height: 20px;
-    width: 20px;
-    background-repeat: no-repeat;
-    background-color: transparent;
-}
 
 .heatmap-view-button {
     background-image: url('../images/heatmap.png');
@@ -196,13 +167,25 @@
 }
 
 .radio-places-item {
+    display: inline !important;
     text-align: left !important;
     padding-left: 10%;
+    white-space: nowrap;
+    font-weight: normal;
+    font-style: normal;
+    line-height: 25px;
+
+
 }
 
 .radio-places-item input {
     display: inline;
-    width: 20% !important;
+    width: 2em !important;
+}
+
+.radio-group{
+    overflow-y: auto;
+    max-height: 250px;  
 }
 
 @import "places-control";
