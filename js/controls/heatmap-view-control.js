@@ -89,6 +89,7 @@
                 }
                 MapViewer.heatmap.setData(pointArray);
                 MapViewer.heatmap.setMap(this.map);
+                MapViewer.heatmap.set('radius', 20);
 
                 for (var m = 0; m < markers.length; m++) {
                     markers[m].setMap(null);
@@ -103,25 +104,27 @@
             var map = this.owner.element;
             var content = document.createElement('div');
 
-
             var overlayContent = document.createElement('div');
             overlayContent.className = 'overlay-content';
-            overlayContent.innerHTML = 'There is more than one Google Places category selected in the toolbar. Choose one Google Places category to represent as heat map';
-
+            overlayContent.innerHTML = '<p>Please choose the Google Places category to represent as heat map</p>';
+            var groupRadio = document.createElement('p');
+            groupRadio.className = "radio-group";
+            this.placesSelected.sort();
             for (var p in this.placesSelected) {
                 for (var type in MapViewer.placesList) {
                     if (MapViewer.placesList[type].type == this.placesSelected[p]) {
-                        var radioButton = "<p class='radio-places-item'><input type='radio'  name='radio-places' value=" + this.placesSelected[p] + ">" + type + "</p>";
-                        overlayContent.innerHTML += radioButton;
+                        var radioButton = "<br><label class='radio-places-item'><input type='radio'  name='radio-places' value=" + this.placesSelected[p] + "><i>" + type + "</i></label>";
+                        groupRadio.innerHTML += radioButton;
                     }
 
                 }
             }
+            overlayContent.appendChild(groupRadio);
             var overlayFooter = document.createElement('div');
             overlayFooter.className = 'overlay-footer';
             var acceptButton = document.createElement('button');
             acceptButton.className = 'heatmap-accept-button overlay-btn';
-            acceptButton.innerHTML = 'Accept';
+            acceptButton.innerHTML = 'OK';
             acceptButton.onclick = function() {
                 var radios = map.getElementsByClassName('radio-places-item');
                 for (var i = 0, length = radios.length; i < length; i++) {
@@ -138,6 +141,7 @@
                 overlay.destroy();
 
             };
+
             overlayFooter.appendChild(acceptButton);
 
 
@@ -153,6 +157,14 @@
             };
 
             var overlay = new MapViewerOverlay(overlayOptions);
+            setTimeout(function() {
+                map.getElementsByClassName('overlay-close-btn')[0].onclick = function() {
+                    MapViewer.heatPlaces = null;
+                    var buttonText = map.getElementsByClassName('heatmap-view-button')[0];
+                    buttonText.classList.remove('active');
+                    overlay.destroy();
+                };
+            }, 500);
 
 
         },
@@ -163,14 +175,14 @@
 
             var overlayContent = document.createElement('div');
             overlayContent.className = 'overlay-header';
-            overlayContent.innerHTML = 'There is not any Google Places category selected in the toolbar. Please first select one Google Places category';
+            overlayContent.innerHTML = 'Please select the Google Places category to represent as heat map';
 
 
             var overlayFooter = document.createElement('div');
             overlayFooter.className = 'overlay-footer';
             var acceptButton = document.createElement('button');
             acceptButton.className = 'heatmap-accept-button overlay-btn';
-            acceptButton.innerHTML = 'Accept';
+            acceptButton.innerHTML = 'OK';
             acceptButton.onclick = function() {
                 overlay.destroy();
             };

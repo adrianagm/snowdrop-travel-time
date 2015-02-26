@@ -119,6 +119,7 @@
             });
         },
         placesSelected: function(li, callback) {
+            
             li.classList.add('active');
             var place = this.places[li.innerHTML];
             var type = place.type;
@@ -141,6 +142,11 @@
                     MapViewer.clusterPlaces.addMarkers(that.markers[type]);
                     if (callback)
                         callback();
+                }
+                else{
+                    setTimeout(function(){
+                        that.placesSelected(li);
+                    }, 100);
                 }
             });
         },
@@ -301,25 +307,41 @@
             }
 
             addBtn.onclick = function() {
+                var n = 0;
                 var searchPlaceslength = searchPlaces.length;
-                for (var i = 0; i < searchPlaceslength; i++) {
-                    if (searchPlaces[i]) {
-                        var option = searchPlaces[i];
-                        if (option.selected) {
-                            MapViewer.placesList[option.text] = {
-                                type: option.value,
-                            };
+                selectedCategories(0);
 
-                            if (!that.customPlacesBtn) {
-                                that.createCustomBtn();
-                            } else if (that.customPlacesBtn.style.display === 'none') {
-                                that.customPlacesBtn.style.display = 'inline-block';
+                function selectedCategories(i) {
+                    while (i < searchPlaceslength && n <= 10) {
+                        if (searchPlaces[i]) {
+                            var option = searchPlaces[i];
+                            if (option.selected) {
+                                MapViewer.placesList[option.text] = {
+                                    type: option.value,
+                                };
+
+                                if (!that.customPlacesBtn) {
+                                    that.createCustomBtn();
+                                } else if (that.customPlacesBtn.style.display === 'none') {
+                                    that.customPlacesBtn.style.display = 'inline-block';
+                                }
+                                if (n == 10) {
+                                    setTimeout(function() {
+                                        n = 0;
+                                        selectedCategories(i-1);
+                                    }, 100);
+
+                                } else {
+                                    that.addCustomLI(option.text);
+                                }
+                                n++;
+
                             }
-                            that.addCustomLI(option.text);
-
                         }
+                        i++;
                     }
                 }
+
                 that.overlay.destroy();
             };
 
@@ -395,7 +417,11 @@
             var list = this.getElementsByClass('custom-places-list-ul')[0];
             var items = list.children;
             var numberItem = this.getElementsByClass('number-item')[0];
-            numberItem.innerHTML = ' (' + items.length + ')';
+            if (items.length < 10) {
+                numberItem.innerHTML = ' (' + items.length + ')';
+            } else {
+                numberItem.innerHTML = ' (+9)';
+            }
         }
 
     });
