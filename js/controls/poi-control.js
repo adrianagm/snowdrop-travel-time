@@ -21,12 +21,15 @@
         infoWindows: [],
 
         distanceService: null,
+        placesService: null,
         selectedProperty: null,
+        active: false,
 
         initialize: function() {
             this.link = this.getElementsByClass('check-class')[0];
 
             this.distanceService = new google.maps.DistanceMatrixService();
+            this.placesService = new google.maps.places.PlacesService(this.map);
 
             if (this.defaultChecked) {
                 this.link.classList.add('checked-pan');
@@ -41,6 +44,7 @@
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
                     that.showSearchBar();
+                    that.active = true;
                 } else {
                     that.deactivate();
                 }
@@ -50,6 +54,7 @@
         deactivate: function() {
             MapViewer.MapControl.prototype.deactivate.apply(this, arguments);
             this.clearMarkers();
+            this.active = false;
             if (this.input) {
                 this.input.classList.add('hide');
             }
@@ -89,25 +94,27 @@
             this.searchBox.setBounds(bounds);
         },
 
-        addMarker: function(place) {
-            if (!place.geometry) return;
+        addMarker: function(place, isPlaceMarker) {
+            if (!place.geometry || !this.selectedProperty) return;
 
-            var content = '<div class="poi-marker"></div>';
+            var content = isPlaceMarker ? '' : '<div class="poi-marker"></div>';
             var marker = new RichMarker({
                 position: new google.maps.LatLng(place.geometry.location.lat(), place.geometry.location.lng()),
                 flat: true,
                 content: content,
                 map: this.map
             });
-
+            if (isPlaceMarker) {
+                marker.placeId = place.placeId;
+            }
             this.markers.push(marker);
 
-            this.createInfowindow(marker, place.name);
+            this.createInfowindow(marker, place.name, isPlaceMarker);
             this.getMarkerMatrix(marker, google.maps.TravelMode.DRIVING);
             this.getMarkerMatrix(marker, google.maps.TravelMode.WALKING);
         },
 
-        createInfowindow: function(marker, name) {
+        createInfowindow: function(marker, name, isPlaceMarker) {
             infoWindowContent = document.createElement('div');
             infoWindowContent.innerHTML = '<div class="poi-popup">' +
                 '<div class="poi-name">' + name + '</div>' +
@@ -117,8 +124,9 @@
 
             marker.infoWindowContent = infoWindowContent;
 
+            var offset = isPlaceMarker ? -20 : -15;
             marker.infowindow = new google.maps.InfoWindow({
-                pixelOffset: new google.maps.Size(0, -15),
+                pixelOffset: new google.maps.Size(0, offset),
                 disableAutoPan: true
             });
             marker.infowindow.setContent(infoWindowContent);
@@ -241,10 +249,45 @@
             content.innerHTML = timeText;
         },
 
-        onPropertyclicked: function(marker) {
+        onPropertyClicked: function(marker) {
             this.selectedProperty = marker;
             if (this.markers.length > 0) {
                 this.refreshMarkers();
+            }
+        },
+
+        onPlaceClicked: function(marker) {
+            if (this.active) {
+                for (var i = 0; i < this.markers.length; i++) {
+                    if (this.markers[i].placeId === marker.placeId) {
+                        return;
+                    }
+                }
+                var that = this;
+                this.placesService.getDetails({
+                    'placeId': marker.placeId,
+                }, function(result, status) {
+                    var place = {
+                        geometry: {
+                            location: marker.position
+                        },
+                        name: result.name,
+                        placeId: marker.placeId
+                    };
+                    that.addMarker(place, true);
+                });
+            }
+        },
+
+        onPlaceRemoved: function(marker) {
+            if (this.active) {
+                for (var i = 0; i < this.markers.length; i++) {
+                    if (this.markers[i].placeId === marker.placeId) {
+                        this.markers[i].setMap(null);
+                        this.markers.splice(i, 1);
+                        break;
+                    }
+                }
             }
         },
 

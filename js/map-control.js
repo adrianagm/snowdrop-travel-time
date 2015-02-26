@@ -80,7 +80,9 @@
         },
 
         onSearchResults: function(searchResults) {},
-        onPropertyclicked: function(marker) {},
+        onPropertyClicked: function(marker) {},
+        onPlaceClicked: function(marker) {},
+        onPlaceRemoved: function(marker) {},
 
         searchInBounds: function() {
             var bounds = this.map.getBounds();

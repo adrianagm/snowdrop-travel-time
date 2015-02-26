@@ -4,7 +4,7 @@
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>' +
-        '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
+            '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
@@ -70,19 +70,21 @@
                 var activePlaces = that.getElementsByClass('active');
                 for (var i = 0; i < activePlaces.length; i++) {
                     var place = that.places[activePlaces[i].innerHTML];
-                    var type = place.type;
-                    that.removePlacesToMap(type);
-                    that.placesSelected(activePlaces[i], function() {
-                        //callback for update heatmap if it's active
-                        var heatMapButton = that.owner.element.getElementsByClassName('heatmap-view-button')[0];
-                        if (heatMapButton) {
-                            if (heatMapButton.classList.contains('active')) {
-                                MapViewer.heatmap.setMap(null);
-                                MapViewer.Heatmap.prototype.createHeatMap();
-                            }
+                    if (place) {
+                        var type = place.type;
+                        that.removePlacesToMap(type);
+                        that.placesSelected(activePlaces[i], updateHeatmap);
+                    }
+                }
+                //callback for update heatmap if it's active
+                function updateHeatmap() {
+                    var heatMapButton = that.owner.element.getElementsByClassName('heatmap-view-button')[0];
+                    if (heatMapButton) {
+                        if (heatMapButton.classList.contains('active')) {
+                            MapViewer.heatmap.setMap(null);
+                            MapViewer.Heatmap.prototype.createHeatMap();
                         }
-
-                    });
+                    }
                 }
             });
 
@@ -148,10 +150,16 @@
             var marker = {
                 properties: place,
                 latLng: place.geometry.location,
-                iconClass: icon,
+                iconClass: "place-marker " + icon,
                 map: this.map
             };
             marker = MapViewer.prototype.drawMarker(marker);
+            marker.placeId = place.place_id;
+
+            var that = this;
+            marker.addListener("click", function(event) {
+                that.owner.notifyPlaceClicked(marker);
+            });
 
             this.markers[type].push(marker);
 
@@ -161,7 +169,7 @@
             li.classList.remove('active');
             var place = this.places[li.innerHTML];
             var type = place.type;
-            this.removePlacesToMap(type);
+            this.removePlacesToMap(type, true);
             if (MapViewer.heatmap) {
                 if (type === MapViewer.heatPlaces) {
                     MapViewer.heatmap.setMap(null);
@@ -173,16 +181,22 @@
                     }
                 }
             }
-
         },
 
-        removePlacesToMap: function(type) {
+        removePlacesToMap: function(type, deselected) {
             var markers = this.markers[type];
-            MapViewer.clusterPlaces.removeMarkers(markers);
-            for (var m = 0; m < markers.length; m++) {
-                markers[m].setMap(null);
+            if (markers) {
+                MapViewer.clusterPlaces.removeMarkers(markers);
+                for (var m = 0; m < markers.length; m++) {
+                    if (markers[m]) {
+                        markers[m].setMap(null);
+                        if (deselected) {
+                            this.owner.notifyPlaceRemoved(markers[m]);
+                        }
+                    }
+                }
+                this.markers[type] = [];
             }
-            this.markers[type] = [];
         },
 
         toggleList: function(header) {

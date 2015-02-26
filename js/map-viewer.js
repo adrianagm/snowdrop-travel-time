@@ -173,7 +173,19 @@ function MapViewer(options, api, modules) {
 
         notifyPropertyClicked: function(marker) {
             for (var module in this.loadedModules) {
-                this.loadedModules[module].onPropertyclicked(marker);
+                this.loadedModules[module].onPropertyClicked(marker);
+            }
+        },
+
+        notifyPlaceClicked: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPlaceClicked(marker);
+            }
+        },
+
+        notifyPlaceRemoved: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPlaceRemoved(marker);
             }
         },
 
@@ -282,7 +294,8 @@ function MapViewer(options, api, modules) {
         },
 
         drawMarker: function(marker) {
-            var content = "<div class='" + marker.iconClass + "'></div>";
+            var content = document.createElement('div');
+            content.className = marker.iconClass;
             var richMarker = new RichMarker({
                 position: marker.latLng,
                 flat: true,
@@ -313,7 +326,11 @@ function MapViewer(options, api, modules) {
                     marker.infoWindow.open(that.map, marker);
 
                 });
-
+                var activeProperty = that.getElementsByClass('property-active')[0];
+                if (activeProperty) {
+                    activeProperty.classList.remove('property-active');
+                }
+                marker.getContent().classList.add('property-active');
                 that.notifyPropertyClicked(marker);
             });
 
