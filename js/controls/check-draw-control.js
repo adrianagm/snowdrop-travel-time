@@ -253,7 +253,7 @@
                     strokeOpacity: 0.9,
                     strokeWeight: 3,
                     fillColor: '#BC141A',
-                    fillOpacity: 0.1,
+                    fillOpacity: 0.01,
                     clickable: true,
                     editable: true,
                     zIndex: 1
