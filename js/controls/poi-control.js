@@ -104,7 +104,9 @@
                 content: content,
                 map: this.map
             });
-
+            if (isPlaceMarker) {
+                marker.placeId = place.placeId;
+            }
             this.markers.push(marker);
 
             this.createInfowindow(marker, place.name, isPlaceMarker);
@@ -256,6 +258,11 @@
 
         onPlaceClicked: function(marker) {
             if (this.active) {
+                for (var i = 0; i < this.markers.length; i++) {
+                    if (this.markers[i].placeId === marker.placeId) {
+                        return;
+                    }
+                }
                 var that = this;
                 this.placesService.getDetails({
                     'placeId': marker.placeId,
@@ -264,7 +271,8 @@
                         geometry: {
                             location: marker.position
                         },
-                        name: result.name
+                        name: result.name,
+                        placeId: marker.placeId
                     };
                     that.addMarker(place, true);
                 });
