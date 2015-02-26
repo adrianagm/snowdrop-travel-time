@@ -167,7 +167,7 @@
             li.classList.remove('active');
             var place = this.places[li.innerHTML];
             var type = place.type;
-            this.removePlacesToMap(type);
+            this.removePlacesToMap(type, true);
             if (MapViewer.heatmap) {
                 if (type === MapViewer.heatPlaces) {
                     MapViewer.heatmap.setMap(null);
@@ -182,11 +182,14 @@
 
         },
 
-        removePlacesToMap: function(type) {
+        removePlacesToMap: function(type, deselected) {
             var markers = this.markers[type];
             MapViewer.clusterPlaces.removeMarkers(markers);
             for (var m = 0; m < markers.length; m++) {
                 markers[m].setMap(null);
+                if (deselected) {
+                    this.owner.notifyPlaceRemoved(markers[m]);
+                }
             }
             this.markers[type] = [];
         },

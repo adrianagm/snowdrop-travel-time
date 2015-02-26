@@ -279,6 +279,18 @@
             }
         },
 
+        onPlaceRemoved: function(marker) {
+            if (this.active) {
+                for (var i = 0; i < this.markers.length; i++) {
+                    if (this.markers[i].placeId === marker.placeId) {
+                        this.markers[i].setMap(null);
+                        this.markers.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        },
+
         clearMarkers: function() {
             for (var i = 0; i < this.markers.length; i++) {
                 marker = this.markers[i];

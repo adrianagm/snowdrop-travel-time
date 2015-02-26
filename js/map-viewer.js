@@ -174,6 +174,12 @@ function MapViewer(options, api, modules) {
             }
         },
 
+        notifyPlaceRemoved: function(marker) {
+            for (var module in this.loadedModules) {
+                this.loadedModules[module].onPlaceRemoved(marker);
+            }
+        },
+
         loadModules: function(modulesList) {
             for (var m = 0; m < modulesList.length; m++) {
                 this.loadModule(modulesList[m]);
@@ -279,7 +285,8 @@ function MapViewer(options, api, modules) {
         },
 
         drawMarker: function(marker) {
-            var content = "<div class='" + marker.iconClass + "'></div>";
+            var content = document.createElement('div');
+            content.className = marker.iconClass;
             var richMarker = new RichMarker({
                 position: marker.latLng,
                 flat: true,
@@ -311,6 +318,10 @@ function MapViewer(options, api, modules) {
 
                 });
 
+                if (that.element.getElementsByClassName('property-active')[0]) {
+                    that.element.getElementsByClassName('property-active')[0].classList.remove('property-active');
+                }
+                marker.getContent().classList.add('property-active');
                 that.notifyPropertyClicked(marker);
             });
 
