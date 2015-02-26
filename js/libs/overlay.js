@@ -1,16 +1,15 @@
 (function() {
 
-    function JLLOverlay(_options) {
+    function MapViewerOverlay(_options) {
 
         this.options = _options || {};
-
         this.id = this.options.id || 'overlay';
 
         this.overlayParent = null;
-        if (typeof this.options.appendToParent === 'string') {
-            this.overlayParent = document.getElementById('map');
-        } else if (typeof this.options.appendToParent === 'object') {
+        if (typeof this.options.appendToParent === 'object') {
             this.overlayParent = this.options.appendToParent;
+        } else {
+            this.overlayParent = document.getElementsByTagName('body');
         }
 
         //create the overlay
@@ -22,46 +21,46 @@
         this._binding();
     }
 
-    JLLOverlay.prototype._createOverlay = function() {
+    MapViewerOverlay.prototype._createOverlay = function() {
         this.overlay = document.createElement('div');
         this.overlay.className = this.id;
     };
 
-    JLLOverlay.prototype._setOverlayCover = function() {
-        var cover = document.createElement('div');
-        cover.className = this.id + '-cover';
-        this.overlay.appendChild(cover);
+    MapViewerOverlay.prototype._setOverlayCover = function() {
+        this.cover = document.createElement('div');
+        this.cover.className = this.id + '-cover';
+        this.overlay.appendChild(this.cover);
     };
 
-    JLLOverlay.prototype._setOverlayModal = function() {
-        var modal = document.createElement('div');
-        modal.innerHTML = '<span class="' + this.id + '-close-btn"></span>';
-        modal.className = this.id + '-modal';
+    MapViewerOverlay.prototype._setOverlayModal = function() {
+        this.modal = document.createElement('div');
+        this.modal.innerHTML = '<span class="' + this.id + '-close-btn"></span>';
+        this.modal.className = this.id + '-modal';
 
 
         if (this.options.modalClasses && typeof this.options.modalClasses === 'string') {
-            modal.className += ' ' + this.options.modalClasses;
+            this.modal.className += ' ' + this.options.modalClasses;
         }
-         else if(this.options.modalClasses && typeof this.options.modalClasses === 'object'){
-            modal.classList.add(this.options.modalClasses);
+        else if (this.options.modalClasses && typeof this.options.modalClasses === 'object') {
+            this.modal.classList.add(this.options.modalClasses);
         }
 
         if (this.options.modalInnerContent && typeof this.options.modalInnerContent === 'string') {
-            modal.innerHTML += '<div class="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
+            this.modal.innerHTML += '<div class="' + this.id + '-modal-inner">' + this.options.modalInnerContent + '</div>';
         }
-        else if(this.options.modalInnerContent && typeof this.options.modalInnerContent === 'object'){
-            var  innerContent = document.createElement('div');
+        else if (this.options.modalInnerContent && typeof this.options.modalInnerContent === 'object') {
+            var innerContent = document.createElement('div');
             innerContent.className = this.id + '-modal-inner';
             innerContent.appendChild(this.options.modalInnerContent);
-            modal.appendChild(innerContent);
+            this.modal.appendChild(innerContent);
         }
 
-        this.overlay.appendChild(modal);
+        this.overlay.appendChild(this.modal);
     };
 
-    JLLOverlay.prototype._binding = function() {
+    MapViewerOverlay.prototype._binding = function() {
         var that = this;
-        document.getElementsByClassName(this.id + '-close-btn')[0].onclick = function() {
+        this.modal.getElementsByClassName(this.id + '-close-btn')[0].onclick = function() {
             that.destroy();
         };
 
@@ -70,12 +69,11 @@
         }
     };
 
-    JLLOverlay.prototype.destroy = function() {
+    MapViewerOverlay.prototype.destroy = function() {
         this.overlayParent.removeChild(this.overlay);
-        //    this.overlay.remove();
     };
 
-    if (typeof window.JLLOverlay == 'undefined') {
-        window.JLLOverlay = JLLOverlay;
+    if (typeof window.MapViewerOverlay == 'undefined') {
+        window.MapViewerOverlay = MapViewerOverlay;
     }
 })();
