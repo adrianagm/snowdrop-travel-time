@@ -304,7 +304,7 @@ InfoBubble.prototype.buildDom_ = function() {
     '-webkit-transform: scale(0)}50% {-webkit-transform: scale(1.2)}90% ' +
     '{-webkit-transform: scale(0.95)}to {-webkit-transform: scale(1)}}';
 
-  stylesheet.textContent = css;
+ // stylesheet.textContent = css;
   document.getElementsByTagName('head')[0].appendChild(stylesheet);
 };
 
