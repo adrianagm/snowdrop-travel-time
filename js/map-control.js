@@ -21,7 +21,17 @@
         toggleGroup: null,
         alias: null,
         initialize: function() {
+            this.link = this.getElementsByClass('check-class')[0];
 
+            if (this.defaultChecked) {
+                this.link.classList.add('checked-pan');
+            } else {
+                this.link.classList.add('unchecked-pan');
+            }
+
+            this.bindEvent('check-class', 'click', function(event) {
+                event.preventDefault();
+            });
         },
 
         controls: function(control, removeClass, addClass) {
@@ -79,10 +89,14 @@
             this.currentlyActivate = true;
         },
 
-        onSearchResults: function(searchResults) {},
-        onPropertyClicked: function(marker) {},
-        onPlaceClicked: function(marker) {},
-        onPlaceRemoved: function(marker) {},
+        onSearchResults: function(searchResults) {
+        },
+        onPropertyClicked: function(marker) {
+        },
+        onPlaceClicked: function(marker) {
+        },
+        onPlaceRemoved: function(marker) {
+        },
 
         searchInBounds: function() {
             var bounds = this.map.getBounds();

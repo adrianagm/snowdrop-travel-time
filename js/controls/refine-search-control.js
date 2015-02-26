@@ -27,18 +27,7 @@
         value: 1,
 
         initialize: function() {
-            this.link = this.getElementsByClass('check-class')[0];
-
-            if (this.defaultChecked) {
-                this.link.classList.add('checked-pan');
-
-            } else {
-                this.link.classList.add('unchecked-pan');
-            }
-            this.bindEvent('check-class', 'click', function(event) {
-                event.preventDefault();
-            });
-            
+            MapViewer.MapControl.prototype.initialize.apply(this, arguments);
             this.setCheckEvent();
         },
 

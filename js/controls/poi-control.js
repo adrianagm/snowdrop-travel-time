@@ -26,23 +26,12 @@
         active: false,
 
         initialize: function() {
-            this.link = this.getElementsByClass('check-class')[0];
+            MapViewer.MapControl.prototype.initialize.apply(this, arguments);
 
             this.distanceService = new google.maps.DistanceMatrixService();
             this.placesService = new google.maps.places.PlacesService(this.map);
 
-            if (this.defaultChecked) {
-                this.link.classList.add('checked-pan');
-
-            } else {
-                this.link.classList.add('unchecked-pan');
-            }
-
             var that = this;
-            this.bindEvent('check-class', 'click', function(event) {
-                event.preventDefault();
-            });
-            
             this.bindEvent('check-pan-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();

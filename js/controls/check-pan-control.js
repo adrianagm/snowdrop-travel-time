@@ -14,19 +14,8 @@
         checked: "",
         toggleGroup: ['search-group'],
         initialize: function() {
-            this.link = this.getElementsByClass('check-class')[0];
-
-            if (this.defaultChecked) {
-                this.link.classList.add('checked-pan');
-
-            } else {
-                this.link.classList.add('unchecked-pan');
-            }
-
+            MapViewer.MapControl.prototype.initialize.apply(this, arguments);
             var that = this;
-            this.bindEvent('check-class', 'click', function(event) {
-                event.preventDefault();
-            });
             this.bindEvent('check-pan-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();

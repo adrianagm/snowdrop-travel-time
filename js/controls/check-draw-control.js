@@ -24,7 +24,7 @@
         reverseRectangleRightCoords: null,
         toggleGroup: ['search-group'],
         initialize: function() {
-
+            MapViewer.MapControl.prototype.initialize.apply(this, arguments);
             /*
              We have to initialize rectangle coordinates here because 'google' var doesn't exist before.
              */
@@ -52,24 +52,9 @@
                 new google.maps.LatLng(-150, 180),
                 new google.maps.LatLng(-150, 0)
             ];
-
-            this.link = this.getElementsByClass('check-class')[0];
-
             this.drawingManager = this._getDrawingManager();
 
-
-            if (this.defaultChecked) {
-                this.link.classList.add('checked-pan');
-                this.notifyActivation();
-            } else {
-                this.link.classList.add('unchecked-pan');
-            }
-
             var that = this;
-            this.bindEvent('check-class', 'click', function(event) {
-                event.preventDefault();
-            });
-
             this.bindEvent('check-draw-control-outer', 'click', function(event) {
                 if (that.link.classList.contains("unchecked-pan")) {
                     that.notifyActivation();
