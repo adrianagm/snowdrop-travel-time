@@ -243,7 +243,7 @@ function MapViewerTest() {
 
     var mapOptions = {
         id: 'map',
-        center: [51.5072, 0.1275],
+        center: [51.5010, 0.1416],
         zoom: 12
     };
 
