@@ -60,7 +60,7 @@ function MapViewer(options, api, modules) {
             this.element.classList.add('map-widget');
             this.map = new google.maps.Map(this.element, mapOptions);
             this.map.content = this.element;
-           
+
 
             google.maps.event.addListener(this.map, 'zoom_changed', function() {
                 //close the infowindow if marker is clustered
@@ -234,6 +234,7 @@ function MapViewer(options, api, modules) {
             this.markers = [];
             this.updatedMarkersById = {};
             var newMarkers = [];
+
             for (var i = 0; i < markers.length; i++) {
                 //new markers
                 if (!this.markersById[markers[i].propertyId]) {
@@ -244,15 +245,19 @@ function MapViewer(options, api, modules) {
                     this.markers.push(this.markersById[markers[i].propertyId]);
                 }
             }
-            this.setMarkers(newMarkers);
+
             var removeMarkers = [];
-            for (var m in this.markersById) {
-                //previous markers outside new search
-                if (!this.updatedMarkersById[m]) {
-                    removeMarkers.push(this.markersById[m]);
+            for (var m in this.cluster.markers_) {
+                var marker = this.cluster.markers_[m];
+                if (!this.updatedMarkersById[marker.propertyId]) {
+                    //previous markers outside new search
+                    removeMarkers.push(this.markersById[marker.propertyId]);
+                    //delete this.markersById[marker.propertyId];
                 }
             }
             this.removeMarkers(removeMarkers);
+
+            this.setMarkers(newMarkers);
         },
 
         removeAllMarkers: function() {
@@ -262,6 +267,7 @@ function MapViewer(options, api, modules) {
                 }
             }
             this.markers = [];
+
             this.cluster.clearMarkers();
         },
         removeMarkers: function(markers) {
