@@ -196,7 +196,7 @@
             html += '       <input type="text" class="overlay-form-input overlay-form-item search-dataset-input" name="search-dataset-input">';
             html += '   </div>';
             html += '   <div class="overlay-content">';
-            html += '       <label for="search-dataset-list">Availables Dataset:</label>';
+            html += '       <label for="search-dataset-list">Available Datasets:</label>';
             html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-dataset-list" name="search-dataset-list">';
             for (var i = 0; i < select_options.length; i++) {
                 html += '<option class="layer" value="' + i + '">' + select_options[i] + '</option>';

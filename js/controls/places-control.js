@@ -243,11 +243,11 @@
             var html = '';
             html += '<div class="overlay-search-places-modal">';
             html += '   <div class="overlay-header">';
-            html += '       <label for="search-places-input">Search Dataset:</label>';
+            html += '       <label for="search-places-input">Search Category:</label>';
             html += '       <input type="text" class="overlay-form-input overlay-form-item search-places-input" name="search-places-input">';
             html += '   </div>';
             html += '   <div class="overlay-content">';
-            html += '       <label for="search-places-list">Availables Dataset:</label>';
+            html += '       <label for="search-places-list">Available Categories:</label>';
             html += '       <select multiple class="overlay-form-select-multiple overlay-form-item search-places-list" name="search-places-list">';
             for (var key in selection_options) {
                 if (selection_options.hasOwnProperty(key)) {

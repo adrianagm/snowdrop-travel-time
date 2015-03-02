@@ -20,17 +20,17 @@ var IntegrationAPI = {
         var polygon = new google.maps.Polygon({
             paths: polygonPoints
         });
-        
+
         var bounds = new google.maps.LatLngBounds();
         var paths = polygon.getPaths();
-        var path;        
+        var path;
         for (var i = 0; i < paths.getLength(); i++) {
             path = paths.getAt(i);
             for (var ii = 0; ii < path.getLength(); ii++) {
                 bounds.extend(path.getAt(ii));
             }
         }
-        
+
         var searchResult = this._tree.search([
             bounds.getSouthWest().lng(),
             bounds.getSouthWest().lat(),
@@ -60,7 +60,7 @@ var IntegrationAPI = {
         var that = this;
         $.get("example-properties.json").success(function(data) {
             that._tree = rbush(9, ['.lng', '.lat', '.lng', '.lat']);
-            
+
             for (var i = 0; i < data.length; i++) {
                 var elem = data[i];
                 var lat = elem.geometry.coordinates[1];
@@ -84,8 +84,10 @@ var IntegrationAPI = {
         var heading = Math.random() * 360;
         var propertyData = {
             propertyId: id,
-            "Address": chance.address()+", London",
-            "Phone": chance.phone({ country: "uk" }),
+            "Address": chance.address() + ", London",
+            "Phone": chance.phone({
+                country: "uk"
+            }),
             images: [{
                 title: 'Photo 1',
                 url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
@@ -109,78 +111,14 @@ var IntegrationAPI = {
     retrieveDatasets: function() {
 
         var datasets = [{
-            label: "Dataset 1", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-12677872887550376890"
+            label: "Primary Schools",
+            type: "gme",             
+            id: '08945086319809671446-16133476562581908850'
         }, {
-            label: "Dataset 2",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'states'
-        }, {
-            label: "Dataset 3", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-01658747114625264102"
-        }, {
-            label: "Dataset 4",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'seihaz'
-        }, {
-            label: "Dataset 5", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-01658747114625264102"
-        }, {
-            label: "Dataset 6",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'srcoi0100g'
-        }, {
-            label: "Dataset 7", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-01658747114625264102"
-        }, {
-            label: "Dataset 8",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'sfgeo'
-        }, {
-            label: "Dataset 9", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-12677872887550376890"
-        }, {
-            label: "Dataset 10",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'glag'
-        }, {
-            label: "Dataset 11", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-01658747114625264102"
-        }, {
-            label: "Dataset 12",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'volcanoes'
-        }, {
-            label: "Dataset 13", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-01658747114625264102"
-        }, {
-            label: "Dataset 14",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'dodexp_1'
-        }, {
-            label: "Dataset 15", // Alternatively a translation key
-            type: "gme", // layers coming from MapsEngine,
-            id: "10446176163891957399-01658747114625264102"
-        }, {
-            label: "Dataset 16",
-            type: "wms", // WMS layers
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'fa0007_1'
-        }, ];
+            label: "Railway Lines",
+            type: "gme",
+            id: '08945086319809671446-04321643559861420246'
+        }];
         return new Promise(function(resolve) {
             window.setTimeout(
                 function() {
@@ -201,10 +139,6 @@ function MapViewerTest() {
             Schools: {
                 type: 'school' //default icon
             },
-            Hospitals: {
-                type: 'hospital',
-                iconClass: 'fa fa-hospital-o fa-2x' //fontawesome icon
-            },
             Supermarkets: {
                 type: 'grocery_or_supermarket' //css defined icon
             },
@@ -223,16 +157,6 @@ function MapViewerTest() {
             label: "GME Layer"
                 // layerName: 'layer_00001'
         }, {
-            type: "gme",
-            id: '10446176163891957399-12677872887550376890', //"10446176163891957399-13516001307527776624",
-            label: "GME Layer 2"
-                //   layerName: 'layer_00002'
-        }, {
-            label: "WMS Layer states",
-            type: "wms",
-            url: "http://webservices.nationalatlas.gov/wms",
-            layers: 'states'
-        }, {
             label: "WMS House Prices",
             type: "wms",
             url: "https://mapit.jll.com/arcgis/services/EMEA/House_Prices_WMS_test2/MapServer/WMSServer",
@@ -243,19 +167,19 @@ function MapViewerTest() {
 
     var mapOptions = {
         id: 'map',
-        center: [51.5010, 0.1416],
+        center: [51.5014408, -0.1406347],
         zoom: 12
     };
 
     var mapViewer = new MapViewer(mapOptions, IntegrationAPI, [
         layerListControl,
         placesToolbar,
-        "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view', 'refine-search', 'points-of-interest'
+        "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view', 'points-of-interest'
     ]);
 
     mapViewer.setBubbleTemplate({
         "Details": {
-            dataFields: ['propertyId', 'Address', 'Phone'],
+            dataFields: ['Address', 'Phone'],
             template: '<div class="balloon data-tab container"><table>{{#data}}<tr class="data-item"><td><b>{{key}}</b></td><td>{{value}}</td></tr>{{/data}}</table></div>'
         },
         "Images": {
@@ -266,8 +190,6 @@ function MapViewerTest() {
         "Street View": {
             type: 'streetView',
             orientationField: 'heading'
-
-
         }
     });
 
