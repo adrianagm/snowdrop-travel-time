@@ -1,0 +1,66 @@
+/*
+    Styles for map infowindows aka ballons.
+*/
+.balloon {
+    border-color: #eee;
+}
+.balloon-container {
+    background-color: white;
+    border-radius: @border-radius-control;
+    box-shadow: @shadow-control;
+}
+.balloon-content {
+    border-top: 1px #ccc solid !important;
+    padding: 10px;
+    overflow: hidden !important;
+}
+.balloon.container {
+    width: 100%;
+    height: 220px;
+    padding: 10px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+.balloon .pano {
+    position: relative;
+    width: 100%;
+    height: 90%;
+}
+.balloon .map-pano {
+    display: none;
+}
+.balloon-tab {
+    font-weight: bold;
+    padding: 10px 15px;
+    border-right: 1px #ccc solid;
+    overflow-x: hidden;
+}
+.balloon-tab:hover {
+    border-bottom: 2px solid @custom-red !important;
+    margin-bottom: -2px;
+}
+
+.balloon-active-tab,
+.balloon-active-tab:hover {
+    border-bottom: 2px solid white !important;
+    margin-bottom: -2px;
+}
+.balloon-close-button {
+    background-image: url("../images/exit_draw_map.png");
+    background-size: 10px 10px;
+    height: 10px;
+    width: 10px;
+    position: absolute;
+    top: 10px !important;
+    right: 10px !important;
+}
+.balloon-arrow-container {
+    
+}
+.balloon-arrow {
+    border-color: #fff transparent transparent;
+    border-style: solid;
+    /*if backgroundImage in .balloon-arrow-container*/
+    /*display:none;*/
+}
