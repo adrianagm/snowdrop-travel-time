@@ -19,7 +19,7 @@ handlers:
   static_dir: dist/js
   login: required
 
-- url: /(.+\.(css|js|json))$
+- url: /(.+\.(css|js))$
   static_files: test/\1
   login: required
   upload: .+\.(css|js|json)$

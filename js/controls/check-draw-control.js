@@ -116,7 +116,7 @@
             this.drawingManager.setMap(null);
 
             if (this.innerPolygon !== null) {
-                this._searchInBounds();
+                this._basicSearch();
                 this._cleanMap();
             } else {
 
@@ -140,6 +140,7 @@
             that.drawingManager.setMap(that.map);
             that.drawingManager.setOptions({
                 drawingControl: false
+
             });
             that.listener = this._addGmapListener();
 
@@ -172,22 +173,10 @@
                 google.maps.event.addListener(polygon, 'dragstart', function() {
                     that.dragFlag = true;
                 });
-                //Events
-
-                google.maps.event.addListener(polygon, 'rightclick', function() {
-                    var polygonOption = {};
-                    if (polygon.getDraggable()) {
-                        _toggleDrag(false);
-                    } else {
-                        _toggleDrag(true);
-                    }
-
-                });
 
                 google.maps.event.addListener(polygon, 'dragend', function() {
                     that.dragFlag = false;
                     that.search(this, "drag");
-                    _toggleDrag(false);
                 });
 
                 google.maps.event.addListener(polygon.getPath(), 'set_at', function() {
@@ -208,18 +197,6 @@
                 });
 
                 that.drawingManager.setDrawingMode(null);
-
-
-                function _toggleDrag(dragable) {
-                    var color = dragable ? '#14bcb6' : '#BC141A';
-                    var polygonOptions = {
-                        strokeColor: color,
-                        fillColor: color,
-                        draggable: dragable
-                    };
-                    polygon.setOptions(polygonOptions);
-                }
-
             });
             return _listener;
 
@@ -240,9 +217,10 @@
                     strokeOpacity: 0.9,
                     strokeWeight: 3,
                     fillColor: '#BC141A',
-                    fillOpacity: 0.01,
+                    fillOpacity: 0.1,
                     clickable: true,
                     editable: true,
+                    draggable: true,
                     zIndex: 1
                 }
             });
@@ -259,8 +237,12 @@
             return area / 2;
         },
 
-        _searchInBounds: function() {
-            this.searchInBounds();
+        _basicSearch: function() {
+            var list = [];
+            var bounds = this.map.getBounds();
+            list.push(bounds.getNorthEast());
+            list.push(bounds.getSouthWest());
+            this.api.searchByPolygon(list);
         },
 
         _cleanMap: function() {
