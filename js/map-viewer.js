@@ -4,6 +4,14 @@ function MapViewer(options, api, modules) {
     } catch (error) {
         console.error(error);
     }
+    
+    this.cluster = null;
+    this.toggleGroups = {};
+    this.templateTabs = null;
+    this.infoWindow = null;
+
+    this.markersById = {};
+    this.markers = [];
 
     var that = this;
     cb = function() {
@@ -53,13 +61,7 @@ function MapViewer(options, api, modules) {
             this.map = new google.maps.Map(this.element, mapOptions);
             this.map.content = this.element;
 
-            this.cluster = null;
-            this.toggleGroups = {};
-            this.templateTabs = null;
-            this.infoWindow = null;
-
-            this.markersById = {};
-            this.markers = [];
+        
 
             this.updatedMarkersById = {};
 
