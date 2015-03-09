@@ -5,7 +5,7 @@
     MapViewer.RefineSearchControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="refine-search-control-outer"><div class="refine-search-control-border">' +
-        '<div class="refine-search-control-inner"><a class="check-class" href="#"> </a><span> Travel time/distance</span></div></div></div>',
+        '<div class="refine-search-control-inner"><a class="check-class" href="javascript:void(0)"> </a><span> Travel time/distance</span></div></div></div>',
         controlClass: 'refine-search-control',
 
         position: 'LEFT_BOTTOM',

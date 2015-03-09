@@ -3,7 +3,7 @@
     var CONTROL_CLASS = 'heatmap-view';
     MapViewer.Heatmap = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="heatmap-view-button" href="#" title="Heat Map View"> </div>',
+        template: '<div class="heatmap-view-button" href="javascript:void(0)" title="Heat Map View"> </div>',
         controlClass: 'heatmap-view-control',
 
         position: 'RIGHT_BOTTOM',
