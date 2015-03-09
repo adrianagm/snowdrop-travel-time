@@ -9,9 +9,7 @@ module.exports = function(grunt) {
             target: {
                 files: {
                     'dist/<%= pkg.name %>.dist.js': [
-                        'js/libs/console-stub.js',
-                        'js/libs/Promise.js',
-                        'js/libs/overlay.js',
+                        'js/libs/*.js',
                         'js/map-viewer.js',
                         'js/map-control.js',
                         'js/controls/**/*.js'
