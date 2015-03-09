@@ -32,14 +32,6 @@ function MapViewer(options, api, modules) {
     "use strict";
 
     MapViewer.prototype = {
-        markers: [],
-        cluster: null,
-        toggleGroups: {},
-        templateTabs: null,
-        infoWindow: null,
-        markersById: {},
-        updatedMarkersById: {},
-
 
         createMap: function(options, api) {
             this.api = api;
@@ -61,6 +53,15 @@ function MapViewer(options, api, modules) {
             this.map = new google.maps.Map(this.element, mapOptions);
             this.map.content = this.element;
 
+            this.cluster = null;
+            this.toggleGroups = {};
+            this.templateTabs = null;
+            this.infoWindow = null;
+
+            this.markersById = {};
+            this.markers = [];
+
+            this.updatedMarkersById = {};
 
             google.maps.event.addListener(this.map, 'zoom_changed', function() {
                 //close the infowindow if marker is clustered
