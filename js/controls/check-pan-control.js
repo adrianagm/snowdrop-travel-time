@@ -23,11 +23,13 @@
                     that.deactivate();
                 }
 
-                google.maps.event.addListener(that.map, 'idle', function() {
-                    if (that.link.classList.contains("checked-pan")) {
-                        that.searchInBounds();
-                    }
-                });
+            
+            });
+            
+            google.maps.event.addListener(that.map, 'idle', function() {
+                if (that.link.classList.contains("checked-pan")) {
+                    that.searchInBounds();
+                }
             });
         }
 

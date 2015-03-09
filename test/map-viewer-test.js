@@ -174,7 +174,10 @@ function MapViewerTest() {
     var mapViewer = new MapViewer(mapOptions, IntegrationAPI, [
         layerListControl,
         placesToolbar,
-        "search-on-pan", "check-draw", 'picture-exportation', 'heatmap-view', 'points-of-interest'
+        { 
+            type: "search-on-pan",
+            defaultChecked: true,
+        }, "check-draw", 'picture-exportation', 'heatmap-view', 'points-of-interest'
     ]);
 
     mapViewer.setBubbleTemplate({
