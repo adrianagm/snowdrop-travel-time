@@ -463,11 +463,18 @@ function MapViewer(options, api, modules) {
 
     MapViewer.loadGoogleLibs = function() {
         var promises = [];
-        promises.push(this.loadLib('js/libs/markerclusterer.js'));
-        promises.push(this.loadLib('js/libs/richmarker.js'));
-        promises.push(this.loadLib('js/libs/mercatorProjectorLayer.js'));
-        promises.push(this.loadLib('js/libs/infobubble.js'));
-        promises.push(this.loadLib('js/libs/mustache.js'));
+        /*
+         promises.push(this.loadLib('js/libs/markerclusterer.js'));
+         promises.push(this.loadLib('js/libs/richmarker.js'));
+         promises.push(this.loadLib('js/libs/mercatorProjectorLayer.js'));
+         promises.push(this.loadLib('js/libs/infobubble.js'));
+         promises.push(this.loadLib('js/libs/mustache.js'));
+         */
+        loadMarkerClusterer();
+        loadRichmarker();
+        loadMercatorProjectorLayer();
+        loadInfoBubble();
+
         return promises;
     };
 
