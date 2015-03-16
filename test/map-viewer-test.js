@@ -88,6 +88,25 @@ var IntegrationAPI = {
             "Phone": chance.phone({
                 country: "uk"
             }),
+            "Id": 2715,
+            "Name": {
+                "Text": "Büroimmobilie - Berlin, Mitte - B0917",
+                "Uri": "api/availabilities/2715/",
+                "WebUri":"#/availability/1493/?jllListingType=For%20Rent%20Only&query=Hamburg&country=All"
+                },
+            "ListingType": "For Rent Only",
+            "SurfaceDivisibleArea": "412.24 Square Metre(s)",
+            "TotalArea": "2286.28 Square Metre(s)",
+            "Floors": "EG,1. OG,2. OG,3. OG,4. OG",
+            "Price": "EUR 17.9 - EUR 17.9 per Square Metre(s)",
+            "Commission": "3 Months rent net",
+            "Availability": "Coming soon",
+            "Owner": null,
+            "Consultant": "Lena, Gottschalk",
+            "PhoneNumber": {
+                "Text": "+49 (0)30 203 980-122",
+                "Uri": "tel:+49 (0)30 203 980-122"
+                },
             images: [{
                 title: 'Photo 1',
                 url: 'https://casamodelo.files.wordpress.com/2010/12/apartamento.jpg'
@@ -182,12 +201,13 @@ function MapViewerTest() {
 
     mapViewer.setBubbleTemplate({
         "Details": {
-            dataFields: ['Address', 'Phone'],
-            template: '<div class="balloon data-tab container"><table>{{#data}}<tr class="data-item"><td><b>{{key}}</b></td><td>{{value}}</td></tr>{{/data}}</table></div>'
+            iterableFields: ['Address', 'Phone'],
+            template: '<div class="balloon data-tab container"><table>{{#iterableData}}<tr class="data-item"><td><b>{{key}}</b></td><td>{{value}}</td></tr>{{/iterableData}}'
+            +'<tr class="data-item"><td><b>Link</b></td><td><a href="{{data.Name.WebUri}}">Go to</a></td></tr></table></div>'
         },
         "Images": {
-            dataFields: ['images'],
-            template: '<div class="balloon image-tab container"><div class="slider_wrapper"><ul id="image_slider">' + '<li><img id="balloon-image-current" src="{{data.' + currentImage + '.value.url}}" title="{{data.' + currentImage + '.value.title}}" ></li>' + '</ul><span class="nvgt" id="prev" onclick="prevImageBalloon()"></span><span class="nvgt" id="next" onclick="nextImageBalloon()"></span></div><ul class="balloon-images-list">' + '{{#data}}<li onclick="showImageBalloon({{key}})"><img src="{{value.url}}" title="{{value.title}}"></li>{{/data}}' + '</ul></div>'
+            iterableFields: ['images'],
+            template: '<div class="balloon image-tab container"><div class="slider_wrapper"><ul id="image_slider">' + '<li><img id="balloon-image-current" src="{{iterableData.' + currentImage + '.value.url}}" title="{{iterableData.' + currentImage + '.value.title}}" ></li>' + '</ul><span class="nvgt" id="prev" onclick="prevImageBalloon()"></span><span class="nvgt" id="next" onclick="nextImageBalloon()"></span></div><ul class="balloon-images-list">' + '{{#iterableData}}<li onclick="showImageBalloon({{key}})"><img src="{{value.url}}" title="{{value.title}}"></li>{{/iterableData}}' + '</ul></div>'
 
         },
         "Street View": {

@@ -22,9 +22,9 @@ module.exports = function(grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
                 sourceMap: true,
                 sourceMapIn: "dist/<%= pkg.name %>.dist.js.map",
-                sourceMapName: "dist/<%= pkg.name %>.dist.js.map",
+                sourceMapName: "dist/<%= pkg.name %>.dist.min.js.map",
                 mangle: false,
-                compress: false
+                compress: true
             },
             dist: {
                 files: {

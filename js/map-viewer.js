@@ -358,35 +358,37 @@ function MapViewer(options, api, modules) {
             for (var labelTab in tabs) {
                 var tab = tabs[labelTab];
                 var output = tab.template ? tab.template : '';
-                var data = propertyData;
-                if (tab.dataFields) {
-                    data = {};
-                    for (var d in tab.dataFields) {
-                        var field = tab.dataFields[d];
-                        data[field] = propertyData[field];
+                var iterableData = propertyData;
+                if (tab.iterableFields) {
+                    iterableData = {};
+                    for (var d in tab.iterableFields) {
+                        var field = tab.iterableFields[d];
+                        iterableData[field] = propertyData[field];
                     }
 
                 }
                 var details = {
-                    'data': []
+                    'iterableData': [],
+                    'data': propertyData
                 };
                 if (tab.template) {
-                    for (var propKey in data) {
-                        var item = data[propKey];
+                    for (var propKey in iterableData) {
+                        var item = iterableData[propKey];
                         if (item instanceof Object) {
                             for (var i in item) {
-                                details.data.push({
+                                details.iterableData.push({
                                     'key': i,
                                     'value': item[i]
                                 });
                             }
                         } else {
-                            details.data.push({
+                            details.iterableData.push({
                                 'key': propKey,
                                 'value': item
                             });
                         }
                     }
+                    
                     output = Mustache.render(tab.template, details);
                 } else {
                     output = 'No content template';
