@@ -3,8 +3,8 @@
     var CONTROL_CLASS = 'places';
     MapViewer.Places = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="#"></a>Places</div><ul class="places-list"></ul>' +
-            '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
+        template: '<div class="places-div"><div class="header" data-i18n="places"><a class="collapse-class" href="javascript:void(0)"></a>Places</div><ul class="places-list"></ul>' +
+        '<div class="custom-btn"></div><div class="search-places">Search Places</div></div>',
         controlClass: 'places-control',
 
         position: 'RIGHT_BOTTOM',
@@ -143,8 +143,8 @@
                     if (callback)
                         callback();
                 }
-                else{
-                    setTimeout(function(){
+                else {
+                    setTimeout(function() {
                         that.placesSelected(li);
                     }, 100);
                 }
@@ -328,7 +328,7 @@
                                 if (n == 10) {
                                     setTimeout(function() {
                                         n = 0;
-                                        selectedCategories(i-1);
+                                        selectedCategories(i - 1);
                                     }, 100);
 
                                 } else {

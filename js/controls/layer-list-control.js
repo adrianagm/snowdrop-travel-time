@@ -4,7 +4,7 @@
 
     MapViewer.LayerList = MapViewer.extend(MapViewer.MapControl, {
 
-        template: '<div class="header"><a class="collapse-class" href="#"></a>Layers</div>' +
+        template: '<div class="header"><a class="collapse-class" href="javascript:void(0)"></a>Layers</div>' +
         '<div class="layer-list-collapsible-wrap">' +
         '<div class="search-dataset">Search Dataset</div>' +
         '<div class="layer-list-options-wrap">' +

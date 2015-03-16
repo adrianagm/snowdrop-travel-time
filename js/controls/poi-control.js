@@ -4,7 +4,7 @@
     MapViewer.POIControl = MapViewer.extend(MapViewer.MapControl, {
 
         template: '<div class="check-pan-control-outer"><div class="check-pan-control-border">' +
-        '<div class="check-pan-control-inner"><a class="check-class" href="#"> </a><span> Points of interest</span></div></div></div>' +
+        '<div class="check-pan-control-inner"><a class="check-class" href="javascript:void(0)"> </a><span> Points of interest</span></div></div></div>' +
         '<input id="poi-input" class="controls map-control poi-input hide" type="text" placeholder="Add new point of interest">',
         controlClass: 'check-pan-control',
 

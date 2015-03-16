@@ -9,9 +9,7 @@ module.exports = function(grunt) {
             target: {
                 files: {
                     'dist/<%= pkg.name %>.dist.js': [
-                        'js/libs/console-stub.js',
-                        'js/libs/Promise.js',
-                        'js/libs/overlay.js',
+                        'js/libs/*.js',
                         'js/map-viewer.js',
                         'js/map-control.js',
                         'js/controls/**/*.js'
@@ -24,9 +22,9 @@ module.exports = function(grunt) {
                 banner: '/*! <%= pkg.name %> <%= grunt.template.today("dd-mm-yyyy") %> */\n',
                 sourceMap: true,
                 sourceMapIn: "dist/<%= pkg.name %>.dist.js.map",
-                sourceMapName: "dist/<%= pkg.name %>.dist.js.map",
+                sourceMapName: "dist/<%= pkg.name %>.dist.min.js.map",
                 mangle: false,
-                compress: false
+                compress: true
             },
             dist: {
                 files: {
