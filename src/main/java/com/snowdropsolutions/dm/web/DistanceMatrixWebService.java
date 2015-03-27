@@ -4,9 +4,11 @@ import com.snowdropsolutions.dm.services.DistanceMatrixService;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,22 +26,22 @@ public class DistanceMatrixWebService extends BaseRestWebService {
 
     private static final Logger LOG = Logger.getLogger(DistanceMatrixWebService.class.getName());
 
-    @RequestMapping(value = "dm", produces = "application/json")
+    @RequestMapping(value = "dm", method = RequestMethod.POST)
     public void retrieveDM(
-            @RequestParam("origins") String origins,
-            @RequestParam("destinations") String destinations,
+            HttpServletRequest request,
+            @RequestParam(value = "origins[]", required = false) String[] origins,
+            @RequestParam(value = "destinations[]", required = false) String[] destinations,
             @RequestParam(value = "mode", required = false) String mode,
             @RequestParam(value = "avoid", required = false) String avoid,
             HttpServletResponse response) throws IOException {
 
-        LOG.log(Level.INFO, "Received queryString: origins={0} destinations={1}", new String[]{origins, destinations});
-
-        String content = dmService.retrieveDM(origins, destinations, mode, avoid);
-
+        LOG.log(Level.INFO, "Received queryString -> origins: {0} destinations: {1}", new String[]{origins[0], destinations[0]});
         response.addHeader("Access-Control-Allow-Origin", "*");
         response.addHeader("Access-Control-Allow-Headers", "Content-Type");
         response.addHeader("Content-Type", "application/json");
 
-        response.getOutputStream().print(content);
+        String content = dmService.retrieveDM(origins, destinations, mode, avoid);
+        
+        response.getOutputStream().print("{\"results\":[" + content + "{}]}");
     }
 }
