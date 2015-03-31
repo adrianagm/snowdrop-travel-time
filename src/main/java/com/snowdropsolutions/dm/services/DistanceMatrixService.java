@@ -16,6 +16,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +45,9 @@ public class DistanceMatrixService {
 
     private static final int MAX_DESTINATIONS = 100;
 
+    DecimalFormatSymbols otherSymbols;
+    DecimalFormat df;
+
     /**
      * Performs requests (one or several, depending on the number of imputs) to Google's DistanceMatrix service and returns
      *
@@ -53,6 +59,14 @@ public class DistanceMatrixService {
      * @throws UnsupportedEncodingException
      */
     public String retrieveDM(String[] origins, String[] destinations, String mode, String avoid) throws UnsupportedEncodingException {
+
+        // We use a formatter to cut latLng decimals, this allows us to perform larger requests
+        // "Point" separator needs to be specified because some locales use "comma" separator
+        otherSymbols = new DecimalFormatSymbols();
+        otherSymbols.setDecimalSeparator('.');
+        otherSymbols.setGroupingSeparator('.');
+        df = new DecimalFormat("#.###", otherSymbols);
+
         String requestResource;
         String formatedOrigins = formatArray(origins);
 
@@ -71,11 +85,11 @@ public class DistanceMatrixService {
             String queryString = "?sensor=false&origins=" + formatedOrigins + "&destinations=" + formatedDestinations;
 
             if (mode != null && !mode.equals("")) {
-                queryString += "&mode=" + mode;
+                queryString += "&mode=" + mode.toLowerCase();
             }
 
             if (avoid != null && !avoid.equals("")) {
-                queryString += "&avoid=" + avoid;
+                queryString += "&avoid=" + avoid.toLowerCase();
             }
 
             URL url;
@@ -144,6 +158,26 @@ public class DistanceMatrixService {
     }
 
     private String formatArray(String[] places) {
-        return Joiner.on("|").skipNulls().join(places);
+        List<String> formattedValues = new ArrayList();
+
+        for (int i = 0; i < places.length; i++){
+            if(places[i] == null) {
+                continue;
+            }
+            String[] values = places[i].split(" ");
+
+            // Check if comma separator is used
+            if(values.length != 2) {
+                values = places[i].split(",");
+            }
+
+            Double lat = Double.valueOf(values[0]);
+            Double lng = Double.valueOf(values[1]);
+
+            // Cut decimals and join values
+            String formattedValue = df.format(lat) + " " + df.format(lng);
+            formattedValues.add(formattedValue);
+        }
+        return Joiner.on("|").skipNulls().join(formattedValues);
     }
 }
