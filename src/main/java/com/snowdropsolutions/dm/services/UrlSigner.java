@@ -30,12 +30,23 @@ public class UrlSigner {
     // This variable stores the binary key, which is computed from the string (Base64) key
     private static byte[] key;
 
+    /**
+     * Creates a valid Google Maps APIs signed URL from the server resource and query parameters
+     *
+     * @param resource The service url you want to access (e.g. DistanceMatrix API service's URL).
+     * @param query The parameters for the requests to be done.
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws InvalidKeyException
+     * @throws UnsupportedEncodingException
+     * @throws URISyntaxException
+     */
     public String signRequest(String resource, String query) throws NoSuchAlgorithmException,
             InvalidKeyException, UnsupportedEncodingException, URISyntaxException {
 
         // Retrieve the proper URL components to sign
-        String url = resource+ '?' + query +"&client=" + clientId;
-       
+        String url = resource + '?' + query + "&client=" + clientId;
+
         if (key == null) {
             // Convert the key from 'web safe' base 64 to binary
             keyString = keyString.replace('-', '+');

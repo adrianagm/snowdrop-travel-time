@@ -41,8 +41,8 @@ public class DistanceMatrixWebService extends BaseRestWebService {
         response.addHeader("Content-Type", "application/json");
 
         String content = dmService.retrieveDM(origins, destinations, mode, avoid);
-        
+
         //Add pre and post content, necessary to return valid JSON
-        response.getOutputStream().print("{\"results\":[" + content + "{}]}");
+        response.getOutputStream().print(content);
     }
 }
