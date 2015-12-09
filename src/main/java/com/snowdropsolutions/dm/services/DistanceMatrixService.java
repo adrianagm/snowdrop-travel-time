@@ -150,7 +150,7 @@ public class DistanceMatrixService {
                     throw new RestException(responseStatus, new String(response.getContent(), "UTF-8"), null);
                 } catch (UnsupportedEncodingException ex) {
                     Logger.getLogger(DistanceMatrixService.class.getName()).log(Level.SEVERE, null, ex);
-                    throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, "Bad encoding", ex);
+                    throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
                 }
             }
         }

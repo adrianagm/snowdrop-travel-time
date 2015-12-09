@@ -15,13 +15,34 @@
     </parent>
 
     <properties>
-        <appengine.app.version>1</appengine.app.version>
+        <appengine.sdk.version>1.9.28</appengine.sdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
+        <appengine.app.version>${maven.build.timestamp}</appengine.app.version>
     </properties>
 
     <prerequisites>
         <maven>3.1.0</maven>
     </prerequisites>
+
+    <profiles>
+        <profile>
+            <id>snowdrop</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <properties>
+                <!-- For determining the filter file -->
+                <profile.id>snowdrop</profile.id>
+            </properties>
+        </profile>
+        <profile>
+            <id>dg</id>
+            <properties>
+                <profile.id>dg</profile.id>
+            </properties>
+        </profile>
+    </profiles>
 
     <dependencies>
         <!-- Compile/runtime dependencies -->
@@ -47,13 +68,13 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.28</version>
+            <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.28</version>
+            <version>${appengine.sdk.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -72,14 +93,30 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.28</version>
+            <version>${appengine.sdk.version}</version>
             <type>jar</type>
         </dependency>
     </dependencies>
 
     <build>
+        <filters>
+            <filter>${basedir}/src/main/filters/${profile.id}.properties</filter>
+        </filters>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+            <resource>
+                <directory>src/main/webapp/WEB-INF</directory>
+                <filtering>true</filtering>
+                <targetPath>${project.build.directory}/WEB-INF</targetPath>
+            </resource>
+        </resources>
+
         <!-- for hot reload of the web application-->
         <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+
         <plugins>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
@@ -112,10 +149,9 @@
 
                     <archiveClasses>true</archiveClasses>
                     <webResources>
-                        <!-- in order to interpolate version from pom into appengine-web.xml -->
                         <resource>
-                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
+                            <directory>${project.build.directory}/WEB-INF</directory>
+                            <filtering>false</filtering>
                             <targetPath>WEB-INF</targetPath>
                         </resource>
                     </webResources>
@@ -124,7 +160,7 @@
             <plugin>
                 <groupId>com.google.appengine</groupId>
                 <artifactId>appengine-maven-plugin</artifactId>
-                <version>1.9.18</version>
+                <version>${appengine.sdk.version}</version>
                 <configuration>
                     <enableJarClasses>false</enableJarClasses>
                     <!-- Comment in the below snippet to bind to all IPs instead of just localhost -->
@@ -137,7 +173,7 @@
                     </jvmFlags -->
                     <jvmFlags>
                         <jvmFlag>-Xdebug</jvmFlag>
-                        <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8001,server=y,suspend=n</jvmFlag>
+                        <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=${jpda.address},server=n,suspend=n</jvmFlag>
                     </jvmFlags>
                 </configuration>
             </plugin>
