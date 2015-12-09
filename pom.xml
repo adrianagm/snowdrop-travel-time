@@ -8,6 +8,12 @@
     <groupId>com.snowdropsolutions</groupId>
     <artifactId>distance-matrix-proxy</artifactId>
 
+    <parent>
+        <groupId>com.emergya</groupId>
+        <artifactId>java-common-checks</artifactId>
+        <version>0.1-SNAPSHOT</version>
+    </parent>
+
     <properties>
         <appengine.app.version>1</appengine.app.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -20,11 +26,6 @@
     <dependencies>
         <!-- Compile/runtime dependencies -->
         <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>1.9.18</version>
-        </dependency>
-        <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>servlet-api</artifactId>
             <version>2.5</version>
@@ -35,42 +36,24 @@
             <artifactId>jstl</artifactId>
             <version>1.2</version>
         </dependency>
-        
-        
+
         <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-webmvc</artifactId>
-            <version>4.1.4.RELEASE</version>
+            <groupId>com.emergya.spring.gae</groupId>
+            <artifactId>gae-web-base</artifactId>
+            <version>0.1-SNAPSHOT</version>
         </dependency>
-        
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-core</artifactId>
-            <version>2.3.3</version>
-        </dependency>      
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-            <version>2.3.3</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-mapsengine</artifactId>
-            <version>v1-rev58-1.19.1</version>
-        </dependency>
-         
-        
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-testing</artifactId>
-            <version>1.9.17</version>
+            <version>1.9.28</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-stubs</artifactId>
-            <version>1.9.17</version>
+            <version>1.9.28</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -82,8 +65,14 @@
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.0.6.RELEASE</version>
+            <version>4.2.3.RELEASE</version>
             <scope>test</scope>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>com.google.appengine</groupId>
+            <artifactId>appengine-api-1.0-sdk</artifactId>
+            <version>1.9.28</version>
             <type>jar</type>
         </dependency>
     </dependencies>
@@ -120,7 +109,7 @@
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.4</version>
                 <configuration>
-                    
+
                     <archiveClasses>true</archiveClasses>
                     <webResources>
                         <!-- in order to interpolate version from pom into appengine-web.xml -->
@@ -129,7 +118,7 @@
                             <filtering>true</filtering>
                             <targetPath>WEB-INF</targetPath>
                         </resource>
-                    </webResources>                   
+                    </webResources>
                 </configuration>
             </plugin>
             <plugin>
@@ -145,13 +134,13 @@
                     like those included with Eclipse or IntelliJ -->
                     <!-- jvmFlags>
                       <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n</jvmFlag>
-                    </jvmFlags -->                    
+                    </jvmFlags -->
                     <jvmFlags>
                         <jvmFlag>-Xdebug</jvmFlag>
                         <jvmFlag>-agentlib:jdwp=transport=dt_socket,address=8001,server=y,suspend=n</jvmFlag>
                     </jvmFlags>
                 </configuration>
-            </plugin>           
+            </plugin>
         </plugins>
     </build>
 </project>
