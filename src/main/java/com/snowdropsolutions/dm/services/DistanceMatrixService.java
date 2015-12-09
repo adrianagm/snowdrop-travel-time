@@ -1,5 +1,6 @@
 package com.snowdropsolutions.dm.services;
 
+import com.emergya.spring.gae.web.ws.BaseRestWebService.RestException;
 import com.google.appengine.api.urlfetch.HTTPRequest;
 import com.google.appengine.api.urlfetch.HTTPResponse;
 import com.google.appengine.api.urlfetch.URLFetchService;
@@ -7,15 +8,12 @@ import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Joiner;
 import com.snowdropsolutions.dm.web.DistanceMatrixWebService;
-import com.snowdropsolutions.dm.web.RestException;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
@@ -37,28 +35,28 @@ import org.springframework.stereotype.Service;
 @Service
 public class DistanceMatrixService {
 
-    @Autowired
-    private UrlSigner urlSigner;
-
     private static final String DM_SERVICE_URL
             = "https://maps.googleapis.com/maps/api/distancematrix/json";
 
     private static final int MAX_DESTINATIONS = 100;
 
-    DecimalFormatSymbols otherSymbols;
-    DecimalFormat df;
+    @Autowired
+    private UrlSigner urlSigner;
+
+    private DecimalFormatSymbols otherSymbols;
+    private DecimalFormat df;
 
     /**
-     * Performs requests (one or several, depending on the number of imputs) to Google's DistanceMatrix service and returns
+     * Performs requests (one or several, depending on the number of imputs) to Google's DistanceMatrix service and returns the
+     * result.
      *
-     * @param origins
-     * @param destinations
-     * @param mode
-     * @param avoid
-     * @return
-     * @throws UnsupportedEncodingException
+     * @param origins the origins.
+     * @param destinations the destinations parameter.
+     * @param mode the mode parameter.
+     * @param avoid the avoid parameter.
+     * @return the Google Distance Matrix service provided result.
      */
-    public String retrieveDM(String[] origins, String[] destinations, String mode, String avoid) throws UnsupportedEncodingException {
+    public String retrieveDM(String[] origins, String[] destinations, String mode, String avoid) {
 
         // We use a formatter to cut latLng decimals, this allows us to perform larger requests
         // "Point" separator needs to be specified because some locales use "comma" separator
@@ -79,7 +77,7 @@ public class DistanceMatrixService {
         // We calculate the amount of requests to be done using a supposed 3 decimal places for
         // origin and destinations' latitude and longitude attributes. You might want to enforce
         // that instead just supposing, or just check the URL length as it is created.
-        for (int i = 0; i < Math.floor(destinations.length / MAX_DESTINATIONS) + 1; i++) {
+        for (int i = 0; i < (destinations.length / MAX_DESTINATIONS + 1); i++) {
             String[] destinationPartial = Arrays.copyOfRange(destinations, i * MAX_DESTINATIONS, (i + 1) * MAX_DESTINATIONS);
             String formatedDestinations = formatArray(destinationPartial);
             String queryString = "?sensor=false&origins=" + formatedOrigins + "&destinations=" + formatedDestinations;
@@ -107,8 +105,7 @@ public class DistanceMatrixService {
             // The request is signed, see UrlSigner class for more info in the process.
             try {
                 requestResource = urlSigner.signRequest(url.getPath(), url.getQuery());
-            } catch (NoSuchAlgorithmException | InvalidKeyException | UnsupportedEncodingException | URISyntaxException ex) {
-
+            } catch (RuntimeException ex) {
                 Logger.getLogger(DistanceMatrixWebService.class.getName()).log(Level.SEVERE, null, ex);
                 throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
             }
@@ -149,7 +146,12 @@ public class DistanceMatrixService {
 
             HttpStatus responseStatus = HttpStatus.valueOf(response.getResponseCode());
             if (!responseStatus.is2xxSuccessful()) {
-                throw new RestException(responseStatus, new String(response.getContent()), null);
+                try {
+                    throw new RestException(responseStatus, new String(response.getContent(), "UTF-8"), null);
+                } catch (UnsupportedEncodingException ex) {
+                    Logger.getLogger(DistanceMatrixService.class.getName()).log(Level.SEVERE, null, ex);
+                    throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
+                }
             }
         }
 
@@ -160,14 +162,14 @@ public class DistanceMatrixService {
     private String formatArray(String[] places) {
         List<String> formattedValues = new ArrayList();
 
-        for (int i = 0; i < places.length; i++){
-            if(places[i] == null) {
+        for (int i = 0; i < places.length; i++) {
+            if (places[i] == null) {
                 continue;
             }
             String[] values = places[i].split(" ");
 
             // Check if comma separator is used
-            if(values.length != 2) {
+            if (values.length != 2) {
                 values = places[i].split(",");
             }
 

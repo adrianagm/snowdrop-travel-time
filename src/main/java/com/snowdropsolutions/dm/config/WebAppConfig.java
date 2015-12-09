@@ -15,39 +15,55 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 /**
- * Spring configuration for the webapp
+ * Spring configuration for the webapp.
+ *
  * @author lroman
  */
 @Configuration
-@ComponentScan(basePackages="com.snowdropsolutions.dm")
+@ComponentScan(basePackages = "com.snowdropsolutions.dm")
 @PropertySource("classpath:app.properties")
 @EnableWebMvc
 public class WebAppConfig extends WebMvcConfigurerAdapter {
+
+    /**
+     * @return the view resolver bean.
+     */
     @Bean
-	public ViewResolver getViewResolver(){
-		InternalResourceViewResolver resolver = new InternalResourceViewResolver();
-		resolver.setPrefix("/WEB-INF/jsp/");
-		resolver.setSuffix(".jsp");
-		return resolver;
-	}
-    
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-       return new PropertySourcesPlaceholderConfigurer();
+    public ViewResolver getViewResolver() {
+        InternalResourceViewResolver resolver = new InternalResourceViewResolver();
+        resolver.setPrefix("/WEB-INF/jsp/");
+        resolver.setSuffix(".jsp");
+        return resolver;
     }
 
+    /**
+     * @return the properties sources configurer bean.
+     */
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
+
+    /**
+     * Configures the message converters.
+     *
+     * @param converters the converters to configure.
+     */
     @Override
     public void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
-        super.configureMessageConverters(converters); 
-        
+        super.configureMessageConverters(converters);
+
         converters.add(new MappingJackson2HttpMessageConverter());
     }
-    
-    
-	
-	@Override
-	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
-	}
+
+    /**
+     * Adds the application resource handlers.
+     *
+     * @param registry the handler registry where to add resource paths.
+     */
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
+    }
 
 }

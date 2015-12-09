@@ -61,6 +61,9 @@
             </goals>
             <properties>
                 <netbeans.deploy.debugmode>true</netbeans.deploy.debugmode>
+                <jpda.listen>true</jpda.listen>
+                
+                
                 
             </properties>
         </action>
