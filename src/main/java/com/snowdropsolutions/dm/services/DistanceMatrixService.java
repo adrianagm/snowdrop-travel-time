@@ -173,12 +173,17 @@ public class DistanceMatrixService {
                 values = places[i].split(",");
             }
 
-            Double lat = Double.valueOf(values[0]);
-            Double lng = Double.valueOf(values[1]);
+            try {
+                Double lat = Double.valueOf(values[0]);
+                Double lng = Double.valueOf(values[1]);
 
-            // Cut decimals and join values
-            String formattedValue = df.format(lat) + " " + df.format(lng);
-            formattedValues.add(formattedValue);
+                // Cut decimals and join values
+                String formattedValue = df.format(lat) + " " + df.format(lng);
+                formattedValues.add(formattedValue);
+            } catch (RuntimeException ex) {
+                formattedValues.add(places[i]);
+            }
+
         }
         return Joiner.on("|").skipNulls().join(formattedValues);
     }
