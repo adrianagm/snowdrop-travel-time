@@ -15,7 +15,7 @@
     </parent>
 
     <properties>
-        <appengine.sdk.version>1.9.28</appengine.sdk.version>
+        <appengine.sdk.version>1.9.38</appengine.sdk.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.build.timestamp.format>yyyyMMdd-HHmm</maven.build.timestamp.format>
         <appengine.app.version>${maven.build.timestamp}</appengine.app.version>
@@ -64,6 +64,13 @@
             <version>0.1-SNAPSHOT</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.google.maps</groupId>
+            <artifactId>google-maps-services</artifactId>
+            <version>0.1.15</version>
+            <type>jar</type>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>com.google.appengine</groupId>
@@ -81,12 +88,12 @@
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.10</version>
-            <scope>test</scope>
+            <type>jar</type>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-test</artifactId>
-            <version>4.2.3.RELEASE</version>
+            <version>4.2.6.RELEASE</version>
             <scope>test</scope>
             <type>jar</type>
         </dependency>

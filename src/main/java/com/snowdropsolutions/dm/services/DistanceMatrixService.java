@@ -7,6 +7,7 @@ import com.google.appengine.api.urlfetch.URLFetchService;
 import com.google.appengine.api.urlfetch.URLFetchServiceFactory;
 import com.google.appengine.repackaged.com.google.gson.Gson;
 import com.google.common.base.Joiner;
+import com.google.maps.internal.PolylineEncoding;
 import com.snowdropsolutions.dm.web.DistanceMatrixWebService;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -47,16 +48,20 @@ public class DistanceMatrixService {
     private DecimalFormat df;
 
     /**
-     * Performs requests (one or several, depending on the number of imputs) to Google's DistanceMatrix service and returns the
-     * result.
+     * Performs requests (one or several, depending on the number of imputs) to
+     * Google's DistanceMatrix service and returns the result.
      *
      * @param origins the origins.
      * @param destinations the destinations parameter.
      * @param mode the mode parameter.
      * @param avoid the avoid parameter.
+     * @param units the units
+     * @param transitMode the transitMode
+     * @param transitRoutingPreference the transitRoutingpreference
      * @return the Google Distance Matrix service provided result.
      */
-    public String retrieveDM(String[] origins, String[] destinations, String mode, String avoid) {
+    public String retrieveDM(String[] origins, String[] destinations, String mode,
+            String avoid, String units, String transitMode, String transitRoutingPreference) {
 
         // We use a formatter to cut latLng decimals, this allows us to perform larger requests
         // "Point" separator needs to be specified because some locales use "comma" separator
@@ -84,10 +89,21 @@ public class DistanceMatrixService {
 
             if (mode != null && !mode.equals("")) {
                 queryString += "&mode=" + mode.toLowerCase();
+                if (mode.toLowerCase().equals("transit")) {
+                    if (transitMode != null && !transitMode.equals("")) {
+                        queryString += "&transit_mode=" + transitMode.toLowerCase();
+                    }
+                    if (transitRoutingPreference != null && !transitRoutingPreference.equals("")) {
+                        queryString += "&transit_routing_preferencing=" + transitRoutingPreference.toLowerCase();
+                    }
+                }
             }
 
             if (avoid != null && !avoid.equals("")) {
                 queryString += "&avoid=" + avoid.toLowerCase();
+            }
+            if (units != null && !units.equals("")) {
+                queryString += "&units=" + units.toLowerCase();
             }
 
             URL url;
@@ -176,9 +192,13 @@ public class DistanceMatrixService {
             try {
                 Double lat = Double.valueOf(values[0]);
                 Double lng = Double.valueOf(values[1]);
-
+                List<com.google.maps.model.LatLng> path = new ArrayList<>();
+                path.add(new com.google.maps.model.LatLng(lat, lng));
+                String formattedValue = "enc:";
+                formattedValue += PolylineEncoding.encode(path);
+                formattedValue += ":";
                 // Cut decimals and join values
-                String formattedValue = df.format(lat) + " " + df.format(lng);
+                //String formattedValue = df.format(lat) + " " + df.format(lng);
                 formattedValues.add(formattedValue);
             } catch (RuntimeException ex) {
                 formattedValues.add(places[i]);

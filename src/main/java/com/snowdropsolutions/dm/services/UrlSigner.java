@@ -30,9 +30,11 @@ public class UrlSigner {
     private byte[] key;
 
     /**
-     * Creates a valid Google Maps APIs signed URL from the server resource and query parameters.
+     * Creates a valid Google Maps APIs signed URL from the server resource and
+     * query parameters.
      *
-     * @param resource The service url you want to access (e.g. DistanceMatrix API service's URL).
+     * @param resource The service url you want to access (e.g. DistanceMatrix
+     * API service's URL).
      * @param query The parameters for the requests to be done.
      * @return the signed request.
      */
