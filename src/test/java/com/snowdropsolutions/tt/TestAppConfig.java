@@ -1,4 +1,4 @@
-package com.snowdropsolutions.dm;
+package com.snowdropsolutions.tt;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

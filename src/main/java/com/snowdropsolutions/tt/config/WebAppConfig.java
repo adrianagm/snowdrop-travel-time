@@ -1,4 +1,4 @@
-package com.snowdropsolutions.dm.config;
+package com.snowdropsolutions.tt.config;
 
 import java.util.List;
 import org.springframework.context.annotation.Bean;

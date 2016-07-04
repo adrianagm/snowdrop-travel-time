@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.snowdropsolutions.dm.dtos;
+package com.snowdropsolutions.tt.dtos;
 
 import java.util.ArrayList;
 
@@ -11,28 +11,21 @@ import java.util.ArrayList;
  *
  * @author amartinez
  */
-public class DMData {
+public class IsoData {
 
-    private ArrayList origins;
-    private ArrayList destinations;
+    private String origin;
     private String mode;
     private String avoid;
     private String units;
     private String transitMode;
     private String transitRoutingPreference;
+    private ArrayList intervals;
 
     /**
-     * @return the origins
+     * @return the origin
      */
-    public ArrayList getOrigins() {
-        return origins;
-    }
-
-    /**
-     * @return the destinations
-     */
-    public ArrayList getDestinations() {
-        return destinations;
+    public String getOrigin() {
+        return origin;
     }
 
     /**
@@ -71,17 +64,17 @@ public class DMData {
     }
 
     /**
-     * @param origins the origins to set
+     * @return the intervals
      */
-    public void setOrigins(ArrayList origins) {
-        this.origins = origins;
+    public ArrayList getIntervals() {
+        return intervals;
     }
 
     /**
-     * @param destinations the destinations to set
+     * @param origin the origin to set
      */
-    public void setDestinations(ArrayList destinations) {
-        this.destinations = destinations;
+    public void setOrigin(String origin) {
+        this.origin = origin;
     }
 
     /**
@@ -117,6 +110,13 @@ public class DMData {
      */
     public void setTransitRoutingPreference(String transitRoutingPreference) {
         this.transitRoutingPreference = transitRoutingPreference;
+    }
+
+    /**
+     * @param intervals the intervals to set
+     */
+    public void setIntervals(ArrayList intervals) {
+        this.intervals = intervals;
     }
 
 }

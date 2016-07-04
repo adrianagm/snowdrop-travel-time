@@ -6,7 +6,7 @@
     <version>1.0-SNAPSHOT</version>
 
     <groupId>com.snowdropsolutions</groupId>
-    <artifactId>distance-matrix-proxy</artifactId>
+    <artifactId>snowdrop-travel-time</artifactId>
 
     <parent>
         <groupId>com.emergya</groupId>
@@ -100,7 +100,19 @@
         <dependency>
             <groupId>com.google.appengine</groupId>
             <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.sdk.version}</version>
+            <version>1.9.38</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20140107</version>
+            <type>jar</type>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+            <version>4.4.1</version>
             <type>jar</type>
         </dependency>
     </dependencies>
@@ -198,4 +210,5 @@
             <url>http://nexus.emergya.es/nexus/content/repositories/emergya-check-style-snapshots</url>
         </repository>
     </repositories>
+    <name>snowdrop-travel-time</name>
 </project>
