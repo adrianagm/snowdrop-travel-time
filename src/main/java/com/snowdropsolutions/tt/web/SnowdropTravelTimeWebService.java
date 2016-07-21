@@ -47,6 +47,7 @@ public class SnowdropTravelTimeWebService extends BaseRestWebService {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Content-Type", "application/json");
         response.setHeader("Access-Control-Allow-Origin", allowedOrigins);
+        response.setHeader("Access-Control-Allow-Methods", "POST");
 
         Map<String, Object> iso = ttService.retrieveIso(isoData);
         Map<String, Object> filterIso = ttService.addFilterIso(iso);
