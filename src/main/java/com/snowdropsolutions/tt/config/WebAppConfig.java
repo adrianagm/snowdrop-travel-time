@@ -20,7 +20,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
  * @author lroman
  */
 @Configuration
-@ComponentScan(basePackages = "com.snowdropsolutions.dm")
+@ComponentScan(basePackages = "com.snowdropsolutions.tt")
 @PropertySource("classpath:app.properties")
 @EnableWebMvc
 public class WebAppConfig extends WebMvcConfigurerAdapter {

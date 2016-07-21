@@ -5,7 +5,7 @@
  */
 package com.snowdropsolutions.tt.dtos;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -19,7 +19,9 @@ public class IsoData {
     private String units;
     private String transitMode;
     private String transitRoutingPreference;
-    private ArrayList intervals;
+    private List<String> timeIntervals;
+    private List<String> distanceIntervals;
+    private String paramInterval;
 
     /**
      * @return the origin
@@ -64,10 +66,24 @@ public class IsoData {
     }
 
     /**
-     * @return the intervals
+     * @return the timeIntervals
      */
-    public ArrayList getIntervals() {
-        return intervals;
+    public List<String> getTimeIntervals() {
+        return timeIntervals;
+    }
+
+    /**
+     * @return the distanceIntervals
+     */
+    public List<String> getDistanceIntervals() {
+        return distanceIntervals;
+    }
+
+    /**
+     * @return the paramInterval
+     */
+    public String getParamInterval() {
+        return paramInterval;
     }
 
     /**
@@ -113,10 +129,24 @@ public class IsoData {
     }
 
     /**
-     * @param intervals the intervals to set
+     * @param timeIntervals the timeIntervals to set
      */
-    public void setIntervals(ArrayList intervals) {
-        this.intervals = intervals;
+    public void setTimeIntervals(List<String> timeIntervals) {
+        this.timeIntervals = timeIntervals;
+    }
+
+    /**
+     * @param distanceIntervals the distanceIntervals to set
+     */
+    public void setDistanceIntervals(List<String> distanceIntervals) {
+        this.distanceIntervals = distanceIntervals;
+    }
+
+    /**
+     * @param paramInterval the paramInterval to set
+     */
+    public void setParamInterval(String paramInterval) {
+        this.paramInterval = paramInterval;
     }
 
 }

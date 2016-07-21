@@ -20,10 +20,10 @@ import org.springframework.stereotype.Component;
 @Component
 public class UrlSigner {
 
-    @Value("${dm.googleApi.privateKey}")
+    @Value("${tt.googleApi.privateKey}")
     private String keyString;
 
-    @Value("${dm.googleApi.clientId}")
+    @Value("${tt.googleApi.clientId}")
     private String clientId;
 
     // This variable stores the binary key, which is computed from the string (Base64) key
