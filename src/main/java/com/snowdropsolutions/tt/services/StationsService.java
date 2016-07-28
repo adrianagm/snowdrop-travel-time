@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 @Service
 public class StationsService {
 
+    static final double TRAMO_1 = 0.08;
+    static final double TRAMO_2 = 0.1;
+    static final double TRAMO_3 = 0.5;
+
     @Autowired
     private DBService dbService;
 
@@ -40,25 +44,24 @@ public class StationsService {
     public ArrayList<String> getStationsByRadius(String origin, double radius) {
         String lat = origin.split(",")[0];
         String lng = origin.split(",")[1];
-        //If distance from origin is less than 10km, get stations each 0.5km
-        //If distance from origin is less than 100km, get stations each 1km
-        //else, get stations each 5km
-        String query = String.format("SELECT *, (6373 * "
-                + "acos ( cos ( radians(%1$s ) )"
-                + "      * cos( radians( Latitude ) )"
-                + "      * cos( radians( Longitude ) - radians(%2$s ) )"
-                + "      + sin ( radians( %1$s ) )"
-                + "      * sin( radians( Latitude ) )"
-                + "    )"
-                + ") AS distance "
-                + "FROM StopsGB "
-                + "GROUP BY IF(distance<100,"
-                + " IF(distance < 10, "
-                + "(concat(0.5 * round(distance / 0.5), '-', 0.5 * round(distance / 0.5) + 0.5)), "
-                + "(concat(1 * round(distance / 1), '-', 1 * round(distance / 1) + 1))), "
-                + "(concat(5 * round(distance / 5), '-', 5 * round(distance / 5) + 5.1))) "
-                + "HAVING distance < %3$s "
-                + "ORDER BY distance", lat, lng, String.valueOf(radius));
+
+        String query = String.format("SELECT latitude, longitude, "
+                + "IF(a.distance<80,"
+                + "IF(a.distance < 40,"
+                + "(ROUND(a.latitude /%4$s) * %4$s),"
+                + "(ROUND(a.latitude / %5$s) * %5$s)),(ROUND(a.latitude /%6$s) * %6$s)"
+                + ") AS rlat,"
+                + "IF(a.distance<80,"
+                + "IF(a.distance < 40,"
+                + "(ROUND(a.longitude / %4$s) * %4$s),"
+                + "(ROUND(a.longitude / %5$s) * %5$s)),(ROUND(a.longitude /%6$s) * %6$s)"
+                + ") AS rlng "
+                + " FROM("
+                + " SELECT latitude, longitude,"
+                + " ST_Distance(point(Latitude,Longitude), point(%1$s, %2$s))*100  AS distance"
+                + " FROM StopsWales HAVING distance <%3$s) as a"
+                + " GROUP BY rlat, rlng"
+                + " ORDER BY distance", lat, lng, String.valueOf(radius), TRAMO_1, TRAMO_2, TRAMO_3);
 
         ArrayList<String> stations = dbService.sqlQuery(query);
 

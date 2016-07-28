@@ -2,6 +2,7 @@
 <appengine-web-app xmlns="http://appengine.google.com/ns/1.0">
     <application>${profile.appengine.app.projectid}</application>
     <version>${appengine.app.version}</version>
+    <module>travel-time</module>
     <threadsafe>true</threadsafe>
     <use-google-connector-j>true</use-google-connector-j>
 

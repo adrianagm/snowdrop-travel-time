@@ -8,6 +8,7 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.Polygon;
+import com.vividsolutions.jts.simplify.DouglasPeuckerSimplifier;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,6 +34,7 @@ import org.wololo.jts2geojson.GeoJSONWriter;
 @Service
 public class TravelTimeService {
 
+    static final double SIMPLIFY = 0.001;
     //velocity
     static final int KM_H = 120;
     static final double TO_SEG = 3.6;
@@ -87,8 +89,9 @@ public class TravelTimeService {
             switch (mode.toLowerCase()) {
                 case "walking":
                 case "driving":
-                case "bicycle":
-                    iso = retrieveOTPIso(isoData);
+                case "bicycling":
+                    iso = simplifyIso(retrieveOTPIso(isoData));
+
                     break;
                 case "transit":
                     iso = retrieveGoogleIso(isoData);
@@ -129,13 +132,18 @@ public class TravelTimeService {
         requestMap.put("batch", "true");
         requestMap.put("fromPlace", isoData.getOrigin());
         requestMap.put("mode", mode);
+        requestMap.put("precisionMeters", "400");
+
         StringBuffer requestIntervals = new StringBuffer();
         for (String interval : isoData.getTimeIntervals()) {
             requestIntervals.append("&cutoffSec=").append(interval);
         }
         String url = isoUrl + utilsService.mapToQueryString(requestMap) + requestIntervals;
         try {
+            long startTime = System.currentTimeMillis();
             iso = utilsService.getHttpResult(url);
+            long endTime = System.currentTimeMillis();
+            System.out.println("TIME:Isos otp:  " + (endTime - startTime));
         } catch (Exception ex) {
             throw new RestException(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage(), ex);
         }
@@ -152,8 +160,13 @@ public class TravelTimeService {
         for (String interval : isoData.getTimeIntervals()) {
             intervals.add(Integer.valueOf(interval));
         }
+        long startTime = System.currentTimeMillis();
         ArrayList<String> destinations = getDestinations(isoData.getOrigin(), Collections.max(intervals).toString());
+        long endTime = System.currentTimeMillis();
+        System.out.println("TIME: Get stations:  " + (endTime - startTime));
         Map<String, Object> dm = getDM(isoData, destinations);
+        long endTimedm = System.currentTimeMillis();
+        System.out.println("TIME: Get dm:  " + (endTimedm - endTime));
         return calculateIsoByDM(dm, isoData, destinations);
     }
 
@@ -218,29 +231,70 @@ public class TravelTimeService {
      * @param dm the distance matrix
      * @return the iso
      */
-    private Map<String, Object> calculateIsoByDM(Map<String, Object> dm, IsoData isoData, ArrayList<String> destinations) {
-        int i = 0;
-        List<String> intervals = isoData.getTimeIntervals();
-        Double valueInterval = Double.parseDouble(Collections.max(intervals));
-        ArrayList<Map<String, Object>> isoList = new ArrayList<>();
+    private Map<String, Object> calculateIsoByDM(Map<String, Object> dm, IsoData isoData, final ArrayList<String> destinations) {
+        long startTime = System.currentTimeMillis();
+
+        final ArrayList<Integer> intervals = new ArrayList<>();
+        for (String interval : isoData.getTimeIntervals()) {
+            intervals.add(Integer.valueOf(interval));
+        }
+        final Integer valueInterval = Collections.max(intervals);
+        final ArrayList<Map<String, Object>> isoList = new ArrayList<>();
         ArrayList<Map<String, Object>> rows = (ArrayList<Map<String, Object>>) dm.get("rows");
         Map<String, Object> el = (Map<String, Object>) rows.get(0);
-        ArrayList<Map<String, Object>> elements = (ArrayList<Map<String, Object>>) el.get("elements");
+        final ArrayList<Map<String, Object>> elements = (ArrayList<Map<String, Object>>) el.get("elements");
         //add walking iso from origin
         isoList.add(getIsoFromStation(isoData.getOrigin(), isoData.getTimeIntervals()));
         //add walking iso from each station
-        for (Map<String, Object> entry : elements) {
+        int i = 0;
+        for (final Map<String, Object> entry : elements) {
             if (entry.get("status").equals("OK")) {
+                final String destination = destinations.get(i);
+                System.out.println("Retrieving iso");
+
                 Map<String, Object> duration = (Map<String, Object>) entry.get("duration");
-                Double value = (Double) duration.get("value");
-                if (value < valueInterval) {
-                    List<String> intervalsForStation = getIntervalsForStation(value, intervals);
-                    isoList.add(getIsoFromStation(destinations.get(i), intervalsForStation));
+                final Double value = (Double) duration.get("value");
+                if (value > valueInterval) {
+                    continue;
                 }
+
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+
+                        List<String> intervalsForStation
+                                = getIntervalsForStation(value.intValue(), intervals);
+                        isoList.add(getIsoFromStation(destination, intervalsForStation));
+                        synchronized (isoList) {
+                            Map<String, Object> m = mergeDMIso(isoList);
+                            isoList.clear();
+                            isoList.add(m);
+
+                            if (entry == elements.get(elements.size() - 1)) {
+                                isoList.notifyAll();
+                            }
+                        }
+                    }
+                };
+                r.run();
+
             }
             i++;
         }
-        return mergeDMIso(isoList);
+
+        synchronized (isoList) {
+            try {
+                while (isoList.size() != 1) {
+                    isoList.wait();
+                }
+            } catch (InterruptedException ex) {
+                Logger.getLogger(TravelTimeService.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+
+        long endTime = System.currentTimeMillis();
+        System.out.println("TIME:Isos by dm:  " + (endTime - startTime));
+        return isoList.get(0);
     }
 
     /**
@@ -263,6 +317,7 @@ public class TravelTimeService {
     }
 
     private Map<String, Object> mergeDMIso(ArrayList<Map<String, Object>> isoList) {
+        long startTime = System.currentTimeMillis();
         ArrayList<Map<String, Object>> isoIntervalList = new ArrayList<>();
 
         Map<String, Object> firstIso = isoList.get(0);
@@ -275,19 +330,24 @@ public class TravelTimeService {
                 if (isofeatures != null) {
                     Map<String, Object> geometry = (Map<String, Object>) isofeatures.get(i).get("geometry");
                     if (iso == null) {
-                        iso = createPolygon(geometry);
+                        iso = DouglasPeuckerSimplifier.simplify(createPolygon(geometry), SIMPLIFY);
                     } else {
                         try {
-                            iso = iso.union(createPolygon(geometry));
+                            Geometry g = (Geometry) createPolygon(geometry);
+                            Geometry simple = DouglasPeuckerSimplifier.simplify(g, SIMPLIFY);
+                            iso = iso.union(simple);
                         } catch (Exception e) {
                             System.out.print(e);
                         }
                     }
                 }
+
             }
+            iso = DouglasPeuckerSimplifier.simplify(iso, SIMPLIFY);
             isoIntervalList.add(createFeature(iso, (Map<String, Object>) features.get(i).get("properties")));
         }
-
+        long endTime = System.currentTimeMillis();
+        System.out.println("TIME: Merge:  " + (endTime - startTime));
         return createGjson(isoIntervalList);
 
     }
@@ -303,7 +363,11 @@ public class TravelTimeService {
         ArrayList<List<Double>> coordinates = (ArrayList<List<Double>>) coordinates2.get(0);
         ArrayList<Coordinate> coordinateList = new ArrayList<>();
         for (List<Double> coor : coordinates) {
-            coordinateList.add(new Coordinate(coor.get(0), coor.get(1)));
+            try {
+                coordinateList.add(new Coordinate(coor.get(0), coor.get(1)));
+            } catch (Exception e) {
+                System.out.print(e);
+            }
         }
         Coordinate[] cs = new Coordinate[coordinateList.size()];
         Coordinate[] cSec = (Coordinate[]) coordinateList.toArray(cs);
@@ -336,10 +400,10 @@ public class TravelTimeService {
 
     }
 
-    private List<String> getIntervalsForStation(Double value, List<String> intervals) {
+    private List<String> getIntervalsForStation(Integer value, List<Integer> intervals) {
         List<String> intervalsForStation = new ArrayList<>();
-        for (String interval : intervals) {
-            Double newInterval = Double.valueOf(interval) - value;
+        for (Integer interval : intervals) {
+            Integer newInterval = interval - value;
             intervalsForStation.add(String.valueOf(newInterval.intValue()));
         }
         return intervalsForStation;
@@ -402,6 +466,22 @@ public class TravelTimeService {
         filterFeature.put("properties", prop);
         features.add(filterFeature);
         return createGjson(features);
+    }
+
+    private Map<String, Object> simplifyIso(Map<String, Object> firstIso) {
+        long startTime = System.currentTimeMillis();
+        ArrayList<Map<String, Object>> isoIntervalList = new ArrayList<>();
+        ArrayList<Map<String, Object>> features = (ArrayList<Map<String, Object>>) firstIso.get("features");
+
+        for (int i = 0; i < features.size(); i++) {
+            Map<String, Object> geometry = (Map<String, Object>) features.get(i).get("geometry");
+            Geometry iso = createPolygon(geometry);
+            Geometry simpleIso = DouglasPeuckerSimplifier.simplify(iso, SIMPLIFY);
+            isoIntervalList.add(createFeature(simpleIso, (Map<String, Object>) features.get(i).get("properties")));
+        }
+        long endTime = System.currentTimeMillis();
+        System.out.println("TIME: simplify:  " + (endTime - startTime));
+        return createGjson(isoIntervalList);
     }
 
 }

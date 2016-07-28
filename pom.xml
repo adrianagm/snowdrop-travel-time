@@ -36,12 +36,7 @@
                 <profile.id>snowdrop</profile.id>
             </properties>
         </profile>
-        <profile>
-            <id>dg</id>
-            <properties>
-                <profile.id>dg</profile.id>
-            </properties>
-        </profile>
+       
     </profiles>
 
     <dependencies>

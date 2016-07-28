@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -40,6 +41,7 @@ public class SnowdropTravelTimeWebService extends BaseRestWebService {
      * @param response the response.
      * @return iso
      */
+    @CrossOrigin
     @RequestMapping(value = "iso", method = RequestMethod.POST)
     public Map<String, Object> retrieveDM(@RequestBody IsoData isoData,
             HttpServletResponse response) {
@@ -47,10 +49,11 @@ public class SnowdropTravelTimeWebService extends BaseRestWebService {
         response.setHeader("Access-Control-Allow-Headers", "Content-Type");
         response.setHeader("Content-Type", "application/json");
         response.setHeader("Access-Control-Allow-Origin", allowedOrigins);
-        response.setHeader("Access-Control-Allow-Methods", "POST");
+        response.setHeader("Access-Control-Allow-Methods", "POST, GET, OPTIONS");
 
         Map<String, Object> iso = ttService.retrieveIso(isoData);
         Map<String, Object> filterIso = ttService.addFilterIso(iso);
         return filterIso;
     }
+
 }

@@ -6,11 +6,12 @@
 package com.snowdropsolutions.tt.services;
 
 import com.snowdropsolutions.tt.dtos.Station;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -23,6 +24,8 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class DBService {
+
+    static final int DECIMALS = 3;
 
     /**
      *
@@ -74,16 +77,27 @@ public class DBService {
     public ArrayList<String> sqlQuery(String query) {
         ArrayList<String> points = new ArrayList<>();
         Connection conn = null;
+        long sTime = System.currentTimeMillis();
         try {
             conn = dbConnect();
             try {
-                try (Statement smt = conn.createStatement()) {
+                try (PreparedStatement smt = conn.prepareStatement(query)) {
+                    long startTime = System.currentTimeMillis();
                     ResultSet rs = smt.executeQuery(query);
+                    long endTime = System.currentTimeMillis();
+                    System.out.println("TIME:Query:  " + (endTime - startTime));
                     while (rs.next()) {
-                        Station station = new Station(rs.getDouble("latitude"), rs.getDouble("longitude"));
+                        BigDecimal lat = new BigDecimal(rs.getDouble(1));
+                        lat = lat.setScale(DECIMALS, BigDecimal.ROUND_CEILING);
+
+                        BigDecimal lng = new BigDecimal(rs.getDouble(2));
+                        lng = lng.setScale(DECIMALS, BigDecimal.ROUND_CEILING);
+
+                        Station station = new Station(lat.doubleValue(), lng.doubleValue());
                         points.add(station.getCoord());
                     }
                     rs.close();
+                    smt.close();
                 }
             } catch (Exception e) {
                 Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, e);
@@ -93,7 +107,8 @@ public class DBService {
         } catch (ServletException | SQLException ex) {
             Logger.getLogger(DBService.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        long eTime = System.currentTimeMillis();
+        System.out.println("TIME:Proccess result set:  " + (eTime - sTime));
         return points;
     }
 }
